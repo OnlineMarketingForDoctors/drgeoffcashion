@@ -10,18 +10,17 @@ sprinkled across the codebase.
 
 ### The switch
 
-There is exactly one source of truth: `NOINDEX` in `site.config.*`.
+Two controls, both currently explicit. When the site gains a framework, both
+must be driven from a single `NOINDEX` constant so launch is a one-line change.
 
-Both of the controls below read from that constant. Flipping it to `false` is
-the entire launch change — no file hunt, no grep for stray meta tags.
+| Control | Lives in | Covers |
+| --- | --- | --- |
+| `X-Robots-Tag: noindex, nofollow` | `vercel.json` (`headers`, source `/(.*)`) | every route and file type |
+| `<meta name="robots" content="noindex, nofollow">` | every HTML `<head>` | HTML only, backstop |
 
-### What the switch drives
-
-1. `X-Robots-Tag: noindex, nofollow` response header on all routes. This is the
-   primary control — it covers non-HTML responses (PDFs, images, JSON) that a
-   meta tag cannot reach.
-2. `<meta name="robots" content="noindex, nofollow">` in the `<head>` of every
-   HTML page, as a backstop for anything served without the header.
+The header is framework-agnostic and applies to whatever gets built, including
+static assets and error responses. Do not remove or narrow the `vercel.json`
+headers block when scaffolding the site.
 
 ### Standing rules while the switch is on
 
