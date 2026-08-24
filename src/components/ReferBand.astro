@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { SITE } from "../site.config";
-import orchidImg from "../assets/generated/orchidometer.webp";
+import orchidImg from "../assets/generated/orchidometer.png";
 
 interface Props {
   /** Interior pages carry an id so the spine and nav can target them. */
@@ -31,10 +31,6 @@ const { id = "refer" } = Astro.props;
         </a>
       </div>
 
-      <p class="refer__note" data-reveal style="--delay:300ms">
-        Prefer paper? Fax or post a standard referral and we will take it from
-        there.
-      </p>
     </div>
 
     <aside class="offer" data-reveal style="--delay:200ms">
@@ -42,7 +38,7 @@ const { id = "refer" } = Astro.props;
         <Image
           src={orchidImg}
           alt="A Prader orchidometer laid out on a surgical drape"
-          widths={[500, 800, 1100]}
+          widths={[420, 700, 1024]}
           sizes="(min-width: 62rem) 38vw, 90vw"
           quality={82}
         />
@@ -86,14 +82,6 @@ const { id = "refer" } = Astro.props;
     margin-top: 2.2rem;
   }
 
-  .refer__note {
-    margin-top: 1.5rem;
-    font-family: var(--mono);
-    font-size: 0.74rem;
-    letter-spacing: 0.03em;
-    color: color-mix(in srgb, var(--drape-pale) 80%, transparent);
-    max-width: 40ch;
-  }
 
   /* the orchidometer offer — the page's signature, paid off */
   .offer {
