@@ -222,17 +222,19 @@ const steps = [
       align-items: start;
     }
 
+    /* Centre the pinned frame with a real sticky offset rather than a
+       translate — a transform would lift it out of its own box and over the
+       section heading above it. */
     .seq__media {
+      --frame-h: min(72vh, 40rem);
       display: block;
       position: sticky;
-      top: 50%;
-      transform: translateY(-50%);
+      top: calc((100svh - var(--frame-h)) / 2);
     }
 
-    /* the pinned frame must leave the nav and some breathing room visible */
     .seq__stack {
       aspect-ratio: auto;
-      height: min(72vh, 40rem);
+      height: var(--frame-h);
     }
 
     .step__inline {
