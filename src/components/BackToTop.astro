@@ -1,0 +1,119 @@
+---
+/**
+ * Appears once the reader is a screen or so down, and returns them to the
+ * top. Sits bottom-right, clear of the orchidometer spine on the left edge.
+ */
+---
+
+<button class="totop" type="button" data-totop aria-label="Back to top" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      d="M12 19V6M12 6l-6 6M12 6l6 6"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+</button>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>("[data-totop]");
+
+  if (btn) {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // far enough down that the button is not competing with the hero
+    const SHOW_AFTER = () => window.innerHeight * 1.2;
+
+    let shown = false;
+    const sync = () => {
+      const should = window.scrollY > SHOW_AFTER();
+      if (should === shown) return;
+      shown = should;
+      if (should) {
+        // unhide first so the transition has something to run on
+        btn.hidden = false;
+        requestAnimationFrame(() => btn.classList.add("is-in"));
+      } else {
+        btn.classList.remove("is-in");
+      }
+    };
+
+    // keep it out of the tab order once it has faded away
+    btn.addEventListener("transitionend", (e) => {
+      if (e.propertyName === "opacity" && !btn.classList.contains("is-in")) {
+        btn.hidden = true;
+      }
+    });
+
+    btn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: reduced.matches ? "auto" : "smooth" });
+      // move focus somewhere sensible rather than leaving it on a button
+      // that is about to disappear
+      document.getElementById("main")?.focus?.();
+    });
+
+    sync();
+    window.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+  }
+</script>
+
+<style>
+  .totop {
+    position: fixed;
+    right: clamp(1rem, 2.5vw, 2rem);
+    bottom: clamp(1rem, 2.5vw, 2rem);
+    z-index: 45;
+
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+
+    color: var(--bone);
+    background: color-mix(in srgb, var(--ink) 82%, transparent);
+    backdrop-filter: blur(10px) saturate(1.2);
+    border: 1px solid color-mix(in srgb, var(--bone) 26%, transparent);
+    border-radius: 50%;
+    cursor: pointer;
+
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.45s var(--ease),
+      transform 0.45s var(--ease-out),
+      background-color 0.3s var(--ease),
+      border-color 0.3s var(--ease);
+  }
+
+  .totop.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  .totop:hover {
+    background: var(--iodine);
+    border-color: var(--iodine);
+  }
+
+  .totop svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    transition: transform 0.35s var(--ease-out);
+  }
+
+  .totop:hover svg {
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .totop,
+    .totop svg {
+      transition: opacity 0.2s linear;
+      transform: none;
+    }
+  }
+</style>

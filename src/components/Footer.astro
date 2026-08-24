@@ -28,7 +28,17 @@ const year = new Date().getFullYear();
 
   <div class="wrap foot__base">
     <p>© {year} Vasectomy Australia. All rights reserved.</p>
-    <p>Powered by Online Marketing For Doctors</p>
+    <p>
+      Powered by
+      <a
+        class="foot__credit"
+        href="https://onlinemarketingfordoctors.com/"
+        target="_blank"
+        rel="noopener"
+      >
+        Online Marketing For Doctors
+      </a>
+    </p>
   </div>
 </footer>
 
@@ -98,6 +108,9 @@ const year = new Date().getFullYear();
     justify-content: space-between;
     gap: 0.5rem 2rem;
     padding-top: 2rem;
+    /* clears the fixed back-to-top button, which otherwise sits on top of
+       the credit line at several widths */
+    padding-bottom: 3.5rem;
     border-top: 1px solid color-mix(in srgb, var(--bone) 15%, transparent);
     font-family: var(--mono);
     font-size: 0.72rem;
@@ -107,6 +120,19 @@ const year = new Date().getFullYear();
 
   .foot__base p {
     margin: 0;
+  }
+
+  .foot__credit {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--bone) 28%, transparent);
+    padding-bottom: 0.1em;
+    transition: color 0.3s var(--ease), border-color 0.3s var(--ease);
+  }
+
+  .foot__credit:hover {
+    color: var(--bone);
+    border-bottom-color: var(--iodine-bright);
   }
 
   @media (min-width: 48rem) {

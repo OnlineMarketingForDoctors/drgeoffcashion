@@ -1,5 +1,6 @@
 ---
 import { NOINDEX } from "../site.config";
+import BackToTop from "../components/BackToTop.astro";
 import "../styles/fonts.css";
 import "../styles/global.css";
 
@@ -49,6 +50,7 @@ const { title, description } = Astro.props;
   <body>
     <a class="skip" href="#main">Skip to content</a>
     <slot />
+    <BackToTop />
 
     <script>
       // Scroll reveals. One observer, unobserve after firing.
