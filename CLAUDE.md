@@ -10,17 +10,22 @@ sprinkled across the codebase.
 
 ### The switch
 
-Two controls, both currently explicit. When the site gains a framework, both
-must be driven from a single `NOINDEX` constant so launch is a one-line change.
+One constant, `NOINDEX` in `src/site.config.ts`, drives both controls:
 
-| Control | Lives in | Covers |
+| Control | Comes from | Covers |
 | --- | --- | --- |
-| `X-Robots-Tag: noindex, nofollow` | `vercel.json` (`headers`, source `/(.*)`) | every route and file type |
-| `<meta name="robots" content="noindex, nofollow">` | every HTML `<head>` | HTML only, backstop |
+| `X-Robots-Tag: noindex, nofollow` | `vercel.json` headers block | every route and file type |
+| `<meta name="robots" content="noindex, nofollow">` | `src/layouts/Base.astro` | HTML only, backstop |
 
-The header is framework-agnostic and applies to whatever gets built, including
-static assets and error responses. Do not remove or narrow the `vercel.json`
-headers block when scaffolding the site.
+`vercel.json` is a **generated, committed** file. After changing `NOINDEX`, run:
+
+    npm run sync:noindex
+
+and commit the result. `npm run build` runs `sync-noindex --check` and fails if
+the two disagree, so they cannot silently drift. The check does not rewrite the
+file during a Vercel build on purpose — Vercel reads `vercel.json` to configure
+the build before `prebuild` runs, so a rewrite there would be too late to change
+the headers actually served.
 
 ### Standing rules while the switch is on
 

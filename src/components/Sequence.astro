@@ -1,0 +1,270 @@
+---
+import { Image } from "astro:assets";
+
+import referralImg from "../assets/generated/referral-desk.webp";
+import corridorImg from "../assets/generated/corridor.webp";
+import instrumentsImg from "../assets/generated/instruments.webp";
+import roomImg from "../assets/generated/procedure-room.webp";
+import mondayImg from "../assets/generated/monday.webp";
+
+/*
+ * This one genuinely is a sequence, so it gets numbers. The image column
+ * pins and cross-fades as each step comes into view.
+ */
+const steps = [
+  {
+    when: "Day 0",
+    title: "You send the referral.",
+    body: "A standard referral by email, fax or post. Our rooms contact him directly to book — you are not chasing anyone, and neither is he.",
+    img: referralImg,
+    alt: "A referral letter and fountain pen on a doctor's desk",
+  },
+  {
+    when: "Before",
+    title: "He arrives knowing what happens.",
+    body: "Written instructions, reminders and an explainer video go out ahead of the appointment. Most of the anxiety in this procedure is about the unknown, so we remove the unknown.",
+    img: corridorImg,
+    alt: "A calm, daylit medical suite corridor",
+  },
+  {
+    when: "5–8 min",
+    title: "No scalpel, no stitches.",
+    body: "Local anaesthetic, then a single small opening made with a ring-tipped forceps rather than a blade. He is awake, and it is over in the time it takes to park the car.",
+    img: instrumentsImg,
+    alt: "Ring-tipped fixation forceps and dissecting forceps on a surgical drape",
+  },
+  {
+    when: "Same hour",
+    title: "He drives himself home.",
+    body: "No sedation and no general anaesthetic means no carer to arrange and no afternoon written off. Several patients have mentioned going out for dinner the same night.",
+    img: roomImg,
+    alt: "An empty procedure room in morning light",
+  },
+  {
+    when: "Monday",
+    title: "He is back at work.",
+    body: "A quiet weekend, ibuprofen, and most men are back to normal duties by Monday. A follow-up semen analysis confirms clearance, then he returns to your care.",
+    img: mondayImg,
+    alt: "A man at home in a sunlit kitchen on a weekend morning",
+  },
+];
+---
+
+<section class="band seq" id="experience">
+  <div class="wrap seq__head" data-reveal>
+    <p class="tag">Your patient's day</p>
+    <h2>What you are actually sending him into.</h2>
+  </div>
+
+  <div class="wrap seq__inner">
+    <div class="seq__media" aria-hidden="true">
+      <div class="seq__stack">
+        {
+          steps.map((s, i) => (
+            <figure class:list={["seq__frame", { "is-active": i === 0 }]} data-seq-frame={i}>
+              <Image
+                src={s.img}
+                alt=""
+                widths={[600, 900, 1300]}
+                sizes="(min-width: 62rem) 46vw, 90vw"
+                quality={80}
+              />
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+
+    <ol class="seq__steps">
+      {
+        steps.map((s, i) => (
+          <li class="step" data-seq-step={i}>
+            <figure class="step__inline">
+              <Image
+                src={s.img}
+                alt={s.alt}
+                widths={[500, 800]}
+                sizes="90vw"
+                quality={78}
+              />
+            </figure>
+            <p class="step__when">{s.when}</p>
+            <h3 class="step__title">{s.title}</h3>
+            <p class="step__body">{s.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<script>
+  const steps = [...document.querySelectorAll<HTMLElement>("[data-seq-step]")];
+  const frames = [...document.querySelectorAll<HTMLElement>("[data-seq-frame]")];
+
+  if (steps.length && frames.length) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const idx = Number((entry.target as HTMLElement).dataset.seqStep);
+          frames.forEach((f, i) => f.classList.toggle("is-active", i === idx));
+          steps.forEach((s, i) => s.classList.toggle("is-active", i === idx));
+        }
+      },
+      { rootMargin: "-48% 0px -48% 0px" }
+    );
+    steps.forEach((s) => io.observe(s));
+  }
+</script>
+
+<style>
+  .seq {
+    background: var(--bone);
+  }
+
+  .seq__head {
+    margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .seq__head h2 {
+    margin-top: 0.4em;
+    max-width: 18ch;
+  }
+
+  .seq__inner {
+    display: grid;
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+
+  /* --- pinned image column (desktop only) --- */
+  .seq__media {
+    display: none;
+  }
+
+  .seq__stack {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    border-radius: 2px;
+    overflow: hidden;
+    background: var(--drape-wash);
+  }
+
+  .seq__frame {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    transform: scale(1.04);
+    transition: opacity 0.9s var(--ease), transform 1.4s var(--ease-out);
+  }
+
+  .seq__frame.is-active {
+    opacity: 1;
+    transform: none;
+  }
+
+  .seq__frame :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* --- steps --- */
+  .seq__steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 3rem);
+  }
+
+  .step {
+    padding-top: 1.4rem;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+
+  .step__inline {
+    margin: 0 0 1.2rem;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .step__inline :global(img) {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+
+  .step__when {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--iodine);
+  }
+
+  .step__title {
+    margin-top: 0.5rem;
+  }
+
+  .step__body {
+    margin-top: 0.7rem;
+    color: var(--ink-soft);
+    max-width: 42ch;
+  }
+
+  @media (min-width: 62rem) {
+    .seq__inner {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(3rem, 7vw, 7rem);
+      align-items: start;
+    }
+
+    .seq__media {
+      display: block;
+      position: sticky;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* the pinned frame must leave the nav and some breathing room visible */
+    .seq__stack {
+      aspect-ratio: auto;
+      height: min(72vh, 40rem);
+    }
+
+    .step__inline {
+      display: none;
+    }
+
+    /* each step holds the viewport long enough for its frame to register */
+    .seq__steps {
+      gap: 0;
+    }
+
+    .step {
+      min-height: 78vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-top: 0;
+      opacity: 0.35;
+      transition: opacity 0.6s var(--ease);
+    }
+
+    .step.is-active {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .step {
+      opacity: 1;
+    }
+    .seq__frame {
+      transition: none;
+    }
+  }
+</style>

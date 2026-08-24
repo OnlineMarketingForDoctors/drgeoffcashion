@@ -1,0 +1,201 @@
+---
+import { reviews } from "../data/reviews";
+---
+
+<section class="band band--dark rv" id="reviews">
+  <div class="wrap rv__head">
+    <div data-reveal>
+      <p class="tag tag--pale">What comes back</p>
+      <h2>Your name is on the referral too.</h2>
+    </div>
+    <p class="lede rv__intro" data-reveal style="--delay:120ms">
+      Which is the real reason to be fussy about where you send him. These are
+      his patients, in their own words, after the fact.
+    </p>
+  </div>
+
+  <div class="rv__track" data-rv-track tabindex="0" role="region" aria-label="Patient reviews, scrollable">
+    {
+      reviews.map((r) => (
+        <article class="quote">
+          <p class="quote__pull">{r.pull}</p>
+          <div class="quote__body">
+            {r.body.map((para) => (
+              <p>{para}</p>
+            ))}
+          </div>
+          <footer class="quote__by">
+            <span class="quote__name">{r.name}</span>
+            <span class="quote__meta">
+              {r.meta} · {r.when}
+            </span>
+          </footer>
+        </article>
+      ))
+    }
+  </div>
+
+  <div class="wrap rv__controls">
+    <button type="button" data-rv-prev aria-label="Previous review">
+      <span aria-hidden="true">←</span>
+    </button>
+    <button type="button" data-rv-next aria-label="Next review">
+      <span aria-hidden="true">→</span>
+    </button>
+  </div>
+</section>
+
+<script>
+  const track = document.querySelector<HTMLElement>("[data-rv-track]");
+  const prev = document.querySelector<HTMLButtonElement>("[data-rv-prev]");
+  const next = document.querySelector<HTMLButtonElement>("[data-rv-next]");
+
+  if (track && prev && next) {
+    const step = () => {
+      const first = track.querySelector<HTMLElement>(".quote");
+      // fall back to a sane nudge if the first child has not laid out yet
+      return first ? first.getBoundingClientRect().width + 24 : track.clientWidth * 0.8;
+    };
+
+    prev.addEventListener("click", () => track.scrollBy({ left: -step(), behavior: "smooth" }));
+    next.addEventListener("click", () => track.scrollBy({ left: step(), behavior: "smooth" }));
+
+    // disable the arrows at each end rather than letting them dead-click
+    const sync = () => {
+      const max = track.scrollWidth - track.clientWidth - 4;
+      prev.disabled = track.scrollLeft <= 4;
+      next.disabled = track.scrollLeft >= max;
+    };
+    sync();
+    track.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+  }
+</script>
+
+<style>
+  .rv {
+    overflow: hidden;
+  }
+
+  .rv__head {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .rv__head h2 {
+    margin-top: 0.4em;
+    max-width: 16ch;
+  }
+
+  .rv__intro {
+    max-width: 44ch;
+  }
+
+  @media (min-width: 62rem) {
+    .rv__head {
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: end;
+      gap: 3rem;
+    }
+  }
+
+  /* horizontal reading track — quotes, not cards */
+  .rv__track {
+    --track-pad: max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)));
+    display: flex;
+    gap: 1.5rem;
+    padding-inline: var(--track-pad);
+    /* without this, scroll-snap lands past the inline padding and the first
+       quote sits flush against the viewport edge */
+    scroll-padding-inline: var(--track-pad);
+    padding-bottom: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .rv__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .quote {
+    flex: 0 0 min(31rem, 82vw);
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.6rem, 3vw, 2.4rem) 0 0;
+    border-top: 1px solid color-mix(in srgb, var(--drape-pale) 35%, transparent);
+  }
+
+  .quote__pull {
+    font-family: var(--display);
+    font-size: clamp(1.35rem, 1.1rem + 1.1vw, 1.95rem);
+    font-weight: 600;
+    font-variation-settings: "opsz" 44, "SOFT" 25, "WONK" 1;
+    line-height: 1.18;
+    letter-spacing: -0.018em;
+    color: var(--bone-pure);
+    text-wrap: balance;
+  }
+
+  .quote__body {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1.3rem;
+    font-size: 0.93rem;
+    line-height: 1.6;
+    color: var(--drape-pale);
+  }
+
+  .quote__by {
+    margin-top: auto;
+    padding-top: 1.6rem;
+  }
+
+  .quote__name {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .quote__meta {
+    display: block;
+    margin-top: 0.2rem;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    color: color-mix(in srgb, var(--drape-pale) 70%, transparent);
+  }
+
+  .rv__controls {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 2rem;
+  }
+
+  .rv__controls button {
+    width: 2.9rem;
+    height: 2.9rem;
+    display: grid;
+    place-items: center;
+    font-size: 1rem;
+    color: var(--bone);
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--bone) 28%, transparent);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s var(--ease), opacity 0.3s var(--ease),
+      border-color 0.3s var(--ease);
+  }
+
+  .rv__controls button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--bone) 12%, transparent);
+    border-color: var(--iodine-bright);
+  }
+
+  .rv__controls button:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+</style>

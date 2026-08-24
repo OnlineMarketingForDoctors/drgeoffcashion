@@ -1,0 +1,853 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import Orchidometer from "../components/Orchidometer.astro";
+import Reviews from "../components/Reviews.astro";
+import Sequence from "../components/Sequence.astro";
+
+import heroImg from "../assets/generated/cashion-hero.webp";
+import portraitImg from "../assets/generated/cashion-portrait.webp";
+import drapeImg from "../assets/generated/drape-texture.webp";
+import cashionCorridorImg from "../assets/generated/cashion-corridor.webp";
+import conferenceImg from "../assets/generated/conference.webp";
+import orchidImg from "../assets/generated/orchidometer.webp";
+import roomImg from "../assets/generated/procedure-room.webp";
+
+/* The spec strip reads like the engraving on an instrument, not a stat grid. */
+const specs = [
+  { figure: "15,000+", label: "Procedures performed" },
+  { figure: "~3,500", label: "Every year" },
+  { figure: "5–8 min", label: "Typical procedure" },
+  { figure: "Under $600", label: "Out of pocket" },
+  { figure: "24 hrs", label: "Post-procedure support" },
+];
+
+const reasons = [
+  {
+    lead: "He performs more vasectomies each year than any other doctor in Australia.",
+    body: "Volume is the closest thing this procedure has to a proxy for competence. Roughly 3,500 a year, over 15,000 to date.",
+  },
+  {
+    lead: "No scalpel, and no stitches.",
+    body: "A single small opening made with a ring-tipped fixation forceps rather than a blade, which is why the recovery your patient reports back is measured in days, not weeks.",
+  },
+  {
+    lead: "Your patient drives himself home.",
+    body: "Local anaesthetic only. No sedation, no general, no need to arrange a driver or a carer.",
+  },
+  {
+    lead: "Support runs 24 hours a day afterwards.",
+    body: "If something worries him at 11pm on a Saturday, he calls us — not you, and not the emergency department.",
+  },
+  {
+    lead: "Under $600 out of pocket.",
+    body: "A figure you can quote in the consult without hedging.",
+  },
+  {
+    lead: "The patient comes back to you.",
+    body: "We handle the procedure and the follow-up semen analysis, then he returns to your care. We are not trying to become his GP.",
+  },
+];
+---
+
+<Base
+  title="Dr Geoff Cashion — No-scalpel vasectomy referrals for Australian GPs"
+  description="Dr Geoff Cashion performs more no-scalpel vasectomies than any other doctor in Australia. Referral information for general practitioners."
+>
+  <Nav />
+  <Orchidometer />
+
+  <main id="main">
+    <!-- ================================================== HERO -->
+    <section class="hero" id="hero">
+      <div class="hero__media">
+        <Image
+          src={heroImg}
+          alt="Dr Geoff Cashion in navy scrubs in a consulting room"
+          widths={[900, 1400, 2000, 2600]}
+          sizes="100vw"
+          loading="eager"
+          fetchpriority="high"
+          quality={82}
+        />
+      </div>
+
+      <div class="hero__scrim"></div>
+
+      <div class="wrap hero__inner">
+        <p class="tag tag--pale hero__eyebrow">For referring GPs</p>
+        <h1 class="hero__title">
+          Refer him to the doctor who does this <em>3,500 times a year.</em>
+        </h1>
+        <p class="lede hero__lede">
+          Dr Geoff Cashion is a Specialist GP and the founder of Vasectomy
+          Australia, the country's largest provider of no-scalpel vasectomy.
+        </p>
+        <div class="hero__actions">
+          <a class="btn" href="#refer">
+            Refer a patient
+            <span class="btn__arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="btn btn--ghost btn--on-dark" href="#experience">
+            What your patient's day looks like
+          </a>
+        </div>
+      </div>
+
+      <div class="hero__specs">
+        <div class="wrap hero__specs-inner">
+          {
+            specs.map((s) => (
+              <div class="spec">
+                <span class="spec__figure">{s.figure}</span>
+                <span class="spec__label">{s.label}</span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================== VOLUME -->
+    <section class="band band--dark volume" id="volume">
+      <div class="volume__bg" aria-hidden="true">
+        <Image src={drapeImg} alt="" widths={[1200, 2000]} sizes="100vw" quality={70} />
+      </div>
+
+      <div class="wrap volume__inner">
+        <div class="volume__head" data-reveal>
+          <p class="tag tag--pale">The case for sending him here</p>
+          <h2>
+            Nobody in the country has done this more times.
+          </h2>
+        </div>
+
+        <div class="volume__body">
+          <p class="lede" data-reveal style="--delay:120ms">
+            Dr Cashion trained in the United States under one of the world's
+            leading vasectomists, learning the no-scalpel technique in the
+            place it was refined. He has since performed over 15,000
+            procedures — and he is now one of Australia's busiest vasectomists,
+            performing over 3,500 vasectomies per year.
+          </p>
+          <p data-reveal style="--delay:220ms">
+            For a referring GP that number is not vanity. It is the reason the
+            procedure takes five to eight minutes, the reason complications are
+            rare, and the reason your patient tends to come back to you
+            surprised at how little there was to it.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================== ABOUT -->
+    <section class="band about" id="about">
+      <div class="wrap about__inner">
+        <figure class="about__figure" data-reveal>
+          <Image
+            src={portraitImg}
+            alt="Studio portrait of Dr Geoff Cashion"
+            widths={[600, 900, 1200]}
+            sizes="(min-width: 60rem) 40vw, 90vw"
+            quality={82}
+          />
+          <figcaption class="tag">Dr Geoff Cashion · Specialist GP</figcaption>
+        </figure>
+
+        <div class="about__text">
+          <p class="tag" data-reveal>About</p>
+          <h2 data-reveal style="--delay:80ms">
+            Trained in the United States, under one of the world's leading
+            vasectomists.
+          </h2>
+
+          <div class="about__prose" data-reveal style="--delay:160ms">
+            <p>
+              I underwent expert training in the US under one of the world's
+              leading vasectomists, learning the no-scalpel vasectomy technique
+              to provide the best surgical procedure for those looking for a
+              permanent means of birth control.
+            </p>
+            <p>
+              I am also passionate about helping solo GPs and small practices
+              reach their potential, in both career enjoyment and income.
+            </p>
+          </div>
+
+          <blockquote class="pull" data-reveal style="--delay:240ms">
+            <p>
+              I look forward to partnering with you and your patients, helping
+              them to achieve their family planning goals.
+            </p>
+            <cite>Dr Geoff Cashion</cite>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================== WHY -->
+    <section class="band why" id="why">
+      <div class="wrap why__inner">
+        <div class="why__sticky">
+          <div class="why__head">
+            <p class="tag">Why GPs refer here</p>
+            <h2>Six reasons, and none of them are marketing.</h2>
+          </div>
+          <figure class="why__figure">
+            <Image
+              src={cashionCorridorImg}
+              alt="Dr Geoff Cashion standing in a clinic corridor"
+              widths={[600, 900, 1300]}
+              sizes="(min-width: 60rem) 42vw, 90vw"
+              quality={80}
+            />
+          </figure>
+        </div>
+
+        <ol class="why__list">
+          {
+            reasons.map((r, i) => (
+              <li class="reason" data-reveal style={`--delay:${i * 70}ms`}>
+                <span class="reason__index">{String(i + 1).padStart(2, "0")}</span>
+                <div class="reason__text">
+                  <p class="reason__lead">{r.lead}</p>
+                  <p class="reason__body">{r.body}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- ================================================== SEQUENCE -->
+    <Sequence />
+
+    <!-- ================================================== WATCH -->
+    <section class="band band--drape watch" id="watch">
+      <div class="wrap watch__inner">
+        <div class="watch__head" data-reveal>
+          <p class="tag tag--pale">The procedure</p>
+          <h2>Watch it before you describe it.</h2>
+          <p class="lede">
+            The same explainer we send your patient before his appointment.
+            Forty seconds, and worth it if you have ever tried to talk a
+            hesitant man through what actually happens.
+          </p>
+        </div>
+
+        <figure class="watch__player" data-reveal style="--delay:140ms">
+          <video controls preload="none" playsinline poster={roomImg.src}>
+            <source src="/assets/how-it-works.mp4" type="video/mp4" />
+            Your browser does not support embedded video.
+            <a href="/assets/how-it-works.mp4">Download the explainer instead.</a>
+          </video>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ================================================== RESEARCH -->
+    <section class="band research" id="research">
+      <div class="wrap research__inner">
+        <figure class="research__figure" data-reveal>
+          <Image
+            src={conferenceImg}
+            alt="A medical conference auditorium during a presentation"
+            widths={[700, 1100, 1600]}
+            sizes="(min-width: 60rem) 52vw, 90vw"
+            quality={78}
+          />
+        </figure>
+
+        <div class="research__text">
+          <p class="tag" data-reveal>Research &amp; teaching</p>
+          <h2 data-reveal style="--delay:80ms">
+            He presents the work, and he keeps learning it.
+          </h2>
+          <p class="lede" data-reveal style="--delay:160ms">
+            Dr Cashion regularly presents at national and international
+            vasectomy conferences, demonstrating his dedication to lifelong
+            learning — and bringing technique refinements back into a practice
+            that performs them thousands of times a year.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================== REVIEWS -->
+    <Reviews />
+
+    <!-- ================================================== REFER -->
+    <section class="band band--dark refer" id="refer">
+      <div class="wrap refer__inner">
+        <div class="refer__main">
+          <p class="tag tag--pale" data-reveal>Refer a patient</p>
+          <h2 data-reveal style="--delay:80ms">Send him our way.</h2>
+          <p class="lede" data-reveal style="--delay:160ms">
+            Are you a GP who would like to refer a patient for a vasectomy?
+            Dr Cashion has performed over 15,000 vasectomies and aims to
+            provide the highest level of clinical care to your patient.
+          </p>
+
+          <div class="refer__actions" data-reveal style="--delay:240ms">
+            <a class="btn" href="mailto:referrals@vasectomyaustralia.com.au">
+              Send a referral
+              <span class="btn__arrow" aria-hidden="true">→</span>
+            </a>
+            <a class="btn btn--ghost btn--on-dark" href="tel:1800764763">
+              1800 SNIPME
+            </a>
+          </div>
+
+          <p class="refer__note" data-reveal style="--delay:300ms">
+            Prefer paper? Fax or post a standard referral and we will take it
+            from there.
+          </p>
+        </div>
+
+        <aside class="offer" data-reveal style="--delay:200ms">
+          <figure class="offer__figure">
+            <Image
+              src={orchidImg}
+              alt="A Prader orchidometer laid out on a surgical drape"
+              widths={[500, 800, 1100]}
+              sizes="(min-width: 60rem) 38vw, 90vw"
+              quality={82}
+            />
+          </figure>
+          <div class="offer__text">
+            <p class="tag tag--pale">A thank you for referrers</p>
+            <h3>We'll post you an orchidometer.</h3>
+            <p>
+              As a thank you to our loyal referrers, tell us where to send one
+              and we will put an orchidometer in the post, along with some
+              other Vasectomy Australia swag.
+            </p>
+            <a class="offer__link" href="mailto:referrals@vasectomyaustralia.com.au?subject=Orchidometer">
+              Claim yours <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  /* ============================================================ HERO */
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 100svh;
+    background: var(--ink);
+    color: var(--bone);
+    overflow: hidden;
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 72% center;
+    animation: heroIn 1.8s var(--ease-out) both;
+  }
+
+  @keyframes heroIn {
+    from {
+      transform: scale(1.07);
+      opacity: 0;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, rgba(14, 31, 27, 0.93) 0%, rgba(14, 31, 27, 0.72) 38%, rgba(14, 31, 27, 0.12) 68%),
+      linear-gradient(to top, rgba(14, 31, 27, 0.9) 0%, transparent 42%);
+  }
+
+  .hero__inner {
+    position: relative;
+    padding-top: clamp(6rem, 11vh, 8rem);
+    padding-bottom: clamp(1.75rem, 3vh, 2.5rem);
+  }
+
+  /* On a phone the portrait fills the frame, so the type needs its own
+     ground rather than a side gradient. */
+  @media (max-width: 47.99rem) {
+    .hero__media :global(img) {
+      object-position: 66% top;
+    }
+
+    .hero__scrim {
+      background: linear-gradient(
+        to bottom,
+        rgba(14, 31, 27, 0.84) 0%,
+        rgba(14, 31, 27, 0.7) 40%,
+        rgba(14, 31, 27, 0.93) 100%
+      );
+    }
+  }
+
+  .hero__eyebrow {
+    animation: riseIn 0.9s var(--ease-out) 0.25s both;
+  }
+
+  .hero__title {
+    max-width: 15ch;
+    margin-top: 0.5em;
+    animation: riseIn 1s var(--ease-out) 0.38s both;
+  }
+
+  .hero__title em {
+    font-style: normal;
+    color: var(--iodine-bright);
+  }
+
+  .hero__lede {
+    max-width: 34ch;
+    margin-top: 1.4rem;
+    color: var(--drape-pale);
+    animation: riseIn 1s var(--ease-out) 0.52s both;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: clamp(1.5rem, 3vh, 2.1rem);
+    animation: riseIn 1s var(--ease-out) 0.66s both;
+  }
+
+  @keyframes riseIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* engraved spec strip along the bottom edge */
+  .hero__specs {
+    position: relative;
+    border-top: 1px solid color-mix(in srgb, var(--bone) 20%, transparent);
+    background: color-mix(in srgb, var(--ink) 55%, transparent);
+    backdrop-filter: blur(8px);
+    animation: riseIn 1s var(--ease-out) 0.85s both;
+  }
+
+  .hero__specs-inner {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .spec {
+    display: grid;
+    gap: 0.25rem;
+    padding: 1.05rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--bone) 12%, transparent);
+  }
+
+  .spec:nth-child(-n + 2) {
+    border-top: 0;
+  }
+
+  .spec__figure {
+    font-family: var(--display);
+    font-size: clamp(1.2rem, 1rem + 0.7vw, 1.7rem);
+    font-weight: 600;
+    font-variation-settings: "opsz" 36, "SOFT" 20, "WONK" 0;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .spec__label {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--drape-pale);
+  }
+
+  @media (min-width: 48rem) {
+    .hero__specs-inner {
+      grid-template-columns: repeat(5, 1fr);
+      gap: clamp(1rem, 3vw, 3rem);
+    }
+    .spec {
+      border-top: 0;
+      padding: 1.3rem 0;
+    }
+  }
+
+  /* ============================================================ VOLUME */
+  .volume {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .volume__bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.22;
+  }
+
+  .volume__bg :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .volume__inner {
+    position: relative;
+    display: grid;
+    gap: clamp(2rem, 5vw, 4.5rem);
+  }
+
+  .volume__head h2 {
+    margin-top: 0.4em;
+    max-width: 16ch;
+  }
+
+  .volume__body {
+    display: grid;
+    gap: 1.4rem;
+    align-content: start;
+    max-width: 44ch;
+  }
+
+  .volume__body p:last-child {
+    color: var(--drape-pale);
+  }
+
+  @media (min-width: 62rem) {
+    .volume__inner {
+      grid-template-columns: 1.05fr 1fr;
+      align-items: start;
+    }
+  }
+
+  /* ============================================================ ABOUT */
+  .about__inner {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+
+  .about__figure {
+    margin: 0;
+  }
+
+  .about__figure :global(img) {
+    width: 100%;
+    border-radius: 2px;
+  }
+
+  .about__figure figcaption {
+    margin-top: 0.9rem;
+  }
+
+  .about__text h2 {
+    margin-top: 0.4em;
+    max-width: 18ch;
+  }
+
+  .about__prose {
+    display: grid;
+    gap: 1.1rem;
+    margin-top: 1.6rem;
+    max-width: 44ch;
+    color: var(--ink-soft);
+  }
+
+  .pull {
+    margin: 2.4rem 0 0;
+    padding-left: 1.5rem;
+    border-left: 2px solid var(--iodine);
+  }
+
+  .pull p {
+    font-family: var(--display);
+    font-size: clamp(1.3rem, 1.05rem + 1.1vw, 1.9rem);
+    font-variation-settings: "opsz" 40, "SOFT" 30, "WONK" 1;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    max-width: 26ch;
+  }
+
+  .pull cite {
+    display: block;
+    margin-top: 0.9rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-style: normal;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--drape);
+  }
+
+  @media (min-width: 60rem) {
+    .about__inner {
+      grid-template-columns: 0.85fr 1fr;
+    }
+  }
+
+  /* ============================================================ WHY */
+  .why {
+    background: var(--bone-pure);
+  }
+
+  .why__inner {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  .why__head h2 {
+    margin-top: 0.4em;
+    max-width: 14ch;
+  }
+
+  .why__figure {
+    margin: 2rem 0 0;
+  }
+
+  .why__figure :global(img) {
+    width: 100%;
+    border-radius: 2px;
+  }
+
+  .why__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: none;
+  }
+
+  .reason {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem 1.4rem;
+    padding: clamp(1.4rem, 2.5vw, 2rem) 0;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
+  }
+
+  .reason:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
+  }
+
+  .reason__index {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--iodine);
+    padding-top: 0.45em;
+  }
+
+  .reason__lead {
+    font-family: var(--display);
+    font-size: clamp(1.15rem, 1rem + 0.6vw, 1.45rem);
+    font-weight: 600;
+    font-variation-settings: "opsz" 32, "SOFT" 20, "WONK" 0;
+    line-height: 1.25;
+    letter-spacing: -0.012em;
+  }
+
+  .reason__body {
+    margin-top: 0.5rem;
+    font-size: 0.97rem;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  @media (min-width: 62rem) {
+    .why__inner {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: clamp(3rem, 6vw, 6rem);
+    }
+    .why__sticky {
+      position: sticky;
+      top: 7rem;
+    }
+  }
+
+  /* ============================================================ WATCH */
+  .watch__inner {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .watch__head h2 {
+    margin-top: 0.4em;
+    max-width: 16ch;
+  }
+
+  .watch__head .lede {
+    margin-top: 1.2rem;
+    max-width: 48ch;
+    color: var(--drape-pale);
+  }
+
+  .watch__player {
+    margin: 0;
+  }
+
+  .watch__player video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: var(--ink);
+    border-radius: 2px;
+    box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.6);
+  }
+
+  @media (min-width: 62rem) {
+    .watch__inner {
+      grid-template-columns: 0.72fr 1.28fr;
+      align-items: center;
+    }
+  }
+
+  /* ============================================================ RESEARCH */
+  .research__inner {
+    display: grid;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: center;
+  }
+
+  .research__figure {
+    margin: 0;
+  }
+
+  .research__figure :global(img) {
+    width: 100%;
+    border-radius: 2px;
+  }
+
+  .research__text h2 {
+    margin-top: 0.4em;
+    max-width: 15ch;
+  }
+
+  .research__text .lede {
+    margin-top: 1.3rem;
+    max-width: 42ch;
+  }
+
+  @media (min-width: 60rem) {
+    .research__inner {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+  }
+
+  /* ============================================================ REFER */
+  .refer__inner {
+    display: grid;
+    gap: clamp(3rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .refer__main h2 {
+    margin-top: 0.3em;
+  }
+
+  .refer__main .lede {
+    margin-top: 1.3rem;
+    max-width: 40ch;
+  }
+
+  .refer__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 2.2rem;
+  }
+
+  .refer__note {
+    margin-top: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.03em;
+    color: color-mix(in srgb, var(--drape-pale) 80%, transparent);
+    max-width: 40ch;
+  }
+
+  /* the orchidometer offer — the page's signature, paid off */
+  .offer {
+    display: grid;
+    gap: 1.6rem;
+    padding: clamp(1.5rem, 3vw, 2.2rem);
+    background: color-mix(in srgb, var(--drape-deep) 55%, transparent);
+    border: 1px solid color-mix(in srgb, var(--drape-pale) 22%, transparent);
+    border-radius: 3px;
+  }
+
+  .offer__figure {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+
+  .offer__figure :global(img) {
+    width: 100%;
+    transition: transform 1.2s var(--ease-out);
+  }
+
+  .offer:hover .offer__figure :global(img) {
+    transform: scale(1.04);
+  }
+
+  .offer__text h3 {
+    margin-top: 0.45em;
+  }
+
+  .offer__text p {
+    margin-top: 0.8rem;
+    font-size: 0.95rem;
+    color: var(--drape-pale);
+    max-width: 38ch;
+  }
+
+  .offer__link {
+    display: inline-flex;
+    gap: 0.5em;
+    margin-top: 1.2rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--iodine-bright);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--iodine-bright) 45%, transparent);
+    padding-bottom: 0.2em;
+    transition: border-color 0.3s var(--ease);
+  }
+
+  .offer__link:hover {
+    border-bottom-color: var(--iodine-bright);
+  }
+
+  @media (min-width: 62rem) {
+    .refer__inner {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+  }
+</style>
