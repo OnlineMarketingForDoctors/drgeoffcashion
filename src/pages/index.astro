@@ -337,20 +337,45 @@ const reasons = [
     padding-bottom: clamp(1.75rem, 3vh, 2.5rem);
   }
 
-  /* On a phone the portrait fills the frame, so the type needs its own
-     ground rather than a side gradient. */
+  /* On a phone the portrait stops being a background and becomes a
+     full-bleed image stacked above the copy — text over a face is a
+     compromise that only earns its keep on a wide screen. */
   @media (max-width: 47.99rem) {
-    .hero__media :global(img) {
-      object-position: 66% top;
+    .hero {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
 
+    .hero__media {
+      position: relative;
+      inset: auto;
+      height: min(54svh, 26rem);
+      flex: 0 0 auto;
+    }
+
+    .hero__media :global(img) {
+      object-position: 66% 22%;
+    }
+
+    /* Sits over the image only: shades the top so the fixed nav stays
+       legible, then dissolves into the ink ground so the join to the copy
+       below is invisible. */
     .hero__scrim {
+      inset: 0 0 auto 0;
+      height: min(54svh, 26rem);
       background: linear-gradient(
         to bottom,
-        rgba(14, 31, 27, 0.84) 0%,
-        rgba(14, 31, 27, 0.7) 40%,
-        rgba(14, 31, 27, 0.93) 100%
+        rgba(14, 31, 27, 0.72) 0%,
+        rgba(14, 31, 27, 0.1) 34%,
+        rgba(14, 31, 27, 0.55) 78%,
+        var(--ink) 100%
       );
+    }
+
+    .hero__inner {
+      padding-top: clamp(1.75rem, 4vh, 2.5rem);
+      padding-bottom: clamp(2rem, 4vh, 2.75rem);
     }
   }
 

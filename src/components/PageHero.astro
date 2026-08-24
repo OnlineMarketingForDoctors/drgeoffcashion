@@ -141,14 +141,38 @@ const { eyebrow, title, lede, image, imageAlt, focus = "center", crumb } = Astro
     }
   }
 
+  /* Same treatment as the homepage on a phone: the photograph goes
+     full-bleed above the copy instead of being flattened under a scrim
+     heavy enough to make the type readable over a face. */
   @media (max-width: 47.99rem) {
+    .phero {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .phero__media {
+      position: relative;
+      inset: auto;
+      height: min(46svh, 22rem);
+      flex: 0 0 auto;
+    }
+
     .phero__scrim {
+      inset: 0 0 auto 0;
+      height: min(46svh, 22rem);
       background: linear-gradient(
         to bottom,
-        rgba(14, 31, 27, 0.8) 0%,
-        rgba(14, 31, 27, 0.66) 40%,
-        rgba(14, 31, 27, 0.93) 100%
+        rgba(14, 31, 27, 0.7) 0%,
+        rgba(14, 31, 27, 0.08) 36%,
+        rgba(14, 31, 27, 0.5) 78%,
+        var(--ink) 100%
       );
+    }
+
+    .phero__inner {
+      padding-top: clamp(1.5rem, 3.5vh, 2.25rem);
+      padding-bottom: clamp(2rem, 4vh, 3rem);
     }
   }
 </style>
