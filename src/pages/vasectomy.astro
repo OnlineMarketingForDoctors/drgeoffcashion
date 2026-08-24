@@ -1,0 +1,1301 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import PageHero from "../components/PageHero.astro";
+import ReferBand from "../components/ReferBand.astro";
+import Occlusion from "../components/Occlusion.astro";
+import LocationFinder from "../components/LocationFinder.astro";
+
+import heroImg from "../assets/generated/vasectomy-hero.webp";
+import instrumentSetImg from "../assets/generated/instrument-set.webp";
+import labImg from "../assets/generated/lab.webp";
+import recoveryImg from "../assets/generated/recovery.webp";
+import costImg from "../assets/generated/cost.webp";
+import drapeImg from "../assets/generated/drape-texture.webp";
+import roomImg from "../assets/generated/procedure-room.webp";
+
+const facts = [
+  { figure: "5–10 min", label: "In the chair" },
+  { figure: "Local", label: "Anaesthetic only" },
+  { figure: "1", label: "Opening, no scalpel" },
+  { figure: "0", label: "Stitches" },
+  { figure: "$597", label: "Out of pocket" },
+];
+
+/* The appointment, in the order it happens. */
+const appointment = [
+  {
+    at: "On arrival",
+    title: "Consent and questions",
+    body: "Identity, indication and expectations are confirmed, and consent is taken. Any man who is uncertain is not booked on the day — this is the point at which that gets caught.",
+  },
+  {
+    at: "Minute 1",
+    title: "Local anaesthetic",
+    body: "A fine needle raises a small bleb of local at the midline, then the anaesthetic is directed along each vas. This is the only part most men describe as uncomfortable, and it lasts seconds.",
+  },
+  {
+    at: "Minute 3",
+    title: "The vas is secured and lifted",
+    body: "A ring-tipped fixation clamp holds the vas under the skin. Sharp dissecting forceps make a single small opening and spread the tissue rather than cutting it.",
+  },
+  {
+    at: "Minute 5",
+    title: "Divided, sealed, separated",
+    body: "A short segment is removed, the lumen is sealed with cautery, and the fascial sheath is interposed between the two ends. The second side is done through the same opening.",
+  },
+  {
+    at: "Minute 8",
+    title: "Dressed, and up",
+    body: "The opening is small enough to close without a suture. A dressing goes on, supportive underwear goes back on, and he sits up.",
+  },
+  {
+    at: "Minute 15",
+    title: "He drives himself home",
+    body: "No sedation means no recovery bay, no carer and no taxi. Written aftercare and the 24-hour contact number go with him.",
+  },
+];
+
+const risks = [
+  {
+    name: "Bruising and swelling",
+    rate: "Common",
+    body: "Expected rather than a complication. Settles over a week to ten days with support and simple analgesia.",
+  },
+  {
+    name: "Haematoma",
+    rate: "Uncommon",
+    body: "A collection of blood in the scrotum. Usually managed conservatively; occasionally needs review. Rates are lower with the no-scalpel approach than with an incisional technique.",
+  },
+  {
+    name: "Infection",
+    rate: "Uncommon",
+    body: "A small opening and no suture material means less to get infected. When it happens it is usually superficial and responds to oral antibiotics.",
+  },
+  {
+    name: "Sperm granuloma",
+    rate: "Uncommon",
+    body: "A small firm nodule at the cut end from sperm leakage. Often asymptomatic and usually settles without intervention.",
+  },
+  {
+    name: "Chronic scrotal pain",
+    rate: "1–2%",
+    body: "Post-vasectomy pain syndrome. The complication worth naming explicitly in the consent conversation, because it is the one that changes a man's mind.",
+  },
+  {
+    name: "Failure",
+    rate: "~1 in 2,000",
+    body: "Early failure is picked up by post-vasectomy semen analysis. Late recanalisation after documented clearance is rarer again.",
+  },
+];
+
+const unchanged = [
+  {
+    q: "Testosterone and hormones",
+    a: "Unchanged. The vas carries sperm, not hormones. Testicular endocrine function is unaffected, so testosterone, body hair, muscle mass and mood are not altered by the procedure.",
+  },
+  {
+    q: "Erections and libido",
+    a: "Unchanged. Nothing in the erectile or neurological pathway is touched. Where men report a change, it is almost always psychological rather than physiological — which is worth surfacing before the procedure rather than after.",
+  },
+  {
+    q: "Ejaculate",
+    a: "Essentially unchanged. Sperm makes up only a few per cent of ejaculate volume; the rest comes from the seminal vesicles and prostate, which are untouched. Most men notice no difference at all.",
+  },
+  {
+    q: "Long-term health risk",
+    a: "Large cohort studies have not shown a causal association between vasectomy and prostate cancer or cardiovascular disease. This still comes up in the consult, so it is worth being able to answer it plainly.",
+  },
+  {
+    q: "Protection from infection",
+    a: "None. Vasectomy is contraception, not barrier protection. A man with a new or non-monogamous partner still needs condoms.",
+  },
+];
+---
+
+<Base
+  title="No-scalpel vasectomy explained — technique, recovery, risks and cost"
+  description="A detailed account of no-scalpel vasectomy for referring GPs: the technique, the appointment, effectiveness and clearance testing, risks, recovery, cost, and clinic locations across Australia."
+>
+  <Nav />
+
+  <main id="main">
+    <PageHero
+      eyebrow="The procedure"
+      title="No scalpel, one opening, no stitches."
+      lede="What actually happens, how well it works, what can go wrong, and what it costs — written for the person doing the referring."
+      image={heroImg}
+      imageAlt="A clinical procedure room with a stainless steel instrument trolley"
+      focus="62% center"
+      crumb="Vasectomy"
+    />
+
+    <!-- ============================================ FACT STRIP -->
+    <section class="factstrip" aria-label="Key facts">
+      <div class="wrap factstrip__inner">
+        {
+          facts.map((f) => (
+            <div class="fact">
+              <span class="fact__figure">{f.figure}</span>
+              <span class="fact__label">{f.label}</span>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ============================================ WHAT IT IS -->
+    <section class="band whatis" id="what">
+      <div class="wrap whatis__inner">
+        <div class="whatis__text">
+          <p class="tag" data-reveal>What it is</p>
+          <h2 data-reveal style="--delay:80ms">
+            A refinement of the operation, not a different operation.
+          </h2>
+          <div class="prose" data-reveal style="--delay:160ms">
+            <p>
+              A vasectomy divides the vas deferens so that sperm cannot reach
+              the ejaculate. That much is the same however it is done. What
+              differs is how the surgeon gets to the vas.
+            </p>
+            <p>
+              The conventional technique makes one or two incisions with a
+              scalpel and closes them with sutures. The no-scalpel technique,
+              developed in China in the 1970s and now the international
+              standard, reaches the vas through a single small opening made by
+              spreading tissue with sharp dissecting forceps rather than
+              cutting it. The opening is small enough that it does not need a
+              stitch.
+            </p>
+            <p>
+              The distinction matters clinically rather than cosmetically.
+              Comparative reviews of the two approaches consistently find less
+              bleeding, less haematoma, less infection and less pain with the
+              no-scalpel technique, with no loss of effectiveness.
+            </p>
+          </div>
+        </div>
+        <figure class="whatis__figure" data-reveal style="--delay:120ms">
+          <Image
+            src={instrumentSetImg}
+            alt="A set of fine stainless steel surgical instruments on a surgical drape"
+            widths={[600, 900, 1300]}
+            sizes="(min-width: 62rem) 46vw, 90vw"
+            quality={80}
+          />
+          <figcaption class="tag">
+            Ring-tipped fixation forceps and sharp dissecting forceps — no blade
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============================================ COMPARISON -->
+    <section class="band band--drape compare" id="compare">
+      <div class="wrap">
+        <div class="compare__head" data-reveal>
+          <p class="tag tag--pale">Side by side</p>
+          <h2>Where the two techniques diverge.</h2>
+        </div>
+
+        <div class="cmp">
+          <div class="cmp__col cmp__col--old" data-reveal style="--delay:100ms">
+            <p class="cmp__label">Conventional incisional</p>
+            <ul class="cmp__list">
+              <li>One or two scalpel incisions</li>
+              <li>Sutures required to close</li>
+              <li>Larger wound, more tissue disturbed</li>
+              <li>Higher rates of haematoma and infection</li>
+              <li>Longer operating time</li>
+            </ul>
+          </div>
+          <div class="cmp__col cmp__col--new" data-reveal style="--delay:200ms">
+            <p class="cmp__label">No-scalpel</p>
+            <ul class="cmp__list">
+              <li>A single small midline opening</li>
+              <li>No sutures — it closes on its own</li>
+              <li>Tissue spread rather than cut</li>
+              <li>Lower rates of haematoma and infection</li>
+              <li>Typically five to ten minutes</li>
+            </ul>
+          </div>
+        </div>
+        <p class="cmp__foot" data-reveal style="--delay:280ms">
+          Both techniques divide the vas. Only the route in is different — and
+          it is the route in that produces most of the complications.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================ OCCLUSION DIAGRAM -->
+    <section class="band occwrap" id="technique">
+      <div class="wrap">
+        <div class="occwrap__head" data-reveal>
+          <p class="tag">Technique</p>
+          <h2>How the vas is occluded.</h2>
+          <p class="lede">
+            Dividing the vas is not enough on its own — the ends can find each
+            other again. Two things prevent that, and doing both is what
+            separates a low failure rate from a merely acceptable one.
+          </p>
+        </div>
+        <Occlusion />
+      </div>
+    </section>
+
+    <!-- ============================================ APPOINTMENT TIMELINE -->
+    <section class="band band--dark appt" id="appointment">
+      <div class="wrap appt__head">
+        <div data-reveal>
+          <p class="tag tag--pale">The appointment</p>
+          <h2>Twenty minutes, start to finish.</h2>
+        </div>
+        <p class="lede appt__intro" data-reveal style="--delay:120ms">
+          Scroll the track. The times are typical rather than promised, but the
+          order does not change.
+        </p>
+      </div>
+
+      <div class="appt__track" data-appt tabindex="0" role="region" aria-label="The appointment step by step, scrollable">
+        {
+          appointment.map((s, i) => (
+            <article class="appt__card">
+              <span class="appt__at">{s.at}</span>
+              <span class="appt__rule" aria-hidden="true" />
+              <h3 class="appt__title">{s.title}</h3>
+              <p class="appt__body">{s.body}</p>
+              <span class="appt__n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="wrap appt__controls">
+        <button type="button" data-appt-prev aria-label="Previous step">
+          <span aria-hidden="true">←</span>
+        </button>
+        <button type="button" data-appt-next aria-label="Next step">
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================ EFFECTIVENESS -->
+    <section class="band effect" id="effectiveness">
+      <div class="wrap effect__inner">
+        <figure class="effect__figure" data-reveal>
+          <Image
+            src={labImg}
+            alt="A microscope and specimen vials on a pathology laboratory bench"
+            widths={[600, 900, 1300]}
+            sizes="(min-width: 62rem) 46vw, 90vw"
+            quality={80}
+          />
+        </figure>
+        <div class="effect__text">
+          <p class="tag" data-reveal>Effectiveness</p>
+          <h2 data-reveal style="--delay:80ms">
+            It is not contraception until the test says so.
+          </h2>
+          <div class="prose" data-reveal style="--delay:160ms">
+            <p>
+              Vasectomy is among the most effective forms of contraception
+              available — after documented clearance, failure sits at roughly
+              one in two thousand. But it is not effective on the day, and this
+              is the single most important thing for a patient to leave the
+              consult understanding.
+            </p>
+            <p>
+              Sperm remain downstream of the division for weeks. Clearance is
+              confirmed by post-vasectomy semen analysis, generally at around
+              twelve weeks and after roughly twenty ejaculations. Until that
+              result is in hand, the couple must continue their existing
+              contraception.
+            </p>
+            <p>
+              Most unplanned pregnancies after vasectomy are not technical
+              failures. They are couples who stopped using contraception before
+              clearance was confirmed.
+            </p>
+          </div>
+          <p class="effect__flag" data-reveal style="--delay:240ms">
+            Worth saying twice in the consult: no unprotected sex until the
+            semen analysis is clear.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ RECOVERY — full bleed -->
+    <section class="bleed" id="recovery">
+      <div class="bleed__media">
+        <Image
+          src={recoveryImg}
+          alt="A man resting on a sofa at home on a weekend afternoon"
+          widths={[1200, 1800, 2600]}
+          sizes="100vw"
+          quality={78}
+        />
+      </div>
+      <div class="bleed__scrim"></div>
+      <div class="wrap bleed__inner">
+        <p class="tag tag--pale" data-reveal>Recovery</p>
+        <h2 data-reveal style="--delay:80ms">A quiet weekend, then back to it.</h2>
+        <ol class="rec" data-reveal style="--delay:160ms">
+          <li><span class="rec__when">Day 0</span><span class="rec__what">Home within the hour. Ice, supportive underwear, simple analgesia.</span></li>
+          <li><span class="rec__when">Days 1–2</span><span class="rec__what">Rest. Aching and bruising are normal. No lifting, no sport.</span></li>
+          <li><span class="rec__when">Day 3</span><span class="rec__what">Most men are back to desk work. Manual work usually needs a few days more.</span></li>
+          <li><span class="rec__when">Week 1</span><span class="rec__what">Normal activity resumes. Sex when comfortable — with contraception.</span></li>
+          <li><span class="rec__when">Week 12</span><span class="rec__what">Semen analysis. Clearance confirmed, then he returns to your care.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============================================ RISKS -->
+    <section class="band risks" id="risks">
+      <div class="wrap risks__inner">
+        <div class="risks__head">
+          <p class="tag" data-reveal>Risks and complications</p>
+          <h2 data-reveal style="--delay:80ms">The honest list.</h2>
+          <p class="lede" data-reveal style="--delay:160ms">
+            A page that only lists benefits is not much use to someone taking
+            consent. These are the things that actually happen, at roughly the
+            rates they happen.
+          </p>
+          <figure class="risks__figure" data-reveal style="--delay:240ms">
+            <Image
+              src={roomImg}
+              alt="An empty procedure room in morning light"
+              widths={[500, 800, 1100]}
+              sizes="(min-width: 62rem) 34vw, 90vw"
+              quality={78}
+            />
+          </figure>
+        </div>
+
+        <ul class="risk__list">
+          {
+            risks.map((r, i) => (
+              <li class="risk" data-reveal style={`--delay:${i * 70}ms`}>
+                <div class="risk__top">
+                  <h3 class="risk__name">{r.name}</h3>
+                  <span class="risk__rate">{r.rate}</span>
+                </div>
+                <p class="risk__body">{r.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================ WHAT DOESN'T CHANGE -->
+    <section class="band band--dark myths" id="unchanged">
+      <div class="wrap myths__inner">
+        <div class="myths__text">
+          <p class="tag tag--pale" data-reveal>What it does not change</p>
+          <h2 data-reveal style="--delay:80ms">
+            The questions he will ask you, not us.
+          </h2>
+          <p class="lede" data-reveal style="--delay:160ms">
+            Most of the hesitation around vasectomy is about things the
+            procedure does not touch. These come up in the GP consult far more
+            often than in ours.
+          </p>
+        </div>
+
+        <div class="myths__list" data-reveal style="--delay:120ms">
+          {
+            unchanged.map((u, i) => (
+              <details class="acc" open={i === 0}>
+                <summary>
+                  <span class="acc__q">{u.q}</span>
+                  <span class="acc__icon" aria-hidden="true" />
+                </summary>
+                <p class="acc__a">{u.a}</p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ COST -->
+    <section class="band cost" id="cost">
+      <div class="wrap cost__inner">
+        <div class="cost__text">
+          <p class="tag" data-reveal>Cost</p>
+          <h2 data-reveal style="--delay:80ms">$597 out of pocket.</h2>
+          <div class="prose" data-reveal style="--delay:160ms">
+            <p>
+              That is the figure after the Medicare rebate, and it is the same
+              in Enmore as it is in Tamworth. A vasectomy performed by a
+              urologist in a private hospital can run to $5,000 once theatre
+              and anaesthetic fees are counted.
+            </p>
+            <p>
+              The difference is not the operation. It is that this one is done
+              under local anaesthetic in a consulting room rather than under
+              general anaesthetic in a theatre.
+            </p>
+          </div>
+          <div class="costbar" data-reveal style="--delay:240ms">
+            <div class="costbar__row">
+              <span class="costbar__label">With Dr Cashion</span>
+              <span class="costbar__track"><span class="costbar__fill costbar__fill--ours"></span></span>
+              <span class="costbar__value">$597</span>
+            </div>
+            <div class="costbar__row">
+              <span class="costbar__label">Urologist, private hospital</span>
+              <span class="costbar__track"><span class="costbar__fill costbar__fill--theirs"></span></span>
+              <span class="costbar__value">up to $5,000</span>
+            </div>
+          </div>
+        </div>
+        <figure class="cost__figure" data-reveal style="--delay:120ms">
+          <Image
+            src={costImg}
+            alt="A statement and bank card on a desk"
+            widths={[500, 800, 1200]}
+            sizes="(min-width: 62rem) 40vw, 90vw"
+            quality={80}
+          />
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============================================ PERMANENCE -->
+    <section class="band perm" id="permanence">
+      <div class="wrap perm__inner">
+        <div class="perm__bg" aria-hidden="true">
+          <Image src={drapeImg} alt="" widths={[1200, 2000]} sizes="100vw" quality={70} />
+        </div>
+        <div class="perm__content" data-reveal>
+          <p class="tag">Permanence</p>
+          <h2>Refer it as permanent, because that is how it should be chosen.</h2>
+          <p class="lede">
+            Reversal exists. It is microsurgery, it takes hours rather than
+            minutes, it costs several thousand dollars, and restored patency
+            does not reliably mean pregnancy — success falls the longer it has
+            been since the vasectomy.
+          </p>
+          <p class="perm__note">
+            Which is why the useful screening question in your consult is not
+            "are you sure" but "what would have to change for you to regret
+            this". Men under thirty and men without children warrant a longer
+            conversation.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ LOCATIONS -->
+    <section class="band locations" id="locations">
+      <div class="wrap">
+        <div class="locations__head" data-reveal>
+          <p class="tag">Where to send him</p>
+          <h2>Clinics across six states.</h2>
+          <p class="lede">
+            Select a state to filter, or narrow to the clinics Dr Cashion
+            operates himself.
+          </p>
+        </div>
+        <LocationFinder />
+      </div>
+    </section>
+
+    <ReferBand />
+  </main>
+
+  <Footer />
+</Base>
+
+<script>
+  // Horizontal appointment track
+  const track = document.querySelector<HTMLElement>("[data-appt]");
+  const prev = document.querySelector<HTMLButtonElement>("[data-appt-prev]");
+  const next = document.querySelector<HTMLButtonElement>("[data-appt-next]");
+
+  if (track && prev && next) {
+    const step = () => {
+      const card = track.querySelector<HTMLElement>(".appt__card");
+      return card ? card.getBoundingClientRect().width + 20 : track.clientWidth * 0.8;
+    };
+    prev.addEventListener("click", () => track.scrollBy({ left: -step(), behavior: "smooth" }));
+    next.addEventListener("click", () => track.scrollBy({ left: step(), behavior: "smooth" }));
+
+    const sync = () => {
+      const max = track.scrollWidth - track.clientWidth - 4;
+      prev.disabled = track.scrollLeft <= 4;
+      next.disabled = track.scrollLeft >= max;
+    };
+    sync();
+    track.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+  }
+</script>
+
+<style>
+  /* ---------------------------------------------------- FACT STRIP */
+  .factstrip {
+    background: var(--ink);
+    color: var(--bone);
+    border-top: 1px solid color-mix(in srgb, var(--bone) 15%, transparent);
+  }
+
+  .factstrip__inner {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+  }
+
+  .fact {
+    display: grid;
+    gap: 0.25rem;
+    padding: 1.2rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--bone) 10%, transparent);
+  }
+
+  .fact:nth-child(-n + 2) {
+    border-top: 0;
+  }
+
+  .fact__figure {
+    font-family: var(--display);
+    font-size: clamp(1.3rem, 1rem + 1vw, 1.9rem);
+    font-weight: 600;
+    font-variation-settings: "opsz" 40, "SOFT" 20, "WONK" 0;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .fact__label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--drape-pale);
+  }
+
+  @media (min-width: 48rem) {
+    .factstrip__inner {
+      grid-template-columns: repeat(5, 1fr);
+      gap: clamp(1rem, 3vw, 3rem);
+    }
+    .fact {
+      border-top: 0;
+      padding: 1.5rem 0;
+    }
+  }
+
+  /* ---------------------------------------------------- shared prose */
+  .prose {
+    display: grid;
+    gap: 1.1rem;
+    margin-top: 1.5rem;
+    max-width: 48ch;
+    color: var(--ink-soft);
+  }
+
+  .band--dark .prose,
+  .band--drape .prose {
+    color: var(--drape-pale);
+  }
+
+  /* ---------------------------------------------------- WHAT IS */
+  .whatis__inner {
+    display: grid;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  .whatis__text h2 {
+    margin-top: 0.4em;
+    max-width: 17ch;
+  }
+
+  .whatis__figure {
+    margin: 0;
+    position: sticky;
+    top: 7.5rem;
+  }
+
+  .whatis__figure :global(img) {
+    width: 100%;
+    border-radius: 2px;
+  }
+
+  .whatis__figure figcaption {
+    margin-top: 0.85rem;
+    max-width: 34ch;
+  }
+
+  @media (min-width: 62rem) {
+    .whatis__inner {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+  }
+
+  /* ---------------------------------------------------- COMPARE */
+  .compare__head h2 {
+    margin-top: 0.4em;
+    max-width: 16ch;
+  }
+
+  .cmp {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .cmp__col {
+    padding: clamp(1.4rem, 3vw, 2.2rem);
+    border-radius: 3px;
+    border: 1px solid color-mix(in srgb, var(--bone) 18%, transparent);
+  }
+
+  .cmp__col--new {
+    background: color-mix(in srgb, var(--ink) 40%, transparent);
+    border-color: color-mix(in srgb, var(--iodine-bright) 45%, transparent);
+  }
+
+  .cmp__label {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--drape-pale);
+    padding-bottom: 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--bone) 16%, transparent);
+  }
+
+  .cmp__col--new .cmp__label {
+    color: var(--iodine-bright);
+  }
+
+  .cmp__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cmp__list li {
+    position: relative;
+    padding: 0.75rem 0 0.75rem 1.5rem;
+    font-size: 0.97rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--bone) 9%, transparent);
+  }
+
+  .cmp__list li:last-child {
+    border-bottom: 0;
+  }
+
+  .cmp__list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1.25rem;
+    width: 7px;
+    height: 9px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--drape-pale) 55%, transparent);
+  }
+
+  .cmp__col--new .cmp__list li::before {
+    background: var(--iodine-bright);
+  }
+
+  .cmp__foot {
+    margin-top: 2rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--drape-pale);
+    max-width: 50ch;
+  }
+
+  @media (min-width: 55rem) {
+    .cmp {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* ---------------------------------------------------- OCCLUSION WRAP */
+  .occwrap {
+    background: var(--bone-pure);
+  }
+
+  .occwrap__head {
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .occwrap__head h2 {
+    margin-top: 0.4em;
+    max-width: 16ch;
+  }
+
+  .occwrap__head .lede {
+    margin-top: 1.2rem;
+    max-width: 50ch;
+  }
+
+  /* ---------------------------------------------------- APPOINTMENT */
+  .appt__head {
+    display: grid;
+    gap: 1.4rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .appt__head h2 {
+    margin-top: 0.4em;
+  }
+
+  .appt__intro {
+    max-width: 40ch;
+  }
+
+  .appt__track {
+    display: flex;
+    gap: 1.25rem;
+    padding-inline: max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)));
+    scroll-padding-inline: max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)));
+    padding-bottom: 1.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .appt__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .appt__card {
+    position: relative;
+    flex: 0 0 min(21rem, 78vw);
+    scroll-snap-align: start;
+    padding: 1.6rem;
+    background: color-mix(in srgb, var(--drape-deep) 42%, transparent);
+    border: 1px solid color-mix(in srgb, var(--drape-pale) 20%, transparent);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .appt__at {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--iodine-bright);
+  }
+
+  .appt__rule {
+    display: block;
+    width: 2.2rem;
+    height: 1px;
+    background: color-mix(in srgb, var(--iodine-bright) 55%, transparent);
+    margin: 0.9rem 0;
+  }
+
+  .appt__title {
+    font-size: 1.2rem;
+    line-height: 1.25;
+  }
+
+  .appt__body {
+    margin-top: 0.7rem;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--drape-pale);
+  }
+
+  .appt__n {
+    position: absolute;
+    right: 0.8rem;
+    bottom: 0.2rem;
+    font-family: var(--display);
+    font-size: 3.4rem;
+    font-weight: 600;
+    line-height: 1;
+    color: color-mix(in srgb, var(--bone) 6%, transparent);
+    pointer-events: none;
+  }
+
+  .appt__controls {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1.6rem;
+  }
+
+  .appt__controls button {
+    width: 2.9rem;
+    height: 2.9rem;
+    display: grid;
+    place-items: center;
+    font-size: 1rem;
+    color: var(--bone);
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--bone) 28%, transparent);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s var(--ease), opacity 0.3s var(--ease),
+      border-color 0.3s var(--ease);
+  }
+
+  .appt__controls button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--bone) 12%, transparent);
+    border-color: var(--iodine-bright);
+  }
+
+  .appt__controls button:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  /* ---------------------------------------------------- EFFECTIVENESS */
+  .effect__inner {
+    display: grid;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: center;
+  }
+
+  .effect__figure {
+    margin: 0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .effect__figure :global(img) {
+    width: 100%;
+  }
+
+  .effect__text h2 {
+    margin-top: 0.4em;
+    max-width: 17ch;
+  }
+
+  .effect__flag {
+    margin-top: 1.8rem;
+    padding: 1rem 1.2rem;
+    background: color-mix(in srgb, var(--iodine) 10%, transparent);
+    border-left: 2px solid var(--iodine);
+    border-radius: 0 3px 3px 0;
+    font-size: 0.94rem;
+    font-weight: 500;
+    max-width: 44ch;
+  }
+
+  @media (min-width: 62rem) {
+    .effect__inner {
+      grid-template-columns: 0.95fr 1.05fr;
+    }
+  }
+
+  /* ---------------------------------------------------- BLEED / RECOVERY */
+  .bleed {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(88svh, 48rem);
+    background: var(--ink);
+    color: var(--bone);
+    overflow: hidden;
+  }
+
+  .bleed__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .bleed__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .bleed__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(14, 31, 27, 0.96) 8%,
+      rgba(14, 31, 27, 0.6) 55%,
+      rgba(14, 31, 27, 0.4) 100%
+    );
+  }
+
+  .bleed__inner {
+    position: relative;
+    padding-block: clamp(3rem, 8vh, 5.5rem);
+  }
+
+  .bleed h2 {
+    margin-top: 0.4em;
+    max-width: 16ch;
+  }
+
+  .rec {
+    list-style: none;
+    margin: clamp(1.8rem, 4vw, 2.8rem) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    max-width: 52rem;
+  }
+
+  .rec li {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 0.2rem 1.2rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--bone) 18%, transparent);
+  }
+
+  .rec li:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--bone) 18%, transparent);
+  }
+
+  .rec__when {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--iodine-bright);
+    padding-top: 0.25em;
+  }
+
+  .rec__what {
+    font-size: 0.98rem;
+    color: var(--bone);
+  }
+
+  /* ---------------------------------------------------- RISKS */
+  .risks__inner {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+
+  .risks__head h2 {
+    margin-top: 0.4em;
+    max-width: 12ch;
+  }
+
+  .risks__head .lede {
+    margin-top: 1.2rem;
+    max-width: 38ch;
+  }
+
+  .risks__figure {
+    margin: 2rem 0 0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .risks__figure :global(img) {
+    width: 100%;
+  }
+
+  .risk__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .risk {
+    padding: clamp(1.2rem, 2.5vw, 1.7rem) 0;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
+  }
+
+  .risk__list .risk:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
+  }
+
+  .risk__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+  }
+
+  .risk__name {
+    font-size: clamp(1.05rem, 1rem + 0.4vw, 1.25rem);
+  }
+
+  .risk__rate {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--iodine);
+    white-space: nowrap;
+  }
+
+  .risk__body {
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    max-width: 56ch;
+  }
+
+  @media (min-width: 62rem) {
+    .risks__inner {
+      grid-template-columns: 0.78fr 1.22fr;
+    }
+  }
+
+  /* ---------------------------------------------------- MYTHS / ACCORDION */
+  .myths__inner {
+    display: grid;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  .myths__text h2 {
+    margin-top: 0.4em;
+    max-width: 15ch;
+  }
+
+  .myths__text .lede {
+    margin-top: 1.3rem;
+    max-width: 38ch;
+  }
+
+  .acc {
+    border-top: 1px solid color-mix(in srgb, var(--bone) 17%, transparent);
+  }
+
+  .myths__list .acc:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--bone) 17%, transparent);
+  }
+
+  .acc summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.15rem 0;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .acc summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .acc__q {
+    font-family: var(--display);
+    font-size: clamp(1.05rem, 1rem + 0.45vw, 1.3rem);
+    font-weight: 600;
+    font-variation-settings: "opsz" 30, "SOFT" 20, "WONK" 0;
+    line-height: 1.3;
+  }
+
+  .acc__icon {
+    position: relative;
+    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+  }
+
+  .acc__icon::before,
+  .acc__icon::after {
+    content: "";
+    position: absolute;
+    inset: 50% 0 auto 0;
+    height: 1.5px;
+    background: var(--iodine-bright);
+    transition: transform 0.35s var(--ease-out);
+  }
+
+  .acc__icon::after {
+    transform: rotate(90deg);
+  }
+
+  .acc[open] .acc__icon::after {
+    transform: rotate(0deg);
+  }
+
+  .acc__a {
+    padding-bottom: 1.3rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--drape-pale);
+    max-width: 56ch;
+  }
+
+  @media (min-width: 62rem) {
+    .myths__inner {
+      grid-template-columns: 0.82fr 1.18fr;
+    }
+  }
+
+  /* ---------------------------------------------------- COST */
+  .cost {
+    background: var(--bone-pure);
+  }
+
+  .cost__inner {
+    display: grid;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: center;
+  }
+
+  .cost__text h2 {
+    margin-top: 0.4em;
+  }
+
+  .cost__figure {
+    margin: 0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .cost__figure :global(img) {
+    width: 100%;
+  }
+
+  .costbar {
+    display: grid;
+    gap: 1.1rem;
+    margin-top: 2rem;
+    max-width: 34rem;
+  }
+
+  .costbar__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .costbar__label {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .costbar__track {
+    display: block;
+    height: 10px;
+    background: color-mix(in srgb, var(--ink) 8%, transparent);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .costbar__fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    transform-origin: left;
+    animation: growBar 1.1s var(--ease-out) both;
+  }
+
+  /* 597 / 5000 ≈ 12% — the bar is to scale, not decorative */
+  .costbar__fill--ours {
+    width: 12%;
+    background: var(--iodine);
+  }
+
+  .costbar__fill--theirs {
+    width: 100%;
+    background: color-mix(in srgb, var(--drape) 45%, transparent);
+    animation-delay: 0.15s;
+  }
+
+  @keyframes growBar {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .costbar__value {
+    font-family: var(--display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-variation-settings: "opsz" 24, "SOFT" 20, "WONK" 0;
+  }
+
+  @media (min-width: 62rem) {
+    .cost__inner {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+    /* The value column is fixed width so both tracks start and end at the
+       same x — otherwise the bars are drawn to different baselines and the
+       comparison lies. */
+    .costbar__row {
+      grid-template-columns: 13rem 1fr 8.5rem;
+      align-items: center;
+      gap: 1rem;
+    }
+  }
+
+  /* ---------------------------------------------------- PERMANENCE */
+  .perm {
+    padding: 0;
+  }
+
+  .perm__inner {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 3px;
+    margin-block: var(--section-y);
+    padding: clamp(2.5rem, 6vw, 5rem);
+    background: var(--ink);
+    color: var(--bone);
+  }
+
+  .perm__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.24;
+  }
+
+  .perm__bg :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .perm h2 {
+    margin-top: 0.4em;
+    max-width: 20ch;
+  }
+
+  .perm .lede {
+    margin-top: 1.3rem;
+    max-width: 48ch;
+    color: var(--drape-pale);
+  }
+
+  .perm__note {
+    margin-top: 1.5rem;
+    padding-left: 1.2rem;
+    border-left: 2px solid var(--iodine-bright);
+    font-size: 0.96rem;
+    max-width: 46ch;
+  }
+
+  /* ---------------------------------------------------- LOCATIONS */
+  .locations__head {
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .locations__head h2 {
+    margin-top: 0.4em;
+    max-width: 16ch;
+  }
+
+  .locations__head .lede {
+    margin-top: 1.2rem;
+    max-width: 42ch;
+  }
+</style>

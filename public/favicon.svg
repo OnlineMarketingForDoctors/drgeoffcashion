@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#0e1f1b"/>
+  <!-- three graduated orchidometer beads, the site's mark -->
+  <ellipse cx="9"  cy="16" rx="2.4" ry="3"   fill="#2f6b5c"/>
+  <ellipse cx="16" cy="16" rx="3.4" ry="4.2" fill="#7ea99b"/>
+  <ellipse cx="24" cy="16" rx="4.6" ry="5.6" fill="#b0561f"/>
+</svg>

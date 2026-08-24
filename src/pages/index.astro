@@ -6,13 +6,13 @@ import Footer from "../components/Footer.astro";
 import Orchidometer from "../components/Orchidometer.astro";
 import Reviews from "../components/Reviews.astro";
 import Sequence from "../components/Sequence.astro";
+import ReferBand from "../components/ReferBand.astro";
 
 import heroImg from "../assets/generated/cashion-hero.webp";
 import portraitImg from "../assets/generated/cashion-portrait.webp";
 import drapeImg from "../assets/generated/drape-texture.webp";
 import cashionCorridorImg from "../assets/generated/cashion-corridor.webp";
 import conferenceImg from "../assets/generated/conference.webp";
-import orchidImg from "../assets/generated/orchidometer.webp";
 import roomImg from "../assets/generated/procedure-room.webp";
 
 /* The spec strip reads like the engraving on an instrument, not a stat grid. */
@@ -279,59 +279,8 @@ const reasons = [
     <!-- ================================================== REVIEWS -->
     <Reviews />
 
-    <!-- ================================================== REFER -->
-    <section class="band band--dark refer" id="refer">
-      <div class="wrap refer__inner">
-        <div class="refer__main">
-          <p class="tag tag--pale" data-reveal>Refer a patient</p>
-          <h2 data-reveal style="--delay:80ms">Send him our way.</h2>
-          <p class="lede" data-reveal style="--delay:160ms">
-            Are you a GP who would like to refer a patient for a vasectomy?
-            Dr Cashion has performed over 15,000 vasectomies and aims to
-            provide the highest level of clinical care to your patient.
-          </p>
+    <ReferBand />
 
-          <div class="refer__actions" data-reveal style="--delay:240ms">
-            <a class="btn" href="mailto:referrals@vasectomyaustralia.com.au">
-              Send a referral
-              <span class="btn__arrow" aria-hidden="true">→</span>
-            </a>
-            <a class="btn btn--ghost btn--on-dark" href="tel:1800764763">
-              1800 SNIPME
-            </a>
-          </div>
-
-          <p class="refer__note" data-reveal style="--delay:300ms">
-            Prefer paper? Fax or post a standard referral and we will take it
-            from there.
-          </p>
-        </div>
-
-        <aside class="offer" data-reveal style="--delay:200ms">
-          <figure class="offer__figure">
-            <Image
-              src={orchidImg}
-              alt="A Prader orchidometer laid out on a surgical drape"
-              widths={[500, 800, 1100]}
-              sizes="(min-width: 60rem) 38vw, 90vw"
-              quality={82}
-            />
-          </figure>
-          <div class="offer__text">
-            <p class="tag tag--pale">A thank you for referrers</p>
-            <h3>We'll post you an orchidometer.</h3>
-            <p>
-              As a thank you to our loyal referrers, tell us where to send one
-              and we will put an orchidometer in the post, along with some
-              other Vasectomy Australia swag.
-            </p>
-            <a class="offer__link" href="mailto:referrals@vasectomyaustralia.com.au?subject=Orchidometer">
-              Claim yours <span aria-hidden="true">→</span>
-            </a>
-          </div>
-        </aside>
-      </div>
-    </section>
   </main>
 
   <Footer />
@@ -760,94 +709,4 @@ const reasons = [
     }
   }
 
-  /* ============================================================ REFER */
-  .refer__inner {
-    display: grid;
-    gap: clamp(3rem, 6vw, 5rem);
-    align-items: center;
-  }
-
-  .refer__main h2 {
-    margin-top: 0.3em;
-  }
-
-  .refer__main .lede {
-    margin-top: 1.3rem;
-    max-width: 40ch;
-  }
-
-  .refer__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.85rem;
-    margin-top: 2.2rem;
-  }
-
-  .refer__note {
-    margin-top: 1.5rem;
-    font-family: var(--mono);
-    font-size: 0.74rem;
-    letter-spacing: 0.03em;
-    color: color-mix(in srgb, var(--drape-pale) 80%, transparent);
-    max-width: 40ch;
-  }
-
-  /* the orchidometer offer — the page's signature, paid off */
-  .offer {
-    display: grid;
-    gap: 1.6rem;
-    padding: clamp(1.5rem, 3vw, 2.2rem);
-    background: color-mix(in srgb, var(--drape-deep) 55%, transparent);
-    border: 1px solid color-mix(in srgb, var(--drape-pale) 22%, transparent);
-    border-radius: 3px;
-  }
-
-  .offer__figure {
-    margin: 0;
-    overflow: hidden;
-    border-radius: 2px;
-  }
-
-  .offer__figure :global(img) {
-    width: 100%;
-    transition: transform 1.2s var(--ease-out);
-  }
-
-  .offer:hover .offer__figure :global(img) {
-    transform: scale(1.04);
-  }
-
-  .offer__text h3 {
-    margin-top: 0.45em;
-  }
-
-  .offer__text p {
-    margin-top: 0.8rem;
-    font-size: 0.95rem;
-    color: var(--drape-pale);
-    max-width: 38ch;
-  }
-
-  .offer__link {
-    display: inline-flex;
-    gap: 0.5em;
-    margin-top: 1.2rem;
-    font-size: 0.92rem;
-    font-weight: 500;
-    color: var(--iodine-bright);
-    text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--iodine-bright) 45%, transparent);
-    padding-bottom: 0.2em;
-    transition: border-color 0.3s var(--ease);
-  }
-
-  .offer__link:hover {
-    border-bottom-color: var(--iodine-bright);
-  }
-
-  @media (min-width: 62rem) {
-    .refer__inner {
-      grid-template-columns: 1.05fr 0.95fr;
-    }
-  }
 </style>

@@ -1,0 +1,331 @@
+---
+/**
+ * Hand-authored SVG rather than a generated image: this is the one place on
+ * the site where a wrong line would be a clinical error, and generated
+ * anatomy cannot be trusted. Deliberately schematic — it shows the mechanism
+ * (isolate, divide and cauterise, interpose fascia), not the anatomy.
+ *
+ * Steps advance on click/keyboard and on scroll into view.
+ */
+
+const steps = [
+  {
+    n: "01",
+    title: "The vas is isolated",
+    body: "A ring-tipped fixation clamp secures the vas deferens through the skin. A single small opening is made in the midline with sharp dissecting forceps — spread, not cut — and the vas is lifted out through it.",
+  },
+  {
+    n: "02",
+    title: "Divided, and the lumen sealed",
+    body: "A short segment is removed and the lumen of the testicular end is sealed with cautery, rather than relying on a tie that can slip or cut through.",
+  },
+  {
+    n: "03",
+    title: "Fascia interposed between the ends",
+    body: "The fascial sheath is drawn over one cut end and secured, so the two ends sit in separate tissue planes. Cautery plus fascial interposition is what drives the failure rate down.",
+  },
+];
+---
+
+<div class="occ" data-occ>
+  <div class="occ__figure">
+    <svg
+      viewBox="0 0 460 300"
+      role="img"
+      aria-labelledby="occ-title occ-desc"
+      class="occ__svg"
+    >
+      <title id="occ-title">How the vas deferens is occluded</title>
+      <desc id="occ-desc">
+        A three-stage schematic: the vas is isolated through a single midline
+        opening, a segment is removed and the lumen sealed with cautery, then
+        the fascial sheath is interposed between the two cut ends.
+      </desc>
+
+      <!-- ambient tissue plane -->
+      <rect x="0" y="0" width="460" height="300" fill="none" />
+      <ellipse
+        cx="230"
+        cy="150"
+        rx="196"
+        ry="104"
+        class="occ__plane"
+      />
+
+      <!-- ============ stage 1: intact vas, held by the ring clamp ============ -->
+      <g class="occ__stage" data-stage="0">
+        <path
+          d="M40 150 C 110 150, 150 150, 230 150 C 310 150, 350 150, 420 150"
+          class="occ__vas"
+        />
+        <!-- ring clamp: the finger rings are what make it read as forceps
+             rather than a stick figure -->
+        <g class="occ__clamp">
+          <circle cx="230" cy="150" r="24" class="occ__ring" />
+          <path d="M230 174 L214 214" class="occ__arm" />
+          <path d="M230 174 L246 214" class="occ__arm" />
+          <circle cx="209" cy="226" r="12" class="occ__ring" />
+          <circle cx="251" cy="226" r="12" class="occ__ring" />
+        </g>
+        <!-- the single opening -->
+        <circle cx="230" cy="96" r="5" class="occ__port" />
+        <text x="230" y="76" class="occ__label" text-anchor="middle">
+          one midline opening
+        </text>
+      </g>
+
+      <!-- ============ stage 2: divided, lumen cauterised ============ -->
+      <g class="occ__stage" data-stage="1">
+        <path d="M40 150 C 110 150, 150 150, 196 150" class="occ__vas" />
+        <path d="M264 150 C 310 150, 350 150, 420 150" class="occ__vas" />
+
+        <!-- excised segment, shown lifted away -->
+        <path d="M198 108 L262 108" class="occ__excised" />
+        <text x="230" y="94" class="occ__label" text-anchor="middle">
+          segment removed
+        </text>
+
+        <!-- sealed lumens -->
+        <circle cx="196" cy="150" r="7" class="occ__seal" />
+        <circle cx="264" cy="150" r="7" class="occ__seal" />
+        <text x="230" y="206" class="occ__label" text-anchor="middle">
+          lumen sealed with cautery
+        </text>
+      </g>
+
+      <!-- ============ stage 3: fascial interposition ============ -->
+      <g class="occ__stage" data-stage="2">
+        <path d="M40 150 C 110 150, 150 150, 176 150" class="occ__vas" />
+        <path d="M284 168 C 330 168, 360 168, 420 168" class="occ__vas" />
+
+        <circle cx="176" cy="150" r="7" class="occ__seal" />
+        <circle cx="284" cy="168" r="7" class="occ__seal" />
+
+        <!-- fascial sheath drawn over the upper end -->
+        <path
+          d="M150 128 C 196 108, 244 112, 258 146 C 268 172, 232 188, 196 180 C 164 172, 142 150, 150 128 Z"
+          class="occ__fascia"
+        />
+        <text x="230" y="238" class="occ__label" text-anchor="middle">
+          fascia between the two ends
+        </text>
+      </g>
+    </svg>
+  </div>
+
+  <ol class="occ__steps">
+    {
+      steps.map((s, i) => (
+        <li>
+          <button
+            type="button"
+            class:list={["occ__step", { "is-active": i === 0 }]}
+            data-occ-step={i}
+            aria-pressed={i === 0 ? "true" : "false"}
+          >
+            <span class="occ__n">{s.n}</span>
+            <span class="occ__text">
+              <span class="occ__title">{s.title}</span>
+              <span class="occ__body">{s.body}</span>
+            </span>
+          </button>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<script>
+  const root = document.querySelector("[data-occ]");
+  if (root) {
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>("[data-occ-step]")];
+    const stages = [...root.querySelectorAll<SVGGElement>("[data-stage]")];
+
+    const show = (idx: number) => {
+      buttons.forEach((b, i) => {
+        b.classList.toggle("is-active", i === idx);
+        b.setAttribute("aria-pressed", String(i === idx));
+      });
+      stages.forEach((g, i) => g.classList.toggle("is-active", i === idx));
+    };
+
+    buttons.forEach((b, i) => b.addEventListener("click", () => show(i)));
+    show(0);
+
+    // Advance once on first view, so a scrolling reader sees it move.
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduced) {
+      let played = false;
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting || played) continue;
+            played = true;
+            let i = 0;
+            const tick = setInterval(() => {
+              i += 1;
+              if (i > 2) return clearInterval(tick);
+              show(i);
+            }, 1600);
+          }
+        },
+        { threshold: 0.45 }
+      );
+      io.observe(root);
+    }
+  }
+</script>
+
+<style>
+  .occ {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .occ__figure {
+    background: var(--bone-pure);
+    border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+    border-radius: 3px;
+    padding: clamp(0.5rem, 2vw, 1.5rem);
+  }
+
+  .occ__svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .occ__plane {
+    fill: color-mix(in srgb, var(--drape-wash) 55%, transparent);
+    stroke: none;
+  }
+
+  /* only the active stage is drawn */
+  .occ__stage {
+    opacity: 0;
+    transition: opacity 0.55s var(--ease);
+  }
+
+  .occ__stage.is-active {
+    opacity: 1;
+  }
+
+  .occ__vas {
+    fill: none;
+    stroke: var(--drape);
+    stroke-width: 9;
+    stroke-linecap: round;
+  }
+
+  .occ__ring {
+    fill: none;
+    stroke: var(--ink-soft);
+    stroke-width: 3.5;
+  }
+
+  .occ__arm {
+    stroke: var(--ink-soft);
+    stroke-width: 3.5;
+    stroke-linecap: round;
+  }
+
+  .occ__port {
+    fill: var(--iodine);
+  }
+
+  .occ__excised {
+    stroke: color-mix(in srgb, var(--drape) 45%, transparent);
+    stroke-width: 7;
+    stroke-linecap: round;
+    stroke-dasharray: 3 11;
+  }
+
+  .occ__seal {
+    fill: var(--iodine);
+  }
+
+  .occ__fascia {
+    fill: color-mix(in srgb, var(--iodine) 12%, transparent);
+    stroke: var(--iodine);
+    stroke-width: 2.5;
+    stroke-dasharray: 6 5;
+  }
+
+  .occ__label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    fill: color-mix(in srgb, var(--ink) 58%, transparent);
+  }
+
+  .occ__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+
+  .occ__step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.2rem;
+    width: 100%;
+    padding: 1.3rem 0;
+    text-align: left;
+    background: none;
+    border: 0;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    opacity: 0.5;
+    transition: opacity 0.4s var(--ease);
+  }
+
+  .occ__steps li:last-child .occ__step {
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
+  }
+
+  .occ__step.is-active,
+  .occ__step:hover {
+    opacity: 1;
+  }
+
+  .occ__n {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--iodine);
+    padding-top: 0.3em;
+  }
+
+  .occ__text {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .occ__title {
+    font-family: var(--display);
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+    font-weight: 600;
+    font-variation-settings: "opsz" 30, "SOFT" 20, "WONK" 0;
+    line-height: 1.25;
+  }
+
+  .occ__body {
+    font-size: 0.94rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 52ch;
+  }
+
+  @media (min-width: 62rem) {
+    .occ {
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
+    }
+  }
+</style>

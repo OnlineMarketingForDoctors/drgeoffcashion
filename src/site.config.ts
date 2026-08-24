@@ -14,4 +14,6 @@ export const SITE = {
   phoneLabel: '1800 SNIPME',
   phoneDigits: '1800 764 763',
   phoneHref: 'tel:1800764763',
+  email: 'info@vasectomyaustralia.com.au',
+  facebook: 'https://www.facebook.com/vasectomyaustralia',
 } as const;

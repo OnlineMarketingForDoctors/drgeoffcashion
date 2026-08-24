@@ -1,0 +1,356 @@
+---
+import { states, totalClinics, cashionClinics } from "../data/locations";
+
+/**
+ * A tile cartogram rather than a traced outline of Australia: the tiles are
+ * arranged in the right relative positions but make no claim to be a map, so
+ * nothing here is geographically wrong. Clicking a state filters the list.
+ */
+const tiles = [
+  { code: "NT", col: 2, row: 1 },
+  { code: "QLD", col: 3, row: 1 },
+  { code: "WA", col: 1, row: 2 },
+  { code: "SA", col: 2, row: 2 },
+  { code: "NSW", col: 3, row: 2 },
+  { code: "VIC", col: 3, row: 3 },
+  { code: "TAS", col: 3, row: 4 },
+];
+
+const countFor = (code: string) =>
+  states.find((s) => s.code === code)?.clinics.length ?? 0;
+
+const allClinics = states.flatMap((s) =>
+  s.clinics.map((c) => ({ ...c, state: s.code, stateName: s.name }))
+);
+---
+
+<div class="loc" data-loc>
+  <div class="loc__controls">
+    <div class="loc__map" role="group" aria-label="Filter clinics by state">
+      {
+        tiles.map((t) => {
+          const n = countFor(t.code);
+          return (
+            <button
+              type="button"
+              class:list={["loc__tile", { "is-empty": n === 0 }]}
+              style={`grid-column:${t.col};grid-row:${t.row}`}
+              data-loc-state={t.code}
+              disabled={n === 0}
+              aria-label={`${t.code}, ${n} ${n === 1 ? "clinic" : "clinics"}`}
+            >
+              <span class="loc__code">{t.code}</span>
+              <span class="loc__count">{n || "—"}</span>
+            </button>
+          );
+        })
+      }
+    </div>
+
+    <div class="loc__filters">
+      <p class="tag">Filter</p>
+      <div class="loc__chips">
+        <button type="button" class="chip is-on" data-loc-doctor="all">
+          All clinics <span class="chip__n">{totalClinics}</span>
+        </button>
+        <button type="button" class="chip" data-loc-doctor="cashion">
+          Dr Cashion <span class="chip__n">{cashionClinics}</span>
+        </button>
+      </div>
+      <button type="button" class="loc__reset" data-loc-reset hidden>
+        Clear state filter
+      </button>
+      <p class="loc__note">
+        Vasectomy Australia runs clinics in every state. Dr Cashion personally
+        operates {cashionClinics} of them; the rest are covered by other
+        Vasectomy Australia doctors.
+      </p>
+    </div>
+  </div>
+
+  <div class="loc__results">
+    <p class="loc__count-line" data-loc-summary aria-live="polite"></p>
+    <ul class="loc__list">
+      {
+        allClinics.map((c) => (
+          <li
+            class="loc__item"
+            data-state={c.state}
+            data-doctor={c.doctor}
+          >
+            <span class="loc__state">{c.state}</span>
+            <span class="loc__body">
+              <span class="loc__area">{c.area}</span>
+              <span class="loc__clinic">{c.clinic}</span>
+            </span>
+            <span class:list={["loc__who", { "is-cashion": c.doctor === "cashion" }]}>
+              {c.doctor === "cashion" ? "Dr Cashion" : "Vasectomy Australia"}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector("[data-loc]");
+  if (root) {
+    const tiles = [...root.querySelectorAll<HTMLButtonElement>("[data-loc-state]")];
+    const chips = [...root.querySelectorAll<HTMLButtonElement>("[data-loc-doctor]")];
+    const items = [...root.querySelectorAll<HTMLElement>(".loc__item")];
+    const summary = root.querySelector<HTMLElement>("[data-loc-summary]");
+    const reset = root.querySelector<HTMLButtonElement>("[data-loc-reset]");
+
+    let state: string | null = null;
+    let doctor = "all";
+
+    const apply = () => {
+      let shown = 0;
+      for (const el of items) {
+        const okState = !state || el.dataset.state === state;
+        const okDoc = doctor === "all" || el.dataset.doctor === doctor;
+        const show = okState && okDoc;
+        el.hidden = !show;
+        if (show) shown += 1;
+      }
+
+      tiles.forEach((t) => t.classList.toggle("is-on", t.dataset.locState === state));
+      chips.forEach((c) => c.classList.toggle("is-on", c.dataset.locDoctor === doctor));
+      if (reset) reset.hidden = state === null;
+
+      if (summary) {
+        const where = state ? ` in ${state}` : " nationwide";
+        const who = doctor === "cashion" ? " with Dr Cashion" : "";
+        summary.textContent =
+          shown === 0
+            ? `No clinics${where}${who}.`
+            : `${shown} ${shown === 1 ? "clinic" : "clinics"}${where}${who}.`;
+      }
+    };
+
+    tiles.forEach((t) =>
+      t.addEventListener("click", () => {
+        // clicking the active state clears it
+        state = state === t.dataset.locState ? null : t.dataset.locState!;
+        apply();
+      })
+    );
+
+    chips.forEach((c) =>
+      c.addEventListener("click", () => {
+        doctor = c.dataset.locDoctor!;
+        apply();
+      })
+    );
+
+    reset?.addEventListener("click", () => {
+      state = null;
+      apply();
+    });
+
+    apply();
+  }
+</script>
+
+<style>
+  .loc {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  /* ---- cartogram ---- */
+  .loc__map {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+    max-width: 22rem;
+  }
+
+  .loc__tile {
+    display: grid;
+    align-content: center;
+    gap: 0.15rem;
+    aspect-ratio: 1;
+    padding: 0.5rem;
+    background: color-mix(in srgb, var(--drape-wash) 70%, transparent);
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    font: inherit;
+    color: var(--ink);
+    transition: background-color 0.35s var(--ease), border-color 0.35s var(--ease),
+      transform 0.35s var(--ease-out);
+  }
+
+  .loc__tile:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--drape) 22%, transparent);
+    transform: translateY(-2px);
+  }
+
+  .loc__tile.is-on {
+    background: var(--drape);
+    border-color: var(--drape);
+    color: var(--bone-pure);
+  }
+
+  .loc__tile.is-empty {
+    background: color-mix(in srgb, var(--ink) 5%, transparent);
+    color: color-mix(in srgb, var(--ink) 35%, transparent);
+    cursor: default;
+  }
+
+  .loc__code {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+  }
+
+  .loc__count {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-variation-settings: "opsz" 30, "SOFT" 20, "WONK" 0;
+    line-height: 1;
+  }
+
+  /* ---- filters ---- */
+  .loc__filters {
+    margin-top: 2rem;
+  }
+
+  .loc__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    padding: 0.6em 1em;
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+    border-radius: 999px;
+    font: inherit;
+    font-size: 0.88rem;
+    color: inherit;
+    cursor: pointer;
+    transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease);
+  }
+
+  .chip:hover {
+    border-color: var(--drape);
+  }
+
+  .chip.is-on {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bone-pure);
+  }
+
+  .chip__n {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    opacity: 0.7;
+  }
+
+  .loc__reset {
+    margin-top: 0.9rem;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--iodine) 45%, transparent);
+    font: inherit;
+    font-size: 0.85rem;
+    color: var(--iodine);
+    cursor: pointer;
+  }
+
+  .loc__note {
+    margin-top: 1.4rem;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    max-width: 34ch;
+  }
+
+  /* ---- results ---- */
+  .loc__count-line {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--drape);
+    padding-bottom: 0.9rem;
+  }
+
+  .loc__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 34rem;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .loc__item {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0.2rem 1rem;
+    padding: 0.95rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 11%, transparent);
+  }
+
+  .loc__item[hidden] {
+    display: none;
+  }
+
+  .loc__state {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    color: color-mix(in srgb, var(--ink) 45%, transparent);
+    padding-top: 0.35em;
+  }
+
+  .loc__body {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .loc__area {
+    font-weight: 500;
+    font-size: 0.98rem;
+  }
+
+  .loc__clinic {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  .loc__who {
+    grid-column: 2;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--ink) 40%, transparent);
+    margin-top: 0.25rem;
+  }
+
+  .loc__who.is-cashion {
+    color: var(--iodine);
+  }
+
+  @media (min-width: 62rem) {
+    .loc {
+      grid-template-columns: 0.82fr 1.18fr;
+      gap: clamp(3rem, 6vw, 5rem);
+    }
+  }
+</style>

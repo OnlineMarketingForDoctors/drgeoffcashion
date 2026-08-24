@@ -1,0 +1,631 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import PageHero from "../components/PageHero.astro";
+import ReferBand from "../components/ReferBand.astro";
+import { qualifications } from "../data/publications";
+
+import deskImg from "../assets/generated/cashion-desk.webp";
+import rockhamptonImg from "../assets/generated/rockhampton.webp";
+import townImg from "../assets/generated/country-town.webp";
+import lecternImg from "../assets/generated/lectern.webp";
+import portraitImg from "../assets/generated/cashion-portrait.webp";
+import universityImg from "../assets/generated/university.webp";
+
+const scale = [
+  { figure: "15,000+", label: "Vasectomies performed" },
+  { figure: "~3,500", label: "Each year" },
+  { figure: "6", label: "States with clinics" },
+  { figure: "2017", label: "Full-time vasectomy practice since" },
+];
+---
+
+<Base
+  title="About Dr Geoff Cashion — Australia's leading vasectomist"
+  description="Dr Geoff Cashion is the founder of Vasectomy Australia and performs more no-scalpel vasectomies than any other doctor in the country. Background, training and qualifications."
+>
+  <Nav />
+
+  <main id="main">
+    <PageHero
+      eyebrow="About"
+      title="The doctor at the end of your referral."
+      lede="Founder of Vasectomy Australia, and the busiest vasectomist in the country."
+      image={deskImg}
+      imageAlt="Dr Geoff Cashion at his desk in a consulting room"
+      focus="70% center"
+      crumb="About"
+    />
+
+    <!-- ============================================ LEAD -->
+    <section class="band lead" id="who">
+      <div class="wrap lead__inner">
+        <p class="lead__statement" data-reveal>
+          Dr Geoff Cashion has dedicated his professional life to one
+          question: how do you make a safe, effective, affordable vasectomy
+          available to <em>every</em> Australian man, not just the ones who
+          live near a capital city?
+        </p>
+
+        <div class="lead__cols">
+          <div class="lead__col" data-reveal style="--delay:100ms">
+            <p>
+              He is the founder of Vasectomy Australia, the country's largest
+              provider of no-scalpel vasectomy. What began as one doctor is now
+              a practice with several full-time vasectomists and clinics across
+              six states — built specifically so that a man in Dubbo or
+              Rockhampton has the same access to an experienced vasectomist as
+              a man in Sydney.
+            </p>
+          </div>
+          <div class="lead__col" data-reveal style="--delay:200ms">
+            <p>
+              For a referring GP, the practical consequence is simple. You are
+              not sending your patient to someone who does a handful of these
+              between other work. You are sending him to a doctor who has done
+              the procedure more than fifteen thousand times, and who does
+              little else.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ SCALE -->
+    <section class="band band--drape scale" id="scale">
+      <div class="wrap">
+        <p class="tag tag--pale" data-reveal>The practice</p>
+        <h2 data-reveal style="--delay:80ms">Built for distance.</h2>
+
+        <dl class="scale__grid">
+          {
+            scale.map((s, i) => (
+              <div class="scale__item" data-reveal style={`--delay:${140 + i * 80}ms`}>
+                <dt class="scale__label">{s.label}</dt>
+                <dd class="scale__figure">{s.figure}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    <!-- ============================================ ROCKHAMPTON — full bleed -->
+    <section class="bleed" id="rural">
+      <div class="bleed__media">
+        <Image
+          src={rockhamptonImg}
+          alt="Open cattle country near Rockhampton, Central Queensland, at golden hour"
+          widths={[1200, 1800, 2600]}
+          sizes="100vw"
+          quality={78}
+        />
+      </div>
+      <div class="bleed__scrim"></div>
+      <div class="wrap bleed__inner">
+        <p class="tag tag--pale" data-reveal>Rockhampton, Queensland</p>
+        <h2 data-reveal style="--delay:80ms">
+          He grew up a long way from a specialist.
+        </h2>
+        <p class="lede" data-reveal style="--delay:160ms">
+          Dr Cashion was raised in Rockhampton, and that upbringing is the
+          reason Vasectomy Australia is shaped the way it is. Rural and
+          regional men have historically had two options: travel hundreds of
+          kilometres, or go without. The clinic list exists to remove that
+          choice.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================ REGIONAL -->
+    <section class="band split" id="access">
+      <div class="wrap split__inner">
+        <div class="split__text">
+          <p class="tag" data-reveal>Access</p>
+          <h2 data-reveal style="--delay:80ms">
+            The same procedure, the same price, wherever your patient lives.
+          </h2>
+          <div class="split__prose" data-reveal style="--delay:160ms">
+            <p>
+              A vasectomy performed in Tamworth is the same operation, by the
+              same technique, at the same out-of-pocket cost as one performed
+              in the inner west of Sydney. Regional clinics run to a schedule,
+              so a patient in a country town is booked into a real list rather
+              than waiting for a visiting doctor who may or may not come.
+            </p>
+            <p>
+              For you, that means a referral does not have to come with an
+              apology about travel.
+            </p>
+          </div>
+        </div>
+        <figure class="split__figure" data-reveal style="--delay:120ms">
+          <Image
+            src={townImg}
+            alt="A quiet main street in a regional Australian town"
+            widths={[600, 900, 1300]}
+            sizes="(min-width: 60rem) 48vw, 90vw"
+            quality={80}
+          />
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============================================ QUALIFICATIONS -->
+    <section class="band quals" id="qualifications">
+      <div class="wrap quals__inner">
+        <div class="quals__head">
+          <p class="tag" data-reveal>Qualifications &amp; memberships</p>
+          <h2 data-reveal style="--delay:80ms">An unusual route in.</h2>
+          <p class="lede" data-reveal style="--delay:160ms">
+            Accountancy first, then medicine, then rural and emergency
+            fellowships. It is not the standard path to a procedural practice,
+            and it shows in how the clinics are run.
+          </p>
+          <figure class="quals__figure" data-reveal style="--delay:240ms">
+            <Image
+              src={universityImg}
+              alt="A sandstone university building in Queensland"
+              widths={[500, 800, 1100]}
+              sizes="(min-width: 62rem) 38vw, 90vw"
+              quality={78}
+            />
+          </figure>
+        </div>
+
+        <ol class="tl">
+          {
+            qualifications.map((q, i) => (
+              <li class="tl__item" data-reveal style={`--delay:${i * 90}ms`}>
+                <span class="tl__year">{q.year}</span>
+                <span class="tl__dot" aria-hidden="true" />
+                <span class="tl__body">
+                  <span class="tl__award">{q.award}</span>
+                  <span class="tl__inst">{q.institution}</span>
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============================================ THOUGHT LEADERSHIP -->
+    <section class="band band--dark teach" id="teaching">
+      <div class="wrap teach__inner">
+        <figure class="teach__figure" data-reveal>
+          <Image
+            src={lecternImg}
+            alt="A speaker at a lectern addressing a darkened conference auditorium"
+            widths={[600, 1000, 1500]}
+            sizes="(min-width: 62rem) 52vw, 90vw"
+            quality={78}
+          />
+        </figure>
+        <div class="teach__text">
+          <p class="tag tag--pale" data-reveal>Thought leadership</p>
+          <h2 data-reveal style="--delay:80ms">
+            He presents the work, and publishes it.
+          </h2>
+          <p class="lede" data-reveal style="--delay:160ms">
+            Dr Cashion regularly attends and presents at national and
+            international vasectomy conferences, and publishes on technique,
+            complications and Australian vasectomy trends. Volume without
+            scrutiny is just repetition; the publishing is what keeps the
+            technique honest.
+          </p>
+          <a class="teach__link" href="/research" data-reveal style="--delay:240ms">
+            Read the publications <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ QUOTE -->
+    <section class="band quote" id="quote">
+      <div class="wrap quote__inner">
+        <figure class="quote__figure" data-reveal>
+          <Image
+            src={portraitImg}
+            alt="Studio portrait of Dr Geoff Cashion"
+            widths={[400, 700, 1000]}
+            sizes="(min-width: 60rem) 32vw, 70vw"
+            quality={82}
+          />
+        </figure>
+        <blockquote class="quote__body" data-reveal style="--delay:120ms">
+          <p>
+            I look forward to partnering with you and your patients, helping
+            them to achieve their family planning goals.
+          </p>
+          <cite>Dr Geoff Cashion — Specialist GP, founder of Vasectomy Australia</cite>
+        </blockquote>
+      </div>
+    </section>
+
+    <ReferBand />
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  /* ---------------------------------------------------- LEAD */
+  .lead__statement {
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 1.1rem + 1.9vw, 2.6rem);
+    font-weight: 600;
+    font-variation-settings: "opsz" 72, "SOFT" 25, "WONK" 1;
+    line-height: 1.18;
+    letter-spacing: -0.018em;
+    max-width: 24ch;
+    text-wrap: balance;
+  }
+
+  .lead__statement em {
+    font-style: italic;
+    color: var(--iodine);
+  }
+
+  .lead__cols {
+    display: grid;
+    gap: 1.6rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .lead__col p {
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  @media (min-width: 60rem) {
+    .lead__cols {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 5vw, 4rem);
+      margin-left: auto;
+      width: min(100%, 62rem);
+    }
+  }
+
+  /* ---------------------------------------------------- SCALE */
+  .scale h2 {
+    margin-top: 0.4em;
+    max-width: 14ch;
+  }
+
+  .scale__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1.5rem;
+    margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+  }
+
+  .scale__item {
+    border-top: 1px solid color-mix(in srgb, var(--bone) 24%, transparent);
+    padding-top: 1rem;
+  }
+
+  .scale__label {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--drape-pale);
+    order: 2;
+  }
+
+  .scale__figure {
+    margin: 0 0 0.35rem;
+    font-family: var(--display);
+    font-size: clamp(2rem, 1.3rem + 2.4vw, 3.4rem);
+    font-weight: 600;
+    font-variation-settings: "opsz" 72, "SOFT" 20, "WONK" 0;
+    line-height: 1;
+    letter-spacing: -0.025em;
+  }
+
+  .scale__item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 55rem) {
+    .scale__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* ---------------------------------------------------- FULL BLEED */
+  .bleed {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(85svh, 46rem);
+    background: var(--ink);
+    color: var(--bone);
+    overflow: hidden;
+  }
+
+  .bleed__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .bleed__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* The sky in this frame is bright where the copy sits, so the scrim needs
+     a horizontal pass as well as the vertical one. */
+  .bleed__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, rgba(14, 31, 27, 0.88) 0%, rgba(14, 31, 27, 0.6) 45%, rgba(14, 31, 27, 0.1) 80%),
+      linear-gradient(to top, rgba(14, 31, 27, 0.9) 4%, rgba(14, 31, 27, 0.3) 55%, rgba(14, 31, 27, 0.45) 100%);
+  }
+
+  .bleed__inner {
+    position: relative;
+    padding-block: clamp(3rem, 8vh, 6rem);
+  }
+
+  .bleed h2 {
+    margin-top: 0.4em;
+    max-width: 15ch;
+  }
+
+  .bleed .lede {
+    margin-top: 1.3rem;
+    max-width: 46ch;
+    color: var(--drape-pale);
+  }
+
+  /* ---------------------------------------------------- SPLIT */
+  .split__inner {
+    display: grid;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: center;
+  }
+
+  .split__text h2 {
+    margin-top: 0.4em;
+    max-width: 17ch;
+  }
+
+  .split__prose {
+    display: grid;
+    gap: 1.1rem;
+    margin-top: 1.5rem;
+    max-width: 46ch;
+    color: var(--ink-soft);
+  }
+
+  .split__figure {
+    margin: 0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .split__figure :global(img) {
+    width: 100%;
+  }
+
+  @media (min-width: 60rem) {
+    .split__inner {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* ---------------------------------------------------- TIMELINE */
+  .quals {
+    background: var(--bone-pure);
+  }
+
+  .quals__inner {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+
+  .quals__head h2 {
+    margin-top: 0.4em;
+    max-width: 12ch;
+  }
+
+  .quals__head .lede {
+    margin-top: 1.2rem;
+    max-width: 38ch;
+  }
+
+  .quals__figure {
+    margin: 2rem 0 0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .quals__figure :global(img) {
+    width: 100%;
+  }
+
+  .tl {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  /* the spine the dots sit on */
+  .tl::before {
+    content: "";
+    position: absolute;
+    left: 4.6rem;
+    top: 0.6rem;
+    bottom: 0.6rem;
+    width: 1px;
+    background: color-mix(in srgb, var(--ink) 16%, transparent);
+  }
+
+  .tl__item {
+    display: grid;
+    grid-template-columns: 3.6rem 2rem 1fr;
+    align-items: start;
+    gap: 0 0;
+    padding: 1.5rem 0;
+  }
+
+  .tl__year {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--drape);
+    padding-top: 0.25em;
+  }
+
+  .tl__dot {
+    position: relative;
+    width: 100%;
+    height: 1.4em;
+  }
+
+  .tl__dot::after {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    top: 0.35em;
+    width: 9px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--iodine);
+    transform: translateX(-50%);
+  }
+
+  .tl__body {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .tl__award {
+    font-family: var(--display);
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+    font-weight: 600;
+    font-variation-settings: "opsz" 30, "SOFT" 20, "WONK" 0;
+    line-height: 1.25;
+  }
+
+  .tl__inst {
+    font-size: 0.94rem;
+    color: var(--ink-soft);
+  }
+
+  @media (min-width: 62rem) {
+    .quals__inner {
+      grid-template-columns: 0.85fr 1.15fr;
+    }
+  }
+
+  /* ---------------------------------------------------- TEACHING */
+  .teach__inner {
+    display: grid;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: center;
+  }
+
+  .teach__figure {
+    margin: 0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .teach__figure :global(img) {
+    width: 100%;
+  }
+
+  .teach__text h2 {
+    margin-top: 0.4em;
+    max-width: 15ch;
+  }
+
+  .teach__text .lede {
+    margin-top: 1.3rem;
+    max-width: 42ch;
+  }
+
+  .teach__link {
+    display: inline-flex;
+    gap: 0.5em;
+    margin-top: 1.6rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--iodine-bright);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--iodine-bright) 45%, transparent);
+    padding-bottom: 0.2em;
+    transition: border-color 0.3s var(--ease);
+  }
+
+  .teach__link:hover {
+    border-bottom-color: var(--iodine-bright);
+  }
+
+  @media (min-width: 60rem) {
+    .teach__inner {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+  }
+
+  /* ---------------------------------------------------- QUOTE */
+  .quote__inner {
+    display: grid;
+    gap: clamp(1.8rem, 4vw, 3.5rem);
+    align-items: center;
+  }
+
+  .quote__figure {
+    margin: 0;
+    border-radius: 2px;
+    overflow: hidden;
+    max-width: 20rem;
+  }
+
+  .quote__figure :global(img) {
+    width: 100%;
+  }
+
+  .quote__body {
+    margin: 0;
+    padding-left: clamp(1rem, 2vw, 1.8rem);
+    border-left: 2px solid var(--iodine);
+  }
+
+  .quote__body p {
+    font-family: var(--display);
+    font-size: clamp(1.35rem, 1.05rem + 1.4vw, 2.15rem);
+    font-variation-settings: "opsz" 60, "SOFT" 30, "WONK" 1;
+    line-height: 1.22;
+    letter-spacing: -0.018em;
+    max-width: 22ch;
+  }
+
+  .quote__body cite {
+    display: block;
+    margin-top: 1.1rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-style: normal;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--drape);
+  }
+
+  @media (min-width: 60rem) {
+    .quote__inner {
+      grid-template-columns: auto 1fr;
+    }
+  }
+</style>

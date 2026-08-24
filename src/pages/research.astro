@@ -1,0 +1,407 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import PageHero from "../components/PageHero.astro";
+import ReferBand from "../components/ReferBand.astro";
+import { publications } from "../data/publications";
+
+import journalsImg from "../assets/generated/journals.webp";
+import conferenceImg from "../assets/generated/conference.webp";
+
+const topics = ["All", "Vasectomy", "Sedation"] as const;
+const counts = {
+  All: publications.length,
+  Vasectomy: publications.filter((p) => p.topic === "Vasectomy").length,
+  Sedation: publications.filter((p) => p.topic === "Sedation").length,
+};
+const sorted = [...publications].sort((a, b) => b.year - a.year);
+---
+
+<Base
+  title="Research and publications — Dr Geoff Cashion"
+  description="Peer-reviewed publications and conference presentations by Dr Geoff Cashion on no-scalpel vasectomy technique, complications, Australian vasectomy trends and procedural sedation."
+>
+  <Nav />
+
+  <main id="main">
+    <PageHero
+      eyebrow="Research and publications"
+      title="Volume is only useful if somebody is checking it."
+      lede="Published work on vasectomy technique, complications and Australian trends — plus earlier research in procedural sedation."
+      image={journalsImg}
+      imageAlt="A stack of medical journals on a desk under a reading lamp"
+      focus="65% center"
+      crumb="Research"
+    />
+
+    <!-- ============================================ INTRO -->
+    <section class="band intro">
+      <div class="wrap intro__inner">
+        <p class="intro__statement" data-reveal>
+          A practice doing three and a half thousand procedures a year
+          generates a lot of data. Publishing it is how the technique gets
+          tested rather than merely repeated.
+        </p>
+        <div class="intro__note" data-reveal style="--delay:140ms">
+          <p>
+            Dr Cashion's recent work covers early-onset infection after
+            no-scalpel vasectomy, the diagnostic problem of unilateral absence
+            of the vas deferens, and a decade of change in who is choosing
+            vasectomy in Australia. His earlier research, from emergency
+            medicine, examined procedural sedation safety.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ PUBLICATIONS -->
+    <section class="band band--dark pubs" id="publications">
+      <div class="wrap">
+        <div class="pubs__head">
+          <div data-reveal>
+            <p class="tag tag--pale">Publications</p>
+            <h2>Selected work.</h2>
+          </div>
+          <div class="pubs__filters" data-reveal style="--delay:120ms" role="group" aria-label="Filter publications by topic">
+            {
+              topics.map((t) => (
+                <button
+                  type="button"
+                  class:list={["pchip", { "is-on": t === "All" }]}
+                  data-pub-topic={t}
+                >
+                  {t} <span class="pchip__n">{counts[t]}</span>
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <ol class="pubs__list" data-pub-list>
+          {
+            sorted.map((p, i) => (
+              <li class="pub" data-topic={p.topic} style={`--delay:${i * 60}ms`} data-reveal>
+                <div class="pub__year">
+                  <span>{p.year}</span>
+                  <span class="pub__topic">{p.topic}</span>
+                </div>
+                <div class="pub__body">
+                  <h3 class="pub__title">
+                    {p.href ? (
+                      <a href={p.href} target="_blank" rel="noopener noreferrer">
+                        {p.title}
+                        <span class="pub__ext" aria-hidden="true">↗</span>
+                        <span class="pub__sr"> (opens in a new tab)</span>
+                      </a>
+                    ) : (
+                      p.title
+                    )}
+                  </h3>
+                  <p class="pub__meta">
+                    {p.authors} · <span class="pub__venue">{p.venue}</span>
+                  </p>
+                  {p.doi && <p class="pub__doi">doi: {p.doi}</p>}
+                  {p.note && <p class="pub__note">{p.note}</p>}
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="pubs__empty" data-pub-empty hidden>No publications in that topic.</p>
+      </div>
+    </section>
+
+    <!-- ============================================ CONFERENCES — full bleed -->
+    <section class="bleed" id="conferences">
+      <div class="bleed__media">
+        <Image
+          src={conferenceImg}
+          alt="A darkened conference auditorium during a presentation"
+          widths={[1200, 1800, 2600]}
+          sizes="100vw"
+          quality={76}
+        />
+      </div>
+      <div class="bleed__scrim"></div>
+      <div class="wrap bleed__inner">
+        <p class="tag tag--pale" data-reveal>Conferences</p>
+        <h2 data-reveal style="--delay:80ms">Presenting, and being corrected.</h2>
+        <p class="lede" data-reveal style="--delay:160ms">
+          Dr Cashion regularly attends and presents at national and
+          international vasectomy conferences — as much to learn from other
+          leading practitioners as to share his own results. Technique
+          refinements from those meetings come back into a practice performing
+          thousands of procedures a year.
+        </p>
+      </div>
+    </section>
+
+    <ReferBand />
+  </main>
+
+  <Footer />
+</Base>
+
+<script>
+  const chips = [...document.querySelectorAll<HTMLButtonElement>("[data-pub-topic]")];
+  const items = [...document.querySelectorAll<HTMLElement>(".pub")];
+  const empty = document.querySelector<HTMLElement>("[data-pub-empty]");
+
+  chips.forEach((chip) =>
+    chip.addEventListener("click", () => {
+      const topic = chip.dataset.pubTopic!;
+      chips.forEach((c) => c.classList.toggle("is-on", c === chip));
+      let shown = 0;
+      for (const el of items) {
+        const show = topic === "All" || el.dataset.topic === topic;
+        el.hidden = !show;
+        if (show) shown += 1;
+      }
+      if (empty) empty.hidden = shown > 0;
+    })
+  );
+</script>
+
+<style>
+  /* ---------------------------------------------------- INTRO */
+  .intro__inner {
+    display: grid;
+    gap: clamp(1.8rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  .intro__statement {
+    font-family: var(--display);
+    font-size: clamp(1.45rem, 1.1rem + 1.7vw, 2.4rem);
+    font-weight: 600;
+    font-variation-settings: "opsz" 60, "SOFT" 25, "WONK" 1;
+    line-height: 1.2;
+    letter-spacing: -0.018em;
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+
+  .intro__note p {
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  @media (min-width: 60rem) {
+    .intro__inner {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+  }
+
+  /* ---------------------------------------------------- PUBLICATIONS */
+  .pubs__head {
+    display: grid;
+    gap: 1.6rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .pubs__head h2 {
+    margin-top: 0.4em;
+  }
+
+  .pubs__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    padding: 0.55em 1em;
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--bone) 26%, transparent);
+    border-radius: 999px;
+    font: inherit;
+    font-size: 0.86rem;
+    color: var(--bone);
+    cursor: pointer;
+    transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease),
+      color 0.3s var(--ease);
+  }
+
+  .pchip:hover {
+    border-color: var(--iodine-bright);
+  }
+
+  .pchip.is-on {
+    background: var(--bone);
+    border-color: var(--bone);
+    color: var(--ink);
+  }
+
+  .pchip__n {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    opacity: 0.65;
+  }
+
+  .pubs__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .pub {
+    display: grid;
+    gap: 0.6rem 2rem;
+    padding: clamp(1.4rem, 2.5vw, 2rem) 0;
+    border-top: 1px solid color-mix(in srgb, var(--bone) 16%, transparent);
+  }
+
+  .pub[hidden] {
+    display: none;
+  }
+
+  .pubs__list .pub:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--bone) 16%, transparent);
+  }
+
+  .pub__year {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--iodine-bright);
+  }
+
+  .pub__topic {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--drape-pale) 75%, transparent);
+  }
+
+  .pub__title {
+    font-size: clamp(1.1rem, 1rem + 0.55vw, 1.4rem);
+    line-height: 1.28;
+    max-width: 44ch;
+  }
+
+  .pub__title a {
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.45s var(--ease-out);
+  }
+
+  .pub__title a:hover {
+    background-size: 100% 1px;
+  }
+
+  .pub__ext {
+    display: inline-block;
+    margin-left: 0.35em;
+    font-size: 0.7em;
+    color: var(--iodine-bright);
+  }
+
+  .pub__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .pub__meta {
+    margin-top: 0.6rem;
+    font-size: 0.92rem;
+    color: var(--drape-pale);
+    max-width: 52ch;
+  }
+
+  .pub__venue {
+    font-style: italic;
+  }
+
+  .pub__doi,
+  .pub__note {
+    margin-top: 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    color: color-mix(in srgb, var(--drape-pale) 65%, transparent);
+  }
+
+  .pubs__empty {
+    padding-top: 2rem;
+    color: var(--drape-pale);
+  }
+
+  @media (min-width: 55rem) {
+    .pubs__head {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+    .pub {
+      grid-template-columns: 11rem 1fr;
+    }
+    .pub__year {
+      flex-direction: column;
+      gap: 0.3rem;
+      padding-top: 0.35em;
+    }
+  }
+
+  /* ---------------------------------------------------- FULL BLEED */
+  .bleed {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(80svh, 42rem);
+    background: var(--ink);
+    color: var(--bone);
+    overflow: hidden;
+  }
+
+  .bleed__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .bleed__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .bleed__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(14, 31, 27, 0.95) 5%,
+      rgba(14, 31, 27, 0.4) 60%,
+      rgba(14, 31, 27, 0.55) 100%
+    );
+  }
+
+  .bleed__inner {
+    position: relative;
+    padding-block: clamp(3rem, 8vh, 6rem);
+  }
+
+  .bleed h2 {
+    margin-top: 0.4em;
+    max-width: 16ch;
+  }
+
+  .bleed .lede {
+    margin-top: 1.3rem;
+    max-width: 46ch;
+    color: var(--drape-pale);
+  }
+</style>
