@@ -48,8 +48,15 @@ import { reviews } from "../data/reviews";
       aria-label="Patient reviews from Google, scrollable"
     >
       {
-        reviews.map((r) => (
-          <article class="gcard">
+        /* The set is rendered twice so the loop can wrap seamlessly. The
+           second pass is hidden from assistive tech and made inert so it is
+           neither announced nor focusable. */
+        [...reviews, ...reviews].map((r, i) => (
+          <article
+            class="gcard"
+            aria-hidden={i >= reviews.length ? "true" : undefined}
+            inert={i >= reviews.length ? true : undefined}
+          >
             <header class="gcard__top">
               <span class="gcard__avatar" style={`--tint:${r.tint}`} aria-hidden="true">
                 {r.initial}
@@ -131,19 +138,6 @@ import { reviews } from "../data/reviews";
       </button>
     </div>
 
-    <ol class="rv__dots" data-rv-dots>
-      {
-        reviews.map((r, i) => (
-          <li>
-            <button
-              type="button"
-              data-rv-dot={i}
-              aria-label={`Go to review ${i + 1} of ${reviews.length}, ${r.name}`}
-            />
-          </li>
-        ))
-      }
-    </ol>
   </div>
 </section>
 
@@ -155,166 +149,155 @@ import { reviews } from "../data/reviews";
     const prev = document.querySelector<HTMLButtonElement>("[data-rv-prev]");
     const next = document.querySelector<HTMLButtonElement>("[data-rv-next]");
     const play = document.querySelector<HTMLButtonElement>("[data-rv-play]");
-    const dots = [...document.querySelectorAll<HTMLButtonElement>("[data-rv-dot]")];
-
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    // the set is rendered twice; one set is what we wrap by
+    const perSet = cards.length / 2;
+    const SPEED = 40; // px per second — slow enough to read while moving
 
     /* ---- clamp long reviews, with a per-card expander ---------------- */
     for (const card of cards) {
       const body = card.querySelector<HTMLElement>("[data-rv-body]");
       const more = card.querySelector<HTMLButtonElement>("[data-rv-more]");
       if (!body || !more) continue;
-      // only offer the toggle when the text is actually clipped
       if (body.scrollHeight > body.clientHeight + 4) {
         more.hidden = false;
         more.addEventListener("click", () => {
           const open = card.classList.toggle("is-open");
           more.textContent = open ? "Show less" : "Read more";
-          pause();
         });
       }
     }
 
-    /* ---- position helpers -------------------------------------------
-     * Several cards are visible at once, so the number of reachable
-     * positions is not the number of cards: the last card can never scroll
-     * to the left edge. Model it as pages, or the trailing dots are dead.
-     */
     const stepOf = () => {
-      const a = cards[0]?.getBoundingClientRect().width ?? track.clientWidth;
+      const w = cards[0]?.getBoundingClientRect().width ?? track.clientWidth;
       const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
-      return a + gap;
+      return w + gap;
     };
 
-    const maxScroll = () => Math.max(0, track.scrollWidth - track.clientWidth);
+    // exact width of one full set, measured from the DOM so it survives any
+    // change to card width, gap or count
+    const setWidth = () =>
+      cards[perSet] && cards[0]
+        ? cards[perSet].offsetLeft - cards[0].offsetLeft
+        : stepOf() * perSet;
 
-    const pageCount = () => {
-      // clientWidth includes the track's inline padding, which is large on
-      // wide screens — measure the content box or perView over-counts and
-      // the final stretch of the track becomes unreachable by dot.
-      const cs = getComputedStyle(track);
-      const inner =
-        track.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-      const perView = Math.max(1, Math.round(inner / stepOf()));
-      return Math.max(1, cards.length - perView + 1);
-    };
-
-    const indexOf = () =>
-      Math.min(pageCount() - 1, Math.round(track.scrollLeft / stepOf()));
-
-    const goTo = (i: number, smooth = true) => {
-      const last = pageCount() - 1;
-      const clamped = Math.max(0, Math.min(last, i));
-      track.scrollTo({
-        left: Math.min(clamped * stepOf(), maxScroll()),
-        behavior: smooth && !reduced.matches ? "smooth" : "auto",
-      });
-    };
-
-    /* ---- autoplay ----------------------------------------------------
-     * `wanted` is the user's intent; `running` is whether the interval is
-     * actually live. Reduced motion sets the *initial* intent to off, but it
-     * must never veto an explicit press of the play control — someone
-     * clicking play is asking for motion.
+    /* ---- continuous motion -------------------------------------------
+     * Driven by rAF over scrollLeft rather than a CSS transform, so the
+     * track stays a real scroll container: still keyboard scrollable, still
+     * drag/swipeable, and the scrollbar position stays truthful.
+     *
+     * Three separate reasons to hold still, tracked apart so that leaving
+     * the card does not resume something the reader deliberately paused:
+     *   wanted   — the play/pause control
+     *   hovering — pointer or keyboard focus is inside the track
+     *   inView   — the carousel is on screen at all
      */
-    let timer: number | undefined;
-    let running = false;
-    let inView = false;
     let wanted = !reduced.matches;
+    let hovering = false;
+    let inView = false;
+    let raf = 0;
+    let last = 0;
+    // Our own sub-pixel position. scrollLeft rounds to whole pixels, so
+    // writing a 0.67px increment each frame rounds up to 1px and the speed
+    // becomes a function of refresh rate rather than time — twice as fast on
+    // a 120Hz display. Keep the precise value here and let the DOM round.
+    let x = 0;
+    let written = -1;
+
+    const moving = () => wanted && !hovering && inView;
+
+    const frame = (t: number) => {
+      if (!moving()) {
+        raf = 0;
+        return;
+      }
+      const dt = last ? Math.min((t - last) / 1000, 0.05) : 0;
+      last = t;
+
+      // if anything else moved the track (a drag, a keypress, a nudge),
+      // adopt that position rather than fighting it
+      if (written < 0 || Math.abs(track.scrollLeft - written) > 2) x = track.scrollLeft;
+
+      x += SPEED * dt;
+      const w = setWidth();
+      // wrap before the duplicate set runs out, so the seam is never visible
+      if (w > 0 && x >= w) x -= w;
+
+      track.scrollLeft = x;
+      written = track.scrollLeft;
+      raf = requestAnimationFrame(frame);
+    };
 
     const paint = () => {
       play?.classList.toggle("is-paused", !wanted);
       play?.setAttribute("aria-pressed", String(!wanted));
       play?.setAttribute(
         "aria-label",
-        wanted ? "Pause automatic scrolling" : "Resume automatic scrolling"
+        wanted ? "Pause the reviews" : "Play the reviews"
       );
     };
 
     const tick = () => {
-      const n = indexOf() + 1;
-      goTo(n > pageCount() - 1 ? 0 : n);
-    };
-
-    // reconcile the timer with intent + visibility
-    const reconcile = () => {
-      const should = wanted && inView;
-      if (should && !running) {
-        timer = window.setInterval(tick, 6000);
-        running = true;
-      } else if (!should && running) {
-        window.clearInterval(timer);
-        timer = undefined;
-        running = false;
+      if (moving() && !raf) {
+        last = 0;
+        written = -1; // resync to wherever the track actually is
+        raf = requestAnimationFrame(frame);
+      } else if (!moving() && raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
       }
       paint();
     };
 
-    // any deliberate handling of the carousel hands control to the reader
-    const pause = () => {
-      if (!wanted) return;
-      wanted = false;
-      reconcile();
-    };
+    /* ---- stop on hover, and on keyboard focus ------------------------ */
+    track.addEventListener("pointerenter", () => {
+      hovering = true;
+      tick();
+    });
+    track.addEventListener("pointerleave", () => {
+      hovering = false;
+      tick();
+    });
+    track.addEventListener("focusin", () => {
+      hovering = true;
+      tick();
+    });
+    track.addEventListener("focusout", () => {
+      hovering = false;
+      tick();
+    });
 
+    /* ---- explicit controls ------------------------------------------- */
     play?.addEventListener("click", () => {
+      // an explicit press always wins, including under reduced motion
       wanted = !wanted;
-      reconcile();
+      tick();
     });
 
-    // NB: no wheel listener. Scrolling the page with the pointer over the
-    // track is not an interaction with the carousel, and killing autoplay
-    // on it meant the thing never appeared to move at all.
-    track.addEventListener("pointerdown", pause);
-    track.addEventListener("focusin", pause);
-    prev?.addEventListener("click", () => {
-      pause();
-      goTo(indexOf() - 1);
-    });
-    next?.addEventListener("click", () => {
-      pause();
-      goTo(indexOf() + 1);
-    });
-    dots.forEach((d, i) =>
-      d.addEventListener("click", () => {
-        pause();
-        goTo(i);
-      })
-    );
-
-    /* ---- state sync -------------------------------------------------- */
-    const sync = () => {
-      const i = indexOf();
-      const pages = pageCount();
-      if (prev) prev.disabled = track.scrollLeft <= 4;
-      if (next) next.disabled = track.scrollLeft >= maxScroll() - 4;
-      dots.forEach((d, n) => {
-        // hide dots for positions that cannot be scrolled to
-        const li = d.parentElement;
-        if (li) li.hidden = n >= pages;
-        d.classList.toggle("is-on", n === i);
-        if (n === i) d.setAttribute("aria-current", "true");
-        else d.removeAttribute("aria-current");
-      });
+    const nudge = (dir: number) => {
+      wanted = false; // taking manual control stops the drift
+      tick();
+      track.scrollBy({ left: dir * stepOf(), behavior: reduced.matches ? "auto" : "smooth" });
     };
-    sync();
-    track.addEventListener("scroll", sync, { passive: true });
-    window.addEventListener("resize", sync);
+    prev?.addEventListener("click", () => nudge(-1));
+    next?.addEventListener("click", () => nudge(1));
 
     /* ---- only run while on screen ------------------------------------ */
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) inView = e.isIntersecting;
-        reconcile();
+        tick();
       },
-      { threshold: 0.3 }
+      { threshold: 0.2 }
     );
     io.observe(track);
 
-    // turning the preference on mid-session should stop it; turning it off
-    // should not silently start it
     reduced.addEventListener?.("change", () => {
-      if (reduced.matches) pause();
+      if (reduced.matches) {
+        wanted = false;
+        tick();
+      }
     });
 
     paint();
@@ -380,6 +363,12 @@ import { reviews } from "../data/reviews";
   /* ---------------------------------------------- carousel plumbing */
   .rv__viewport {
     position: relative;
+    /* Cards now travel right to the viewport edge, so soften both ends.
+       This also keeps them from colliding hard with the page spine. */
+    -webkit-mask-image: linear-gradient(
+      to right, transparent 0, #000 7%, #000 93%, transparent 100%);
+    mask-image: linear-gradient(
+      to right, transparent 0, #000 7%, #000 93%, transparent 100%);
   }
 
   .rv__track {
@@ -393,7 +382,7 @@ import { reviews } from "../data/reviews";
     scroll-padding-inline: var(--track-pad);
     padding-bottom: 1.5rem;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
+    /* no scroll snapping: it fights a continuously moving track */
     scrollbar-width: none;
   }
 
@@ -405,7 +394,6 @@ import { reviews } from "../data/reviews";
   .gcard {
     position: relative;
     flex: 0 0 min(24rem, 84vw);
-    scroll-snap-align: start;
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
@@ -627,34 +615,6 @@ import { reviews } from "../data/reviews";
 
   .rv__play.is-paused .rv__play-icon::after {
     opacity: 0;
-  }
-
-  .rv__dots {
-    display: flex;
-    gap: 0.45rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .rv__dots button {
-    width: 7px;
-    height: 7px;
-    padding: 0;
-    background: color-mix(in srgb, var(--bone) 30%, transparent);
-    border: 0;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.35s var(--ease), transform 0.35s var(--ease-out);
-  }
-
-  .rv__dots button:hover {
-    background: color-mix(in srgb, var(--bone) 60%, transparent);
-  }
-
-  .rv__dots button.is-on {
-    background: var(--iodine-bright);
-    transform: scale(1.5);
   }
 
   @media (prefers-reduced-motion: reduce) {
