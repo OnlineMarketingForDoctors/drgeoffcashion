@@ -170,7 +170,7 @@ import { reviews } from "../data/reviews";
         more.addEventListener("click", () => {
           const open = card.classList.toggle("is-open");
           more.textContent = open ? "Show less" : "Read more";
-          stop();
+          pause();
         });
       }
     }
@@ -207,52 +207,77 @@ import { reviews } from "../data/reviews";
       const clamped = Math.max(0, Math.min(last, i));
       track.scrollTo({
         left: Math.min(clamped * stepOf(), maxScroll()),
-        behavior: smooth ? "smooth" : "auto",
+        behavior: smooth && !reduced.matches ? "smooth" : "auto",
       });
     };
 
-    /* ---- autoplay ---------------------------------------------------- */
+    /* ---- autoplay ----------------------------------------------------
+     * `wanted` is the user's intent; `running` is whether the interval is
+     * actually live. Reduced motion sets the *initial* intent to off, but it
+     * must never veto an explicit press of the play control — someone
+     * clicking play is asking for motion.
+     */
     let timer: number | undefined;
-    let playing = false;
+    let running = false;
+    let inView = false;
+    let wanted = !reduced.matches;
 
-    const start = () => {
-      if (reduced.matches || playing) return;
-      playing = true;
-      play?.setAttribute("aria-pressed", "false");
-      play?.setAttribute("aria-label", "Pause automatic scrolling");
-      play?.classList.remove("is-paused");
-      timer = window.setInterval(() => {
-        const next = indexOf() + 1;
-        goTo(next > pageCount() - 1 ? 0 : next);
-      }, 6000);
+    const paint = () => {
+      play?.classList.toggle("is-paused", !wanted);
+      play?.setAttribute("aria-pressed", String(!wanted));
+      play?.setAttribute(
+        "aria-label",
+        wanted ? "Pause automatic scrolling" : "Resume automatic scrolling"
+      );
     };
 
-    const stop = () => {
-      playing = false;
-      play?.setAttribute("aria-pressed", "true");
-      play?.setAttribute("aria-label", "Resume automatic scrolling");
-      play?.classList.add("is-paused");
-      if (timer) window.clearInterval(timer);
-      timer = undefined;
+    const tick = () => {
+      const n = indexOf() + 1;
+      goTo(n > pageCount() - 1 ? 0 : n);
     };
 
-    play?.addEventListener("click", () => (playing ? stop() : start()));
+    // reconcile the timer with intent + visibility
+    const reconcile = () => {
+      const should = wanted && inView;
+      if (should && !running) {
+        timer = window.setInterval(tick, 6000);
+        running = true;
+      } else if (!should && running) {
+        window.clearInterval(timer);
+        timer = undefined;
+        running = false;
+      }
+      paint();
+    };
 
-    // any deliberate interaction takes over from the autoplay
-    track.addEventListener("pointerdown", stop);
-    track.addEventListener("wheel", stop, { passive: true });
-    track.addEventListener("focusin", stop);
+    // any deliberate handling of the carousel hands control to the reader
+    const pause = () => {
+      if (!wanted) return;
+      wanted = false;
+      reconcile();
+    };
+
+    play?.addEventListener("click", () => {
+      wanted = !wanted;
+      reconcile();
+    });
+
+    // NB: no wheel listener. Scrolling the page with the pointer over the
+    // track is not an interaction with the carousel, and killing autoplay
+    // on it meant the thing never appeared to move at all.
+    track.addEventListener("pointerdown", pause);
+    track.addEventListener("focusin", pause);
     prev?.addEventListener("click", () => {
-      stop();
+      pause();
       goTo(indexOf() - 1);
     });
     next?.addEventListener("click", () => {
-      stop();
+      pause();
       goTo(indexOf() + 1);
     });
     dots.forEach((d, i) =>
       d.addEventListener("click", () => {
-        stop();
+        pause();
         goTo(i);
       })
     );
@@ -279,16 +304,20 @@ import { reviews } from "../data/reviews";
     /* ---- only run while on screen ------------------------------------ */
     const io = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) start();
-          else if (timer) window.clearInterval(timer), (timer = undefined), (playing = false);
-        }
+        for (const e of entries) inView = e.isIntersecting;
+        reconcile();
       },
       { threshold: 0.3 }
     );
     io.observe(track);
 
-    reduced.addEventListener?.("change", () => reduced.matches && stop());
+    // turning the preference on mid-session should stop it; turning it off
+    // should not silently start it
+    reduced.addEventListener?.("change", () => {
+      if (reduced.matches) pause();
+    });
+
+    paint();
   }
 </script>
 
