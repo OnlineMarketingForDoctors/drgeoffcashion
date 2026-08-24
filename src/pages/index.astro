@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { Image, getImage } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
@@ -9,15 +9,35 @@ import Sequence from "../components/Sequence.astro";
 import ReferBand from "../components/ReferBand.astro";
 
 import heroImg from "../assets/generated/cashion-hero.webp";
+import heroTallImg from "../assets/generated/cashion-hero-mobile.webp";
 import portraitImg from "../assets/generated/cashion-portrait.webp";
 import drapeImg from "../assets/generated/drape-texture.webp";
 import cashionCorridorImg from "../assets/generated/cashion-corridor.webp";
 import conferenceImg from "../assets/generated/conference.webp";
 import roomImg from "../assets/generated/procedure-room.webp";
 
+/*
+ * Art direction rather than a crop: the wide frame cannot put him centred at
+ * a phone's aspect ratio, so portrait screens get their own portrait shot.
+ * Astro's <Image> has no media-query switching, so the sources are built here
+ * and handed to a plain <picture>.
+ */
+const heroWide = await getImage({
+  src: heroImg,
+  widths: [900, 1400, 2000, 2600],
+  format: "webp",
+  quality: 82,
+});
+const heroTall = await getImage({
+  src: heroTallImg,
+  widths: [420, 640, 900, 1240],
+  format: "webp",
+  quality: 82,
+});
+
 /* The spec strip reads like the engraving on an instrument, not a stat grid. */
 const specs = [
-  { figure: "15,000+", label: "Procedures performed" },
+  { figure: "25,000+", label: "Procedures performed" },
   { figure: "~3,500", label: "Every year" },
   { figure: "5–8 min", label: "Typical procedure" },
   { figure: "Under $600", label: "Out of pocket" },
@@ -27,7 +47,7 @@ const specs = [
 const reasons = [
   {
     lead: "He performs more vasectomies each year than any other doctor in Australia.",
-    body: "Volume is the closest thing this procedure has to a proxy for competence. Roughly 3,500 a year, over 15,000 to date.",
+    body: "Volume is the closest thing this procedure has to a proxy for competence. Roughly 3,500 a year, over 25,000 across his career.",
   },
   {
     lead: "No scalpel, and no stitches.",
@@ -63,15 +83,25 @@ const reasons = [
     <!-- ================================================== HERO -->
     <section class="hero" id="hero">
       <div class="hero__media">
-        <Image
-          src={heroImg}
-          alt="Dr Geoff Cashion in navy scrubs in a consulting room"
-          widths={[900, 1400, 2000, 2600]}
-          sizes="100vw"
-          loading="eager"
-          fetchpriority="high"
-          quality={82}
-        />
+        <picture>
+          <source
+            media="(max-width: 767.98px)"
+            type="image/webp"
+            srcset={heroTall.srcSet.attribute}
+            sizes="100vw"
+          />
+          <img
+            src={heroWide.src}
+            srcset={heroWide.srcSet.attribute}
+            sizes="100vw"
+            width={heroWide.options.width}
+            height={heroWide.options.height}
+            alt="Dr Geoff Cashion in navy scrubs in a consulting room"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </picture>
       </div>
 
       <div class="hero__scrim"></div>
@@ -128,7 +158,7 @@ const reasons = [
           <p class="lede" data-reveal style="--delay:120ms">
             Dr Cashion trained in the United States under one of the world's
             leading vasectomists, learning the no-scalpel technique in the
-            place it was refined. He has since performed over 15,000
+            place it was refined. He has since performed over 25,000
             procedures — and he is now one of Australia's busiest vasectomists,
             performing over 3,500 vasectomies per year.
           </p>
@@ -304,6 +334,12 @@ const reasons = [
     inset: 0;
   }
 
+  .hero__media picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
   .hero__media :global(img) {
     width: 100%;
     height: 100%;
@@ -350,12 +386,16 @@ const reasons = [
     .hero__media {
       position: relative;
       inset: auto;
-      height: min(54svh, 26rem);
+      /* close to the portrait source's own 4:5, so the composition survives
+         with only a little crop */
+      height: min(56svh, 28rem);
       flex: 0 0 auto;
     }
 
+    /* He is centred horizontally in the source; bias the vertical crop
+       upward so the headroom survives rather than being split evenly. */
     .hero__media :global(img) {
-      object-position: 66% 22%;
+      object-position: center 25%;
     }
 
     /* Sits over the image only: shades the top so the fixed nav stays
@@ -363,7 +403,7 @@ const reasons = [
        below is invisible. */
     .hero__scrim {
       inset: 0 0 auto 0;
-      height: min(54svh, 26rem);
+      height: min(56svh, 28rem);
       background: linear-gradient(
         to bottom,
         rgba(14, 31, 27, 0.72) 0%,
