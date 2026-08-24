@@ -89,10 +89,17 @@ const { eyebrow, title, lede, image, imageAlt, focus = "center", crumb } = Astro
   .phero__inner {
     position: relative;
     padding-top: clamp(7rem, 16vh, 10rem);
-    padding-bottom: clamp(2.5rem, 6vh, 4.5rem);
+    padding-bottom: clamp(3.5rem, 7vh, 5rem);
   }
 
+  /* Parked in the bottom-right corner of the banner rather than sitting
+     above the title, where it was competing with the eyebrow for the same
+     job. .phero__inner is the flex item pinned to the bottom of the banner,
+     so its box bottom is the banner's bottom. */
   .phero__crumb {
+    position: absolute;
+    right: var(--gutter);
+    bottom: clamp(1.1rem, 2.5vh, 1.75rem);
     display: flex;
     gap: 0.6em;
     font-family: var(--mono);
@@ -100,7 +107,6 @@ const { eyebrow, title, lede, image, imageAlt, focus = "center", crumb } = Astro
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: color-mix(in srgb, var(--drape-pale) 85%, transparent);
-    margin-bottom: 1.6rem;
     animation: riseIn 0.8s var(--ease-out) 0.2s both;
   }
 
@@ -172,7 +178,7 @@ const { eyebrow, title, lede, image, imageAlt, focus = "center", crumb } = Astro
 
     .phero__inner {
       padding-top: clamp(1.5rem, 3.5vh, 2.25rem);
-      padding-bottom: clamp(2rem, 4vh, 3rem);
+      padding-bottom: clamp(3rem, 6vh, 4rem);
     }
   }
 </style>
