@@ -16,4 +16,5 @@ export const SITE = {
   phoneHref: 'tel:1800764763',
   email: 'info@vasectomyaustralia.com.au',
   facebook: 'https://www.facebook.com/vasectomyaustralia',
+  parentSite: 'https://vasectomyaustralia.com.au/',
 } as const;

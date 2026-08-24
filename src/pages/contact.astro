@@ -82,8 +82,12 @@ import receptionImg from "../assets/generated/reception.webp";
             of the clinical question is enough to get a useful answer.
           </p>
           <p class="cform__aside" data-reveal style="--delay:240ms">
-            Not a GP? Patients book directly through Vasectomy Australia rather
-            than through these rooms.
+            Not a GP? Patients book directly through <a
+              class="cform__aside-link"
+              href={SITE.parentSite}
+              target="_blank"
+              rel="noopener">Vasectomy Australia</a> rather than through these
+            rooms.
           </p>
         </div>
 
@@ -288,6 +292,18 @@ import receptionImg from "../assets/generated/reception.webp";
   .cform__text .lede {
     margin-top: 1.3rem;
     max-width: 40ch;
+  }
+
+  .cform__aside-link {
+    color: var(--bone);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--iodine-bright) 50%, transparent);
+    padding-bottom: 0.1em;
+    transition: border-color 0.3s var(--ease);
+  }
+
+  .cform__aside-link:hover {
+    border-bottom-color: var(--iodine-bright);
   }
 
   .cform__aside {
