@@ -17,7 +17,18 @@ const isCurrent = (href: string) => path === href;
   <div class="nav__inner">
     <a class="nav__mark" href="/">
       <span class="nav__mark-name">Geoff Cashion</span>
-      <span class="nav__mark-role">No-scalpel vasectomy</span>
+      {/* Split into glyphs so flex can track the tagline out to exactly the
+          width of the name above it, whatever the font metrics turn out to
+          be. The label carries the real text for assistive tech. */}
+      <span class="nav__mark-role" aria-label="No-scalpel vasectomy">
+        {
+          [..."NO-SCALPEL VASECTOMY"].map((ch) => (
+            <span aria-hidden="true" class={ch === " " ? "is-space" : undefined}>
+              {ch === " " ? " " : ch}
+            </span>
+          ))
+        }
+      </span>
     </a>
 
     <nav class="nav__links" aria-label="Primary">
@@ -153,13 +164,23 @@ const isCurrent = (href: string) => path === href;
     line-height: 1;
   }
 
+  /* justify-content spreads the glyphs across the grid column, which the
+     name above sizes — so the two lines always end flush */
   .nav__mark-role {
+    display: flex;
+    justify-content: space-between;
     font-family: var(--mono);
     font-size: 0.6rem;
-    letter-spacing: 0.2em;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--drape-pale);
     line-height: 1;
+  }
+
+  .nav__mark-role .is-space {
+    /* the word gap has to stay wider than the letter gaps to still read as
+       two words */
+    min-width: 0.5em;
   }
 
   .nav__links {
