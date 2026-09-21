@@ -6,6 +6,7 @@ import Footer from "../components/Footer.astro";
 import PageHero from "../components/PageHero.astro";
 import ReferBand from "../components/ReferBand.astro";
 import { qualifications } from "../data/publications";
+import { SITE } from "../site.config";
 
 import deskImg from "../assets/generated/cashion-desk.webp";
 import rockhamptonImg from "../assets/generated/rockhampton.webp";
@@ -175,6 +176,10 @@ const scale = [
           </figure>
         </div>
 
+        <p class="quals__reg">
+          Registered medical practitioner · AHPRA reg. {SITE.ahpra}
+        </p>
+
         <ol class="tl">
           {
             qualifications.map((q, i) => (
@@ -240,7 +245,10 @@ const scale = [
             I look forward to partnering with you and your patients, helping
             them to achieve their family planning goals.
           </p>
-          <cite>Dr Geoff Cashion — Specialist GP, founder of Vasectomy Australia</cite>
+          <cite>
+            Dr Geoffrey Cashion — Specialist GP, founder of Vasectomy Australia<br />
+            AHPRA registration {SITE.ahpra}
+          </cite>
         </blockquote>
       </div>
     </section>
@@ -450,6 +458,15 @@ const scale = [
 
   .quals__figure :global(img) {
     width: 100%;
+  }
+
+  .quals__reg {
+    padding-bottom: 1.4rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--drape);
   }
 
   .tl {

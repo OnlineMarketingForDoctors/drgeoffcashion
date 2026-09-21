@@ -7,6 +7,7 @@ import Orchidometer from "../components/Orchidometer.astro";
 import Reviews from "../components/Reviews.astro";
 import Sequence from "../components/Sequence.astro";
 import ReferBand from "../components/ReferBand.astro";
+import { SITE } from "../site.config";
 
 import heroImg from "../assets/generated/cashion-hero.webp";
 import heroTallImg from "../assets/generated/cashion-hero-mobile.webp";
@@ -183,7 +184,7 @@ const reasons = [
             sizes="(min-width: 60rem) 40vw, 90vw"
             quality={82}
           />
-          <figcaption class="tag">Dr Geoff Cashion · Specialist GP</figcaption>
+          <figcaption class="tag">Dr Geoff Cashion · Specialist GP · AHPRA {SITE.ahpra}</figcaption>
         </figure>
 
         <div class="about__text">
@@ -211,7 +212,7 @@ const reasons = [
               I look forward to partnering with you and your patients, helping
               them to achieve their family planning goals.
             </p>
-            <cite>Dr Geoff Cashion</cite>
+            <cite>Dr Geoffrey Cashion · AHPRA reg. {SITE.ahpra}</cite>
           </blockquote>
         </div>
       </div>

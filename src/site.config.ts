@@ -17,4 +17,6 @@ export const SITE = {
   email: 'info@vasectomyaustralia.com.au',
   facebook: 'https://www.facebook.com/vasectomyaustralia',
   parentSite: 'https://vasectomyaustralia.com.au/',
+  // AHPRA registration — shown wherever the practitioner is identified
+  ahpra: 'MED0001196484',
 } as const;

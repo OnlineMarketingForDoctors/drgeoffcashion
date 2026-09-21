@@ -7,6 +7,7 @@ import PageHero from "../components/PageHero.astro";
 import ReferBand from "../components/ReferBand.astro";
 import Occlusion from "../components/Occlusion.astro";
 import LocationFinder from "../components/LocationFinder.astro";
+import { SITE } from "../site.config";
 
 import heroImg from "../assets/generated/vasectomy-hero.webp";
 import instrumentSetImg from "../assets/generated/instrument-set.webp";
@@ -131,6 +132,13 @@ const unchanged = [
       focus="62% center"
       crumb="Vasectomy"
     />
+
+    <div class="vas__reg">
+      <p class="wrap">
+        Procedure information provided by Dr Geoffrey Cashion, registered
+        medical practitioner · AHPRA reg. {SITE.ahpra}
+      </p>
+    </div>
 
     <!-- ============================================ FACT STRIP -->
     <section class="factstrip" aria-label="Key facts">
@@ -538,6 +546,19 @@ const unchanged = [
 </script>
 
 <style>
+  .vas__reg {
+    background: var(--ink);
+    padding-block: 1rem;
+  }
+
+  .vas__reg p {
+    color: color-mix(in srgb, var(--drape-pale) 82%, transparent);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    line-height: 1.6;
+    letter-spacing: 0.06em;
+  }
+
   /* ---------------------------------------------------- FACT STRIP */
   .factstrip {
     background: var(--ink);

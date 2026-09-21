@@ -6,6 +6,7 @@ import Footer from "../components/Footer.astro";
 import PageHero from "../components/PageHero.astro";
 import ReferBand from "../components/ReferBand.astro";
 import { publications } from "../data/publications";
+import { SITE } from "../site.config";
 
 import journalsImg from "../assets/generated/journals.webp";
 import conferenceImg from "../assets/generated/conference.webp";
@@ -63,6 +64,9 @@ const sorted = [...publications].sort((a, b) => b.year - a.year);
           <div data-reveal>
             <p class="tag tag--pale">Publications</p>
             <h2>Selected work.</h2>
+            <p class="pubs__author">
+              Dr Geoffrey Cashion · AHPRA reg. {SITE.ahpra}
+            </p>
           </div>
           <div class="pubs__filters" data-reveal style="--delay:120ms" role="group" aria-label="Filter publications by topic">
             {
@@ -203,6 +207,14 @@ const sorted = [...publications].sort((a, b) => b.year - a.year);
 
   .pubs__head h2 {
     margin-top: 0.4em;
+  }
+
+  .pubs__author {
+    margin-top: 1rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--drape-pale) 80%, transparent);
   }
 
   .pubs__filters {

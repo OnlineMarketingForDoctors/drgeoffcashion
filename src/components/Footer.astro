@@ -9,6 +9,7 @@ const year = new Date().getFullYear();
     <div class="foot__mark">
       <p class="foot__name">Geoff Cashion</p>
       <p class="tag tag--pale">Specialist GP · No-scalpel vasectomy</p>
+      <p class="foot__ahpra">AHPRA reg. {SITE.ahpra}</p>
     </div>
 
     <nav class="foot__nav" aria-label="Footer">
@@ -63,6 +64,14 @@ const year = new Date().getFullYear();
     letter-spacing: -0.02em;
     line-height: 1;
     margin-bottom: 0.5rem;
+  }
+
+  .foot__ahpra {
+    margin-top: 0.7rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--bone) 55%, transparent);
   }
 
   .foot__nav {
