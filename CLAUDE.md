@@ -13,8 +13,11 @@ https://drgeoffcashion.sanity.studio; see its README. `src/data/*.ts` is only
 the seed source for `npm run sanity:seed` (except `qualifications`, which is
 still rendered from there).
 
-The site is static, so a publish in the Studio shows up only after Vercel
-rebuilds.
+The site is static, so content changes need a Vercel rebuild. A Sanity
+webhook ("Rebuild site on Vercel", manage.sanity.io → API → Webhooks) calls a
+Vercel deploy hook on `main` whenever a published document of those types is
+created, updated or deleted, so a publish is live about a minute later. The
+hook URL is a secret and is not stored in this repo.
 
 ## Search engine indexing: OFF (temporary)
 

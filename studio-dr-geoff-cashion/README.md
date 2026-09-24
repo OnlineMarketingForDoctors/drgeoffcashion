@@ -7,6 +7,10 @@ only the site, and the Studio is not embedded in it (`astro.config.mjs` has no
 
 Deployed at https://drgeoffcashion.sanity.studio.
 
+Publishing rebuilds the live site automatically (a Sanity webhook calls a
+Vercel deploy hook), so changes appear about a minute after publishing.
+Drafts do not trigger a rebuild.
+
 Schema types live in `schemaTypes/`. Their fields match the GROQ queries in
 `../src/sanity/queries.ts`.
 
