@@ -11,6 +11,8 @@ import { defineQuery } from "groq";
 import type { Doctor, StateGroup } from "../data/locations";
 import type { Publication } from "../data/publications";
 import type { Review } from "../data/reviews";
+import type { PageContent } from "../data/pages";
+import type { SiteSettings } from "../data/siteSettings";
 
 export const CLINICS_QUERY = defineQuery(/* groq */ `
   *[_type == "clinic"] | order(coalesce(order, 9999) asc, area asc) {
@@ -46,6 +48,48 @@ export const REVIEWS_QUERY = defineQuery(/* groq */ `
     reviewCount,
     photoCount,
     localGuide
+  }
+`);
+
+const LINK = /* groq */ `{ label, href }`;
+
+export const SITE_SETTINGS_QUERY = defineQuery(/* groq */ `
+  *[_id == "siteSettings"][0] {
+    phoneLabel,
+    phoneDigits,
+    email,
+    facebook,
+    parentSite,
+    ahpra,
+    brandName,
+    brandTagline,
+    navLinks[] ${LINK},
+    headerCta ${LINK},
+    footerTagline,
+    footerLinks[] ${LINK},
+    phoneCaption,
+    copyrightHolder,
+    credit ${LINK},
+    referEyebrow,
+    referHeading,
+    referBody,
+    referButton ${LINK},
+    offerEyebrow,
+    offerHeading,
+    offerBody,
+    offerLinkLabel
+  }
+`);
+
+export const PAGE_QUERY = defineQuery(/* groq */ `
+  *[_id == $id][0] {
+    eyebrow,
+    heading,
+    headingEmphasis,
+    lede,
+    breadcrumb,
+    metaTitle,
+    metaDescription
   }
 `);
 
@@ -141,4 +185,35 @@ export async function getReviews(): Promise<Review[]> {
     rating: Math.min(5, Math.max(1, Math.round(d.rating ?? 5))),
     body: d.body ?? [],
   }));
+}
+
+export type Site = SiteSettings & { phoneHref: string };
+
+// Every page renders the header, footer and refer band, so share one fetch
+// across the whole build instead of making one per component per page.
+let siteSettings: Promise<Site> | undefined;
+
+/** The Site Settings singleton, plus a tel: link built from the digits. */
+export function getSiteSettings(): Promise<Site> {
+  siteSettings ??= sanityClient
+    .fetch<SiteSettings | null>(SITE_SETTINGS_QUERY)
+    .then((doc) => {
+      if (!doc) throw new Error('Sanity: the "siteSettings" document is missing');
+      return {
+        ...doc,
+        navLinks: doc.navLinks ?? [],
+        footerLinks: doc.footerLinks ?? [],
+        phoneHref: `tel:${doc.phoneDigits.replace(/[^\d+]/g, "")}`,
+      };
+    });
+  return siteSettings;
+}
+
+export type Page = Omit<PageContent, "slug" | "title" | "route">;
+
+/** Hero and meta text for one route, from the document `page-<slug>`. */
+export async function getPage(slug: string): Promise<Page> {
+  const doc = await sanityClient.fetch<Page | null>(PAGE_QUERY, { id: `page-${slug}` });
+  if (!doc) throw new Error(`Sanity: the "page-${slug}" document is missing`);
+  return doc;
 }

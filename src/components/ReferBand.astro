@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { SITE } from "../site.config";
+import { getSiteSettings } from "../sanity/queries";
 import orchidImg from "../assets/generated/orchidometer.png";
 
 interface Props {
@@ -8,25 +8,24 @@ interface Props {
   id?: string;
 }
 const { id = "refer" } = Astro.props;
+const SITE = await getSiteSettings();
 ---
 
 <section class="band band--dark refer" id={id}>
   <div class="wrap refer__inner">
     <div class="refer__main">
-      <p class="tag tag--pale" data-reveal>Refer a patient</p>
-      <h2 data-reveal style="--delay:80ms">Send him our way.</h2>
+      <p class="tag tag--pale" data-reveal>{SITE.referEyebrow}</p>
+      <h2 data-reveal style="--delay:80ms">{SITE.referHeading}</h2>
       <p class="lede" data-reveal style="--delay:160ms">
-        Are you a GP who would like to refer a patient for a vasectomy?
-        Dr Cashion has performed over 25,000 vasectomies and aims to provide
-        the highest level of clinical care to your patient.
+        {SITE.referBody}
       </p>
       <p class="refer__reg" data-reveal style="--delay:180ms">
         Dr Geoffrey Cashion · AHPRA reg. {SITE.ahpra}
       </p>
 
       <div class="refer__actions" data-reveal style="--delay:240ms">
-        <a class="btn" href="/refer">
-          Send a referral
+        <a class="btn" href={SITE.referButton.href}>
+          {SITE.referButton.label}
           <span class="btn__arrow" aria-hidden="true">→</span>
         </a>
         <a class="btn btn--ghost btn--on-dark" href={SITE.phoneHref}>
@@ -47,16 +46,16 @@ const { id = "refer" } = Astro.props;
         />
       </figure>
       <div class="offer__text">
-        <p class="tag tag--pale">A thank you for referrers</p>
-        <h3>We'll post you an orchidometer.</h3>
-        <p>
-          As a thank you to our loyal referrers, tell us where to send one and
-          we will put an orchidometer in the post, along with some other
-          Vasectomy Australia swag.
-        </p>
-        <a class="offer__link" href={`mailto:${SITE.email}?subject=Orchidometer`}>
-          Claim yours <span aria-hidden="true">→</span>
-        </a>
+        {SITE.offerEyebrow && <p class="tag tag--pale">{SITE.offerEyebrow}</p>}
+        {SITE.offerHeading && <h3>{SITE.offerHeading}</h3>}
+        {SITE.offerBody && <p>{SITE.offerBody}</p>}
+        {
+          SITE.offerLinkLabel && (
+            <a class="offer__link" href={`mailto:${SITE.email}?subject=Orchidometer`}>
+              {SITE.offerLinkLabel} <span aria-hidden="true">→</span>
+            </a>
+          )
+        }
       </div>
     </aside>
   </div>

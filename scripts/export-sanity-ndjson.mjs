@@ -2,10 +2,15 @@
  * Turns the hardcoded site data into an NDJSON file that
  * `sanity dataset import` can load into the Content Lake.
  *
- * Deliberately does not set `_id`: Sanity assigns document IDs, and the
- * schema guidance is to keep explicit IDs for singletons only. That means
- * re-running an import creates duplicates rather than upserting, so import
- * into an empty dataset (or clear the affected types first).
+ * Clinics, publications and reviews deliberately have no `_id`: Sanity
+ * assigns document IDs, and the schema guidance is to keep explicit IDs for
+ * singletons only. Re-importing those creates duplicates rather than
+ * upserting, so import into an empty dataset (or clear those types first).
+ *
+ * Site Settings and the pages do have fixed IDs (`siteSettings`,
+ * `page-<slug>`), because the site loads them by ID. An import stops on an
+ * ID that already exists unless given --replace (overwrite) or --missing
+ * (skip existing).
  *
  *   npm run sanity:seed
  *   cd studio-dr-geoff-cashion
@@ -15,8 +20,29 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { states } from '../src/data/locations.ts';
 import { publications } from '../src/data/publications.ts';
 import { reviews } from '../src/data/reviews.ts';
+import { siteSettings } from '../src/data/siteSettings.ts';
+import { pages } from '../src/data/pages.ts';
 
 const docs = [];
+
+// Sanity needs a _key on every object in an array
+const keyed = (links) => links.map((l, i) => ({ _key: `link${i}`, _type: 'link', ...l }));
+const link = (l) => ({ _type: 'link', ...l });
+
+docs.push({
+  _id: 'siteSettings',
+  _type: 'siteSettings',
+  ...siteSettings,
+  navLinks: keyed(siteSettings.navLinks),
+  headerCta: link(siteSettings.headerCta),
+  footerLinks: keyed(siteSettings.footerLinks),
+  credit: link(siteSettings.credit),
+  referButton: link(siteSettings.referButton),
+});
+
+for (const { slug, ...p } of pages) {
+  docs.push({ _id: `page-${slug}`, _type: 'page', ...p });
+}
 
 // `order` keeps the curated sequence (metro before regional); Sanity would
 // otherwise have nothing better than alphabetical to sort by

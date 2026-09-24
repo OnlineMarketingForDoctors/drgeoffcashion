@@ -6,7 +6,7 @@ import Footer from "../components/Footer.astro";
 import PageHero from "../components/PageHero.astro";
 import ReferBand from "../components/ReferBand.astro";
 import { qualifications } from "../data/publications";
-import { SITE } from "../site.config";
+import { getPage, getSiteSettings } from "../sanity/queries";
 
 import deskImg from "../assets/generated/cashion-desk.webp";
 import rockhamptonImg from "../assets/generated/rockhampton.webp";
@@ -21,23 +21,24 @@ const scale = [
   { figure: "6", label: "States with clinics" },
   { figure: "2017", label: "Full-time vasectomy practice since" },
 ];
+
+const SITE = await getSiteSettings();
+const page = await getPage("about");
 ---
 
-<Base
-  title="About Dr Geoff Cashion — Australia's leading vasectomist"
-  description="Dr Geoff Cashion is the founder of Vasectomy Australia and performs more no-scalpel vasectomies than any other doctor in the country. Background, training and qualifications."
->
+<Base title={page.metaTitle} description={page.metaDescription}>
   <Nav />
 
   <main id="main" tabindex="-1">
     <PageHero
-      eyebrow="About"
-      title="The doctor at the end of your referral."
-      lede="Founder of Vasectomy Australia, and the busiest vasectomist in the country."
+      eyebrow={page.eyebrow}
+      title={page.heading}
+      titleEmphasis={page.headingEmphasis}
+      lede={page.lede}
       image={deskImg}
       imageAlt="Dr Geoff Cashion at his desk in a consulting room"
       focus="70% center"
-      crumb="About"
+      crumb={page.breadcrumb ?? page.eyebrow}
     />
 
     <!-- ============================================ LEAD -->

@@ -4,29 +4,29 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import PageHero from "../components/PageHero.astro";
 import ReferBand from "../components/ReferBand.astro";
-import { SITE } from "../site.config";
-import { getStates } from "../sanity/queries";
+import { getPage, getSiteSettings, getStates } from "../sanity/queries";
 
 import receptionImg from "../assets/generated/reception.webp";
 
 const totalClinics = (await getStates()).reduce((n, s) => n + s.clinics.length, 0);
+
+const SITE = await getSiteSettings();
+const page = await getPage("contact");
 ---
 
-<Base
-  title="Contact Dr Geoff Cashion — questions about a patient"
-  description="Contact Dr Geoff Cashion's rooms about a patient referral for no-scalpel vasectomy. Phone 1800 SNIPME, email, or send a question directly."
->
+<Base title={page.metaTitle} description={page.metaDescription}>
   <Nav />
 
   <main id="main" tabindex="-1">
     <PageHero
-      eyebrow="Contact"
-      title="Ask about a patient."
-      lede="Questions about suitability, timing or a specific case go straight to the rooms. Dr Cashion answers clinical questions himself."
+      eyebrow={page.eyebrow}
+      title={page.heading}
+      titleEmphasis={page.headingEmphasis}
+      lede={page.lede}
       image={receptionImg}
       imageAlt="An empty medical practice reception area in morning light"
       focus="60% center"
-      crumb="Contact"
+      crumb={page.breadcrumb ?? page.eyebrow}
     />
 
     <!-- ============================================ DIRECT -->

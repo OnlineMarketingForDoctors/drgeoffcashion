@@ -1,12 +1,8 @@
 ---
-import { SITE } from "../site.config";
+import { getSiteSettings } from "../sanity/queries";
 
-const links = [
-  { href: "/about", label: "About" },
-  { href: "/vasectomy", label: "The procedure" },
-  { href: "/research", label: "Research" },
-  { href: "/contact", label: "Contact" },
-];
+const SITE = await getSiteSettings();
+const links = SITE.navLinks;
 
 // mark the current section, tolerating a trailing slash
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
@@ -16,13 +12,13 @@ const isCurrent = (href: string) => path === href;
 <header class="nav" data-nav>
   <div class="nav__inner">
     <a class="nav__mark" href="/">
-      <span class="nav__mark-name">Geoff Cashion</span>
+      <span class="nav__mark-name">{SITE.brandName}</span>
       {/* Split into glyphs so flex can track the tagline out to exactly the
           width of the name above it, whatever the font metrics turn out to
           be. The label carries the real text for assistive tech. */}
-      <span class="nav__mark-role" aria-label="No-scalpel vasectomy">
+      <span class="nav__mark-role" aria-label={SITE.brandTagline}>
         {
-          [..."NO-SCALPEL VASECTOMY"].map((ch) => (
+          [...SITE.brandTagline.toUpperCase()].map((ch) => (
             <span aria-hidden="true" class={ch === " " ? "is-space" : undefined}>
               {ch === " " ? " " : ch}
             </span>
@@ -57,7 +53,7 @@ const isCurrent = (href: string) => path === href;
         </svg>
         <span class="nav__call-label">{SITE.phoneLabel}</span>
       </a>
-      <a class="btn nav__cta" href="/refer">Refer a patient</a>
+      <a class="btn nav__cta" href={SITE.headerCta.href}>{SITE.headerCta.label}</a>
       <button
         class="nav__burger"
         type="button"

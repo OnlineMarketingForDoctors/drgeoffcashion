@@ -7,7 +7,7 @@ import Orchidometer from "../components/Orchidometer.astro";
 import Reviews from "../components/Reviews.astro";
 import Sequence from "../components/Sequence.astro";
 import ReferBand from "../components/ReferBand.astro";
-import { SITE } from "../site.config";
+import { getPage, getSiteSettings } from "../sanity/queries";
 
 import heroImg from "../assets/generated/cashion-hero.webp";
 import heroTallImg from "../assets/generated/cashion-hero-mobile.webp";
@@ -71,12 +71,12 @@ const reasons = [
     body: "We handle the procedure and the follow-up semen analysis, then he returns to your care. We are not trying to become his GP.",
   },
 ];
+
+const SITE = await getSiteSettings();
+const page = await getPage("home");
 ---
 
-<Base
-  title="Dr Geoff Cashion — No-scalpel vasectomy referrals for Australian GPs"
-  description="Dr Geoff Cashion performs more no-scalpel vasectomies than any other doctor in Australia. Referral information for general practitioners."
->
+<Base title={page.metaTitle} description={page.metaDescription}>
   <Nav />
   <Orchidometer />
 
@@ -108,14 +108,11 @@ const reasons = [
       <div class="hero__scrim"></div>
 
       <div class="wrap hero__inner">
-        <p class="tag tag--pale hero__eyebrow">For referring GPs</p>
+        <p class="tag tag--pale hero__eyebrow">{page.eyebrow}</p>
         <h1 class="hero__title">
-          Refer him to the doctor who does this <em>3,500 times a year.</em>
+          {page.heading} {page.headingEmphasis && <em>{page.headingEmphasis}</em>}
         </h1>
-        <p class="lede hero__lede">
-          Dr Geoff Cashion is a Specialist GP and the founder of Vasectomy
-          Australia, the country's largest provider of no-scalpel vasectomy.
-        </p>
+        {page.lede && <p class="lede hero__lede">{page.lede}</p>}
         <div class="hero__actions">
           <a class="btn" href="/refer">
             Refer a patient

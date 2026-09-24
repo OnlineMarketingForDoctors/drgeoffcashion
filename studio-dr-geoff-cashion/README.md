@@ -7,8 +7,17 @@ only the site, and the Studio is not embedded in it (`astro.config.mjs` has no
 
 Deployed at https://drgeoffcashion.sanity.studio.
 
-Schema types live in `schemaTypes/` (`clinic`, `publication`, `review`). Their
-fields match the GROQ queries in `../src/sanity/queries.ts`.
+Schema types live in `schemaTypes/`. Their fields match the GROQ queries in
+`../src/sanity/queries.ts`.
+
+- **Site Settings** (`siteSettings`): one document, ID `siteSettings`, for
+  what repeats on every page: contact details, header, footer, refer band.
+- **Pages** (`page`): one document per route, ID `page-<slug>` (home, about,
+  vasectomy, research, contact, refer), holding hero and meta text. Routes
+  and layouts live in the Astro app, so the Studio offers no create, delete
+  or duplicate for these two types (see `structure.ts`, `sanity.config.ts`).
+- **Clinics**, **Publications**, **Reviews**: collections; clinics and
+  reviews have an Order field for their position on the site.
 
 ## Commands
 

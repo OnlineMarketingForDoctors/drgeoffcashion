@@ -4,8 +4,10 @@ Deployed on Vercel from this repository.
 
 ## Content: Sanity
 
-Clinics, publications and reviews are read from Sanity (project `4odz5ftz`,
-dataset `production`) at build time, via `src/sanity/queries.ts`. The Studio is
+Clinics, publications, reviews, Site Settings (contact details, header,
+footer, refer band) and each page's hero and meta text are read from Sanity
+(project `4odz5ftz`, dataset `production`) at build time, via
+`src/sanity/queries.ts`. Page layouts and images stay in code. The Studio is
 `studio-dr-geoff-cashion/`, a separate package deployed to
 https://drgeoffcashion.sanity.studio; see its README. `src/data/*.ts` is only
 the seed source for `npm run sanity:seed` (except `qualifications`, which is

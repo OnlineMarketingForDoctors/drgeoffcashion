@@ -1,5 +1,7 @@
 ---
-import { SITE } from "../site.config";
+import { getSiteSettings } from "../sanity/queries";
+
+const SITE = await getSiteSettings();
 
 const year = new Date().getFullYear();
 ---
@@ -7,39 +9,34 @@ const year = new Date().getFullYear();
 <footer class="foot">
   <div class="wrap foot__inner">
     <div class="foot__mark">
-      <p class="foot__name">Geoff Cashion</p>
-      <p class="tag tag--pale">Specialist GP · No-scalpel vasectomy</p>
+      <p class="foot__name">{SITE.brandName}</p>
+      <p class="tag tag--pale">{SITE.footerTagline}</p>
       <p class="foot__ahpra">AHPRA reg. {SITE.ahpra}</p>
     </div>
 
     <nav class="foot__nav" aria-label="Footer">
-      <a href="/about">About</a>
-      <a href="/vasectomy">The procedure</a>
-      <a href="/vasectomy#locations">Clinic locations</a>
-      <a href="/research">Research</a>
-      <a href="/contact">Contact</a>
+      {SITE.footerLinks.map((l) => <a href={l.href}>{l.label}</a>)}
     </nav>
 
     <a class="foot__phone" href={SITE.phoneHref}>
-      <span class="tag tag--pale">Rooms</span>
+      {SITE.phoneCaption && <span class="tag tag--pale">{SITE.phoneCaption}</span>}
       <span class="foot__phone-digits">{SITE.phoneLabel}</span>
       <span class="foot__phone-alt">{SITE.phoneDigits}</span>
     </a>
   </div>
 
   <div class="wrap foot__base">
-    <p>© {year} Vasectomy Australia. All rights reserved.</p>
-    <p>
-      Powered by
-      <a
-        class="foot__credit"
-        href="https://onlinemarketingfordoctors.com/"
-        target="_blank"
-        rel="noopener"
-      >
-        Online Marketing For Doctors
-      </a>
-    </p>
+    <p>© {year} {SITE.copyrightHolder}. All rights reserved.</p>
+    {
+      SITE.credit && (
+        <p>
+          Powered by
+          <a class="foot__credit" href={SITE.credit.href} target="_blank" rel="noopener">
+            {SITE.credit.label}
+          </a>
+        </p>
+      )
+    }
   </div>
 </footer>
 

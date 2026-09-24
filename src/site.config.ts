@@ -9,14 +9,5 @@
  */
 export const NOINDEX = true;
 
-export const SITE = {
-  name: 'Dr Geoff Cashion',
-  phoneLabel: '1800 SNIPME',
-  phoneDigits: '1800 764 763',
-  phoneHref: 'tel:1800764763',
-  email: 'info@vasectomyaustralia.com.au',
-  facebook: 'https://www.facebook.com/vasectomyaustralia',
-  parentSite: 'https://vasectomyaustralia.com.au/',
-  // AHPRA registration — shown wherever the practitioner is identified
-  ahpra: 'MED0001196484',
-} as const;
+// Contact details, header, footer and the refer band are edited in Sanity
+// (Site Settings), not here. See src/sanity/queries.ts.

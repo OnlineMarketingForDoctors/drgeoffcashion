@@ -7,7 +7,7 @@ import PageHero from "../components/PageHero.astro";
 import ReferBand from "../components/ReferBand.astro";
 import Occlusion from "../components/Occlusion.astro";
 import LocationFinder from "../components/LocationFinder.astro";
-import { SITE } from "../site.config";
+import { getPage, getSiteSettings } from "../sanity/queries";
 
 import heroImg from "../assets/generated/vasectomy-hero.webp";
 import instrumentSetImg from "../assets/generated/instrument-set.webp";
@@ -114,23 +114,24 @@ const unchanged = [
     a: "None. Vasectomy is contraception, not barrier protection. A man with a new or non-monogamous partner still needs condoms.",
   },
 ];
+
+const SITE = await getSiteSettings();
+const page = await getPage("vasectomy");
 ---
 
-<Base
-  title="No-scalpel vasectomy explained — technique, recovery, risks and cost"
-  description="A detailed account of no-scalpel vasectomy for referring GPs: the technique, the appointment, effectiveness and clearance testing, risks, recovery, cost, and clinic locations across Australia."
->
+<Base title={page.metaTitle} description={page.metaDescription}>
   <Nav />
 
   <main id="main" tabindex="-1">
     <PageHero
-      eyebrow="The procedure"
-      title="No scalpel, one opening, no stitches."
-      lede="What actually happens, how well it works, what can go wrong, and what it costs — written for the person doing the referring."
+      eyebrow={page.eyebrow}
+      title={page.heading}
+      titleEmphasis={page.headingEmphasis}
+      lede={page.lede}
       image={heroImg}
       imageAlt="A clinical procedure room with a stainless steel instrument trolley"
       focus="62% center"
-      crumb="Vasectomy"
+      crumb={page.breadcrumb ?? page.eyebrow}
     />
 
     <div class="vas__reg">

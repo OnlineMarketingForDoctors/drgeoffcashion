@@ -3,7 +3,7 @@ import Base from "../layouts/Base.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import PageHero from "../components/PageHero.astro";
-import { SITE } from "../site.config";
+import { getPage, getSiteSettings } from "../sanity/queries";
 
 import referralImg from "../assets/generated/referral-desk.webp";
 
@@ -23,23 +23,24 @@ const doctor = [
   { id: "d-clinic", name: "doctor_clinic", label: "Clinic name", type: "text", auto: "organization", required: false },
   { id: "d-email", name: "doctor_email", label: "Email", type: "email", auto: "off", required: true },
 ];
+
+const SITE = await getSiteSettings();
+const page = await getPage("refer");
 ---
 
-<Base
-  title="Refer a patient — Dr Geoff Cashion"
-  description="Refer a patient to Dr Geoff Cashion for a no-scalpel vasectomy. Send the patient's details and your own, and the rooms will take it from there."
->
+<Base title={page.metaTitle} description={page.metaDescription}>
   <Nav />
 
   <main id="main" tabindex="-1">
     <PageHero
-      eyebrow="Refer a patient"
-      title="Send us your patient."
-      lede="Dr Cashion has performed over 25,000 vasectomies and aims to provide the highest level of clinical care to your patient."
+      eyebrow={page.eyebrow}
+      title={page.heading}
+      titleEmphasis={page.headingEmphasis}
+      lede={page.lede}
       image={referralImg}
       imageAlt="A referral letter and fountain pen on a doctor's desk"
       focus="60% center"
-      crumb="Refer a patient"
+      crumb={page.breadcrumb ?? page.eyebrow}
     />
 
     <section class="band rf" id="form">
