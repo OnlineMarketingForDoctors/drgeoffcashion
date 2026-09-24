@@ -93,6 +93,18 @@ export const PAGE_QUERY = defineQuery(/* groq */ `
   }
 `);
 
+// Pages that only make sense after a form submission, plus the sitemap
+// itself, are left out of the sitemap page.
+export const SITEMAP_PAGES_QUERY = defineQuery(/* groq */ `
+  *[_type == "page" && !(_id in path("drafts.**"))
+    && !string::startsWith(_id, "page-thank-you")
+    && _id != "page-sitemap"] {
+    title,
+    route,
+    metaDescription
+  }
+`);
+
 /** Display order for states; also the full set the finder knows about. */
 const STATE_NAMES: [code: string, name: string][] = [
   ["NSW", "New South Wales"],
@@ -216,4 +228,33 @@ export async function getPage(slug: string): Promise<Page> {
   const doc = await sanityClient.fetch<Page | null>(PAGE_QUERY, { id: `page-${slug}` });
   if (!doc) throw new Error(`Sanity: the "page-${slug}" document is missing`);
   return doc;
+}
+
+export interface SitemapEntry {
+  title: string;
+  route: string;
+  description: string;
+}
+
+/**
+ * Pages for the HTML sitemap, in header-menu order: home, the menu links,
+ * the header button, then anything else by title.
+ */
+export async function getSitemapPages(): Promise<SitemapEntry[]> {
+  const [docs, site] = await Promise.all([
+    sanityClient.fetch<{ title: string | null; route: string | null; metaDescription: string | null }[]>(
+      SITEMAP_PAGES_QUERY
+    ),
+    getSiteSettings(),
+  ]);
+  const norm = (href: string) => href.replace(/\/+$/, "") || "/";
+  const order = ["/", ...site.navLinks.map((l) => l.href), site.headerCta.href].map(norm);
+  const rank = (route: string) => {
+    const i = order.indexOf(norm(route));
+    return i < 0 ? order.length : i;
+  };
+  return docs
+    .filter((d) => d.title && d.route)
+    .map((d) => ({ title: d.title!, route: d.route!, description: d.metaDescription ?? "" }))
+    .sort((a, b) => rank(a.route) - rank(b.route) || a.title.localeCompare(b.title));
 }

@@ -1,0 +1,108 @@
+---
+import Base from "../layouts/Base.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import PageHero from "../components/PageHero.astro";
+import { getPage, getSitemapPages } from "../sanity/queries";
+
+import corridorImg from "../assets/generated/corridor.webp";
+
+/*
+ * The HTML sitemap, for people. Not sitemap.xml: that stays out while the
+ * site is noindexed (see CLAUDE.md). The list comes from the Page documents
+ * in Sanity, minus the thank-you pages and this page.
+ */
+const page = await getPage("sitemap");
+const pages = await getSitemapPages();
+---
+
+<Base title={page.metaTitle} description={page.metaDescription}>
+  <Nav />
+
+  <main id="main" tabindex="-1">
+    <PageHero
+      eyebrow={page.eyebrow}
+      title={page.heading}
+      titleEmphasis={page.headingEmphasis}
+      lede={page.lede}
+      image={corridorImg}
+      imageAlt="A calm, daylit medical suite corridor"
+      focus="center"
+      crumb={page.breadcrumb ?? page.eyebrow}
+    />
+
+    <section class="band sm">
+      <div class="wrap">
+        <ul class="sm__list">
+          {
+            pages.map((p) => (
+              <li class="sm__item">
+                <a class="sm__link" href={p.route}>
+                  <span class="sm__title">{p.title}</span>
+                  <span class="sm__route">{p.route}</span>
+                </a>
+                {p.description && <p class="sm__desc">{p.description}</p>}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .sm {
+    background: var(--bone-pure);
+  }
+
+  .sm__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 52rem;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
+  }
+
+  .sm__item {
+    padding-block: 1.4rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
+  }
+
+  .sm__link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.3rem 1rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .sm__title {
+    font-family: var(--display);
+    font-size: clamp(1.35rem, 1.1rem + 1vw, 1.8rem);
+    font-weight: 600;
+    font-variation-settings: "opsz" 30, "SOFT" 20, "WONK" 0;
+    letter-spacing: -0.01em;
+    transition: color 0.3s var(--ease);
+  }
+
+  .sm__link:hover .sm__title {
+    color: var(--iodine);
+  }
+
+  .sm__route {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--drape);
+  }
+
+  .sm__desc {
+    margin-top: 0.45rem;
+    max-width: 60ch;
+    color: var(--ink-soft);
+  }
+</style>

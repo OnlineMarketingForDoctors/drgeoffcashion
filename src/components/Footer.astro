@@ -26,7 +26,11 @@ const year = new Date().getFullYear();
   </div>
 
   <div class="wrap foot__base">
-    <p>© {year} {SITE.copyrightHolder}. All rights reserved.</p>
+    <p>
+      © {year} {SITE.copyrightHolder}. All rights reserved.
+      <span aria-hidden="true">·</span>
+      <a class="foot__credit" href="/sitemap">Sitemap</a>
+    </p>
     {
       SITE.credit && (
         <p>

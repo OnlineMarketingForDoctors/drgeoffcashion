@@ -113,4 +113,14 @@ export const pages: PageContent[] = [
     metaTitle: "Question received — Dr Geoff Cashion",
     metaDescription: "Your question has been sent to Dr Geoff Cashion's rooms. Dr Cashion will get back to you as soon as possible.",
   },
+  {
+    slug: "sitemap",
+    title: "Sitemap",
+    route: "/sitemap/",
+    eyebrow: "Sitemap",
+    heading: "Every page on the site.",
+    breadcrumb: "Sitemap",
+    metaTitle: "Sitemap — Dr Geoff Cashion",
+    metaDescription: "A list of every page on Dr Geoff Cashion's site for referring GPs.",
+  },
 ];
