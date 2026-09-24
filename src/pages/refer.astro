@@ -7,23 +7,6 @@ import { getPage, getSiteSettings } from "../sanity/queries";
 
 import referralImg from "../assets/generated/referral-desk.webp";
 
-/* Fields mirror the existing referral form exactly — nothing added, nothing
-   dropped. Labels are real labels rather than placeholders, so the field
-   still says what it is once the reader starts typing. */
-const patient = [
-  { id: "p-first", name: "patient_first_name", label: "First name", type: "text", auto: "given-name", required: true },
-  { id: "p-last", name: "patient_last_name", label: "Last name", type: "text", auto: "family-name", required: true },
-  { id: "p-phone", name: "patient_phone", label: "Phone number", type: "tel", auto: "tel", required: true },
-  { id: "p-email", name: "patient_email", label: "Email", type: "email", auto: "email", required: false },
-];
-
-const doctor = [
-  { id: "d-first", name: "doctor_first_name", label: "First name", type: "text", auto: "off", required: true },
-  { id: "d-last", name: "doctor_last_name", label: "Last name", type: "text", auto: "off", required: true },
-  { id: "d-clinic", name: "doctor_clinic", label: "Clinic name", type: "text", auto: "organization", required: false },
-  { id: "d-email", name: "doctor_email", label: "Email", type: "email", auto: "off", required: true },
-];
-
 const SITE = await getSiteSettings();
 const page = await getPage("refer");
 ---
@@ -68,91 +51,18 @@ const page = await getPage("refer");
         </aside>
 
         <!-- ---------------------------------------------- form -->
-        <form class="rf__form" data-refer>
-          <fieldset class="fs">
-            <legend class="fs__legend">Patient's details</legend>
-            <div class="fs__grid">
-              {
-                patient.map((f) => (
-                  <div class="field">
-                    <label for={f.id}>
-                      {f.label}
-                      {!f.required && <span class="field__opt">optional</span>}
-                    </label>
-                    <input
-                      id={f.id}
-                      name={f.name}
-                      type={f.type}
-                      autocomplete={f.auto}
-                      required={f.required}
-                    />
-                  </div>
-                ))
-              }
-            </div>
-          </fieldset>
-
-          <fieldset class="fs">
-            <legend class="fs__legend">Referring doctor's details</legend>
-            <div class="fs__grid">
-              {
-                doctor.map((f) => (
-                  <div class="field">
-                    <label for={f.id}>
-                      {f.label}
-                      {!f.required && <span class="field__opt">optional</span>}
-                    </label>
-                    <input
-                      id={f.id}
-                      name={f.name}
-                      type={f.type}
-                      autocomplete={f.auto}
-                      required={f.required}
-                    />
-                  </div>
-                ))
-              }
-            </div>
-          </fieldset>
-
-          <div class="rf__actions">
-            <button class="btn" type="submit">
-              Submit referral
-              <span class="btn__arrow" aria-hidden="true">→</span>
-            </button>
-            <p class="rf__status" data-refer-status role="status" aria-live="polite"></p>
-          </div>
-        </form>
+        {/* Wufoo embed, as supplied by Vasectomy Australia. is:inline keeps
+            Astro from bundling the script; the loader inserts form.js and
+            renders the form into the div. */}
+        <div class="rf__form">
+          <div id="wufoo-z1funy0c0agqy7q"> Fill out my <a href="https://vasectomyaustralia.wufoo.com/forms/z1funy0c0agqy7q">online form</a>. </div><script type="text/javascript" is:inline> var z1funy0c0agqy7q; (function(d, t) { var s = d.createElement(t), options = { 'userName':'vasectomyaustralia', 'formHash':'z1funy0c0agqy7q', 'autoResize':true, 'height':'627', 'async':true, 'host':'wufoo.com', 'header':'show', 'ssl':true }; s.src = ('https:' == d.location.protocol ?'https://':'http://') + 'secure.wufoo.com/scripts/embed/form.js'; s.onload = s.onreadystatechange = function() { var rs = this.readyState; if (rs) if (rs != 'complete') if (rs != 'loaded') return; try { z1funy0c0agqy7q = new WufooForm(); z1funy0c0agqy7q.initialize(options); z1funy0c0agqy7q.display(); } catch (e) { } }; var scr = d.getElementsByTagName(t)[0], par = scr.parentNode; par.insertBefore(s, scr); })(document, 'script'); </script>
+        </div>
       </div>
     </section>
   </main>
 
   <Footer />
 </Base>
-
-<script>
-  /*
-   * Not wired to anything yet, by request. Submission is intercepted so the
-   * browser cannot fall back to a GET that reloads the page with the
-   * patient's details sitting in the URL — which would be both useless and a
-   * small privacy problem. Swap this handler for a real endpoint.
-   */
-  const form = document.querySelector<HTMLFormElement>("[data-refer]");
-  const status = document.querySelector<HTMLElement>("[data-refer-status]");
-
-  form?.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    // let the browser do the field-level validation and messaging
-    if (!form.reportValidity()) return;
-
-    if (status) {
-      status.textContent =
-        "This form is not connected yet — nothing has been sent. Please phone or email the rooms in the meantime.";
-      status.dataset.state = "pending";
-    }
-  });
-</script>
 
 <style>
   .rf {
@@ -228,110 +138,9 @@ const page = await getPage("refer");
   }
 
   /* ---------------------------------------------------- form */
+  /* Wufoo sizes its own iframe; this only stops it overflowing the grid */
   .rf__form {
-    display: grid;
-    gap: clamp(2rem, 4vw, 2.8rem);
-  }
-
-  .fs {
-    margin: 0;
-    padding: 0;
-    border: 0;
-  }
-
-  .fs__legend {
-    width: 100%;
-    padding: 0 0 1.1rem;
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--drape);
-    border-bottom: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
-  }
-
-  .fs__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.15rem;
-    padding-top: 1.5rem;
-  }
-
-  .field {
-    display: grid;
-    gap: 0.45rem;
-  }
-
-  .field label {
-    display: flex;
-    align-items: baseline;
-    gap: 0.6em;
-    font-family: var(--mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-
-  .field__opt {
-    font-size: 0.62rem;
-    letter-spacing: 0.06em;
-    text-transform: none;
-    color: color-mix(in srgb, var(--ink) 42%, transparent);
-  }
-
-  .field input {
-    width: 100%;
-    padding: 0.9em 1em;
-    background: #fff;
-    border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
-    border-radius: 3px;
-    font: inherit;
-    font-size: 1rem;
-    color: var(--ink);
-    transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
-  }
-
-  .field input:hover {
-    border-color: color-mix(in srgb, var(--ink) 30%, transparent);
-  }
-
-  .field input:focus {
-    outline: none;
-    border-color: var(--drape);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--drape) 16%, transparent);
-  }
-
-  /* only flag a field once the reader has actually left it wrong */
-  .field input:user-invalid {
-    border-color: var(--iodine);
-  }
-
-  .rf__actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1rem 1.25rem;
-  }
-
-  .rf__status {
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: var(--ink-soft);
-    max-width: 38ch;
-  }
-
-  .rf__status[data-state="pending"] {
-    padding-left: 0.9rem;
-    border-left: 2px solid var(--iodine);
-  }
-
-  @media (min-width: 34rem) {
-    .fs__grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 1.15rem 1.25rem;
-    }
+    min-width: 0;
   }
 
   @media (min-width: 62rem) {
