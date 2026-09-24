@@ -91,4 +91,26 @@ export const pages: PageContent[] = [
     metaDescription:
       "Refer a patient to Dr Geoff Cashion for a no-scalpel vasectomy. Send the patient's details and your own, and the rooms will take it from there.",
   },
+  {
+    slug: "thank-you-refer",
+    title: "Thank you — referral",
+    route: "/thank-you-refer/",
+    eyebrow: "Referral received",
+    heading: "Thank you for the referral.",
+    lede: "The rooms will take it from there and contact your patient to arrange an appointment. The outcome comes back to you once he has been seen.",
+    breadcrumb: "Thank you",
+    metaTitle: "Referral received — Dr Geoff Cashion",
+    metaDescription: "Your referral to Dr Geoff Cashion has been received. The rooms will contact your patient to arrange an appointment.",
+  },
+  {
+    slug: "thank-you-contact",
+    title: "Thank you — contact",
+    route: "/thank-you-contact/",
+    eyebrow: "Question received",
+    heading: "Thanks — we'll be in touch.",
+    lede: "Dr Cashion will get back to you about your patient as soon as possible.",
+    breadcrumb: "Thank you",
+    metaTitle: "Question received — Dr Geoff Cashion",
+    metaDescription: "Your question has been sent to Dr Geoff Cashion's rooms. Dr Cashion will get back to you as soon as possible.",
+  },
 ];

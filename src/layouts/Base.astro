@@ -7,9 +7,15 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description: string;
+  /**
+   * Keeps this page out of search results for good, whatever NOINDEX says.
+   * For pages that only make sense after an action, like a form's thank-you
+   * page. Not the site-wide switch: that stays NOINDEX alone (see CLAUDE.md).
+   */
+  noindex?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, noindex = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -23,7 +29,11 @@ const { title, description } = Astro.props;
     {/* Backstop half of the noindex switch. The X-Robots-Tag header in
         vercel.json is the primary control; both are driven by NOINDEX in
         src/site.config.ts. See CLAUDE.md. */}
-    {NOINDEX && <meta name="robots" content="noindex, nofollow" />}
+    {NOINDEX ? (
+      <meta name="robots" content="noindex, nofollow" />
+    ) : (
+      noindex && <meta name="robots" content="noindex" />
+    )}
 
     {/* Fonts are self-hosted (see scripts/fetch-fonts.sh). Preload only the
         two faces that paint above the fold. */}

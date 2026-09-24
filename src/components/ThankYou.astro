@@ -1,0 +1,93 @@
+---
+import type { ImageMetadata } from "astro";
+import Base from "../layouts/Base.astro";
+import Nav from "./Nav.astro";
+import Footer from "./Footer.astro";
+import PageHero from "./PageHero.astro";
+import { getPage, getSiteSettings } from "../sanity/queries";
+
+/**
+ * Where a form sends people after a successful submission. The text comes
+ * from the Sanity page `page-<slug>`; the page is kept out of search results
+ * permanently, since it means nothing without the form in front of it.
+ */
+interface Props {
+  slug: string;
+  image: ImageMetadata;
+  imageAlt: string;
+  focus?: string;
+  /** Where "send another" goes back to. */
+  again: { href: string; label: string };
+}
+
+const { slug, image, imageAlt, focus, again } = Astro.props;
+const SITE = await getSiteSettings();
+const page = await getPage(slug);
+---
+
+<Base title={page.metaTitle} description={page.metaDescription} noindex>
+  <Nav />
+
+  <main id="main" tabindex="-1">
+    <PageHero
+      eyebrow={page.eyebrow}
+      title={page.heading}
+      titleEmphasis={page.headingEmphasis}
+      lede={page.lede}
+      image={image}
+      imageAlt={imageAlt}
+      focus={focus}
+      crumb={page.breadcrumb ?? page.eyebrow}
+    />
+
+    <section class="band ty">
+      <div class="wrap ty__inner">
+        <div class="ty__actions" data-reveal>
+          <a class="btn" href="/">
+            Back to the home page
+            <span class="btn__arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="btn btn--ghost" href={again.href}>{again.label}</a>
+        </div>
+
+        <p class="ty__urgent" data-reveal style="--delay:120ms">
+          Something urgent? Call the rooms on
+          <a href={SITE.phoneHref}>{SITE.phoneLabel}</a>
+          ({SITE.phoneDigits}) or email
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .ty {
+    background: var(--bone-pure);
+  }
+
+  .ty__inner {
+    display: grid;
+    gap: 1.8rem;
+  }
+
+  .ty__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .ty__urgent {
+    max-width: 52ch;
+    color: var(--ink-soft);
+  }
+
+  .ty__urgent a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+  }
+</style>

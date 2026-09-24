@@ -70,6 +70,10 @@ Both must be present. If either is missing, the site is not safe to share.
 1. Set `NOINDEX = false` and deploy.
 2. Verify the header and meta tag are **gone** from production, using the same
    two commands above.
+   The exception is `/thank-you-contact/` and `/thank-you-refer/`: they pass
+   `noindex` to `Base.astro` and keep `<meta name="robots" content="noindex">`
+   permanently, because they only make sense after a form submission. That is
+   a per-page property, not part of the switch.
 3. Only then add `sitemap.xml`, Search Console verification, and submit.
 
 Nothing gets indexed automatically on flip — indexing requires submission.
