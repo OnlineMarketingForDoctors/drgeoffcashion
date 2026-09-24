@@ -1,5 +1,12 @@
 ---
-import { states, totalClinics, cashionClinics } from "../data/locations";
+import { getStates } from "../sanity/queries";
+
+const states = await getStates();
+const totalClinics = states.reduce((n, s) => n + s.clinics.length, 0);
+const cashionClinics = states.reduce(
+  (n, s) => n + s.clinics.filter((c) => c.doctor === "cashion").length,
+  0
+);
 
 /**
  * A tile cartogram rather than a traced outline of Australia: the tiles are

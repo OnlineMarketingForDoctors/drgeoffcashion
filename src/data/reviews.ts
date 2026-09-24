@@ -5,6 +5,10 @@
  * `initial` and `tint` reproduce Google's default avatar treatment for
  * reviewers without a profile photo — we deliberately do not lift the real
  * profile pictures out of the screenshots.
+ *
+ * Seed data only: the site renders this content from Sanity (see
+ * src/sanity/queries.ts), and `npm run sanity:seed` exports it from here.
+ * Edit the live content in the Studio, not in this file.
  */
 
 export interface Review {
@@ -16,7 +20,7 @@ export interface Review {
   localGuide?: boolean;
   photos?: string;
   when: string;
-  rating: 5;
+  rating: number;
   body: string[];
 }
 

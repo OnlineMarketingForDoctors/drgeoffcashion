@@ -49,8 +49,20 @@ export const clinic = defineType({
       initialValue: 'cashion',
       validation: (rule) => rule.required(),
     }),
+    defineField({
+      name: 'order',
+      title: 'Order',
+      type: 'number',
+      description: 'Position within its state on the site; lower numbers show first.',
+      validation: (rule) => rule.integer(),
+    }),
   ],
   orderings: [
+    {
+      title: 'Site order',
+      name: 'siteOrder',
+      by: [{field: 'order', direction: 'asc'}],
+    },
     {
       title: 'State, then area',
       name: 'stateArea',

@@ -2,6 +2,18 @@
 
 Deployed on Vercel from this repository.
 
+## Content: Sanity
+
+Clinics, publications and reviews are read from Sanity (project `4odz5ftz`,
+dataset `production`) at build time, via `src/sanity/queries.ts`. The Studio is
+`studio-dr-geoff-cashion/`, a separate package deployed to
+https://drgeoffcashion.sanity.studio; see its README. `src/data/*.ts` is only
+the seed source for `npm run sanity:seed` (except `qualifications`, which is
+still rendered from there).
+
+The site is static, so a publish in the Studio shows up only after Vercel
+rebuilds.
+
 ## Search engine indexing: OFF (temporary)
 
 This site must not be indexed by search engines **for now**. It is expected to

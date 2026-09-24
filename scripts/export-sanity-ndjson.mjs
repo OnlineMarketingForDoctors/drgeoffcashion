@@ -18,10 +18,14 @@ import { reviews } from '../src/data/reviews.ts';
 
 const docs = [];
 
+// `order` keeps the curated sequence (metro before regional); Sanity would
+// otherwise have nothing better than alphabetical to sort by
+let clinicOrder = 0;
 for (const state of states) {
   for (const c of state.clinics) {
     docs.push({
       _type: 'clinic',
+      order: ++clinicOrder,
       clinic: c.clinic,
       area: c.area,
       state: state.code,
@@ -44,9 +48,10 @@ for (const p of publications) {
   });
 }
 
-for (const r of reviews) {
+for (const [i, r] of reviews.entries()) {
   docs.push({
     _type: 'review',
+    order: i + 1,
     name: r.name,
     body: r.body,
     rating: r.rating,

@@ -1,6 +1,10 @@
 /**
  * Publications and presentations, transcribed from the old
  * drgeoffcashion.com.au/research page. Citations left exactly as published.
+ *
+ * `publications` is seed data only: the research page renders them from Sanity
+ * (see src/sanity/queries.ts), and `npm run sanity:seed` exports them from
+ * here. `qualifications` is still rendered from this file.
  */
 
 export interface Publication {

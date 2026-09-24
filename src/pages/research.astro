@@ -5,11 +5,13 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import PageHero from "../components/PageHero.astro";
 import ReferBand from "../components/ReferBand.astro";
-import { publications } from "../data/publications";
+import { getPublications } from "../sanity/queries";
 import { SITE } from "../site.config";
 
 import journalsImg from "../assets/generated/journals.webp";
 import conferenceImg from "../assets/generated/conference.webp";
+
+const publications = await getPublications();
 
 const topics = ["All", "Vasectomy", "Sedation"] as const;
 const counts = {

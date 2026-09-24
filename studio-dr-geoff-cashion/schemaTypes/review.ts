@@ -48,11 +48,25 @@ export const review = defineType({
       description: 'Google\'s display string, e.g. "5 photos".',
     }),
     defineField({
+      name: 'order',
+      title: 'Order',
+      type: 'number',
+      description: 'Position on the site; lower numbers show first.',
+      validation: (rule) => rule.integer(),
+    }),
+    defineField({
       name: 'localGuide',
       title: 'Local Guide',
       type: 'boolean',
       initialValue: false,
     }),
+  ],
+  orderings: [
+    {
+      title: 'Site order',
+      name: 'siteOrder',
+      by: [{field: 'order', direction: 'asc'}],
+    },
   ],
   preview: {
     select: {title: 'name', rating: 'rating', when: 'when'},

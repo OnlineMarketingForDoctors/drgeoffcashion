@@ -5,9 +5,11 @@ import Footer from "../components/Footer.astro";
 import PageHero from "../components/PageHero.astro";
 import ReferBand from "../components/ReferBand.astro";
 import { SITE } from "../site.config";
-import { totalClinics } from "../data/locations";
+import { getStates } from "../sanity/queries";
 
 import receptionImg from "../assets/generated/reception.webp";
+
+const totalClinics = (await getStates()).reduce((n, s) => n + s.clinics.length, 0);
 ---
 
 <Base

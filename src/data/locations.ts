@@ -5,6 +5,10 @@
  * `doctor` matters on a GP-facing site: a referrer needs to know whether the
  * patient will be seen by Dr Cashion himself or by another Vasectomy
  * Australia doctor.
+ *
+ * Seed data only: the site renders this content from Sanity (see
+ * src/sanity/queries.ts), and `npm run sanity:seed` exports it from here.
+ * Edit the live content in the Studio, not in this file.
  */
 
 export type Doctor = "cashion" | "valentine";
@@ -99,9 +103,3 @@ export const states: StateGroup[] = [
     ],
   },
 ];
-
-export const totalClinics = states.reduce((n, s) => n + s.clinics.length, 0);
-export const cashionClinics = states.reduce(
-  (n, s) => n + s.clinics.filter((c) => c.doctor === "cashion").length,
-  0
-);
