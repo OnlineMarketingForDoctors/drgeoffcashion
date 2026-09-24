@@ -72,7 +72,6 @@ export const states: StateGroup[] = [
       { area: "Sunshine Coast", clinic: "Ochre Medical Centre Sippy Downs", doctor: "valentine" },
       { area: "Toowoomba", clinic: "Ochre Medical Centre Wyalla", doctor: "valentine" },
       { area: "Springfield", clinic: "Springfield Doctors", doctor: "valentine" },
-      { area: "Hervey Bay", clinic: "Eli Waters Medical Centre", doctor: "valentine" },
       { area: "Gladstone", clinic: "Vitality Solutions", doctor: "valentine" },
       { area: "Rockhampton", clinic: "CQ Doctors, 24 Upper Dawson Rd", doctor: "valentine" },
       { area: "Townsville", clinic: "SmartClinics Annandale Medical Centre", doctor: "valentine" },
