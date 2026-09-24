@@ -4,7 +4,6 @@ import Base from "../layouts/Base.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import Orchidometer from "../components/Orchidometer.astro";
-import Reviews from "../components/Reviews.astro";
 import Sequence from "../components/Sequence.astro";
 import ReferBand from "../components/ReferBand.astro";
 import { getPage, getSiteSettings } from "../sanity/queries";
@@ -303,9 +302,6 @@ const page = await getPage("home");
         </div>
       </div>
     </section>
-
-    <!-- ================================================== REVIEWS -->
-    <Reviews />
 
     <ReferBand />
 
