@@ -4,9 +4,10 @@ import { getSiteSettings } from "../sanity/queries";
 const SITE = await getSiteSettings();
 const links = SITE.navLinks;
 
-// mark the current section, tolerating a trailing slash
-const path = Astro.url.pathname.replace(/\/$/, "") || "/";
-const isCurrent = (href: string) => path === href;
+// mark the current section; compare without the trailing slash so a link
+// typed either way still matches
+const bare = (p: string) => p.replace(/\/+$/, "") || "/";
+const isCurrent = (href: string) => bare(Astro.url.pathname) === bare(href);
 ---
 
 <header class="nav" data-nav>

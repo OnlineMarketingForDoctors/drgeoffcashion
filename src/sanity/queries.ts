@@ -201,6 +201,20 @@ export async function getReviews(): Promise<Review[]> {
 
 export type Site = SiteSettings & { phoneHref: string };
 
+/**
+ * Site paths always end in a slash (trailingSlash: 'always'). Editors can
+ * type "/about" or "/about/"; both come out as "/about/", with any #hash or
+ * ?query kept after it. Full URLs, mailto: and tel: pass through untouched.
+ */
+export function withSlash(href: string): string {
+  const m = href.match(/^(\/[^?#]*)([?#].*)?$/);
+  if (!m || href.startsWith("//")) return href;
+  return `${m[1].replace(/\/+$/, "")}/` + (m[2] ?? "");
+}
+
+const fixLink = <T extends { href: string } | null | undefined>(l: T): T =>
+  l ? { ...l, href: withSlash(l.href) } : l;
+
 // Every page renders the header, footer and refer band, so share one fetch
 // across the whole build instead of making one per component per page.
 let siteSettings: Promise<Site> | undefined;
@@ -213,8 +227,10 @@ export function getSiteSettings(): Promise<Site> {
       if (!doc) throw new Error('Sanity: the "siteSettings" document is missing');
       return {
         ...doc,
-        navLinks: doc.navLinks ?? [],
-        footerLinks: doc.footerLinks ?? [],
+        navLinks: (doc.navLinks ?? []).map(fixLink),
+        footerLinks: (doc.footerLinks ?? []).map(fixLink),
+        headerCta: fixLink(doc.headerCta),
+        referButton: fixLink(doc.referButton),
         phoneHref: `tel:${doc.phoneDigits.replace(/[^\d+]/g, "")}`,
       };
     });
@@ -255,6 +271,6 @@ export async function getSitemapPages(): Promise<SitemapEntry[]> {
   };
   return docs
     .filter((d) => d.title && d.route)
-    .map((d) => ({ title: d.title!, route: d.route!, description: d.metaDescription ?? "" }))
+    .map((d) => ({ title: d.title!, route: withSlash(d.route!), description: d.metaDescription ?? "" }))
     .sort((a, b) => rank(a.route) - rank(b.route) || a.title.localeCompare(b.title));
 }

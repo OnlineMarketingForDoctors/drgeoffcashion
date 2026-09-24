@@ -34,7 +34,7 @@ export const pages: PageContent[] = [
   {
     slug: "about",
     title: "About",
-    route: "/about",
+    route: "/about/",
     eyebrow: "About",
     heading: "The doctor at the end of your referral.",
     lede: "Founder of Vasectomy Australia, and the busiest vasectomist in the country.",
@@ -46,7 +46,7 @@ export const pages: PageContent[] = [
   {
     slug: "vasectomy",
     title: "The procedure",
-    route: "/vasectomy",
+    route: "/vasectomy/",
     eyebrow: "The procedure",
     heading: "No scalpel, one opening, no stitches.",
     lede: "What actually happens, how well it works, what can go wrong, and what it costs — written for the person doing the referring.",
@@ -58,7 +58,7 @@ export const pages: PageContent[] = [
   {
     slug: "research",
     title: "Research",
-    route: "/research",
+    route: "/research/",
     eyebrow: "Research and publications",
     heading: "Volume is only useful if somebody is checking it.",
     lede: "Published work on vasectomy technique, complications and Australian trends — plus earlier research in procedural sedation.",
@@ -70,7 +70,7 @@ export const pages: PageContent[] = [
   {
     slug: "contact",
     title: "Contact",
-    route: "/contact",
+    route: "/contact/",
     eyebrow: "Contact",
     heading: "Ask about a patient.",
     lede: "Questions about suitability, timing or a specific case go straight to the rooms. Dr Cashion answers clinical questions himself.",
@@ -82,7 +82,7 @@ export const pages: PageContent[] = [
   {
     slug: "refer",
     title: "Refer a patient",
-    route: "/refer",
+    route: "/refer/",
     eyebrow: "Refer a patient",
     heading: "Send us your patient.",
     lede: "Dr Cashion has performed over 25,000 vasectomies and aims to provide the highest level of clinical care to your patient.",

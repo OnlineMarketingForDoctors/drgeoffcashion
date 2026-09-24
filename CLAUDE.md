@@ -19,6 +19,16 @@ Vercel deploy hook on `main` whenever a published document of those types is
 created, updated or deleted, so a publish is live about a minute later. The
 hook URL is a secret and is not stored in this repo.
 
+## URLs end in a slash
+
+Every page URL ends in `/` (`/about/`, `/vasectomy/#locations`). Astro has
+`trailingSlash: 'always'`, and `vercel.json` has `"trailingSlash": true`, so
+Vercel 308-redirects `/about` to `/about/`. Write internal links with the
+slash; links from Sanity pass through `withSlash()` in
+`src/sanity/queries.ts`, so an editor's `/about` still comes out right.
+`vercel.json` is generated only for its headers block; other keys, including
+this one, are kept as they are.
+
 ## Search engine indexing: OFF (temporary)
 
 This site must not be indexed by search engines **for now**. It is expected to

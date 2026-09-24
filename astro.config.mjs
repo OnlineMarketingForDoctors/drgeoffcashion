@@ -15,6 +15,8 @@ const dataset = env.PUBLIC_SANITY_DATASET || 'production';
 
 export default defineConfig({
   site: 'https://drgeoffcashion.com.au',
+  // every page URL ends in a slash; vercel.json redirects the bare form
+  trailingSlash: 'always',
   build: { inlineStylesheets: 'auto' },
   integrations: [
     sanity({

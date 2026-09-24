@@ -16,7 +16,7 @@ export const link = defineType({
       name: 'href',
       title: 'Link to',
       type: 'string',
-      description: 'A path on this site ("/about", "/vasectomy#locations") or a full URL.',
+      description: 'A path on this site ("/about/", "/vasectomy/#locations") or a full URL. Site paths get their trailing slash added automatically.',
       validation: (rule) =>
         rule.required().custom((value) =>
           !value || /^(\/|#|https?:\/\/|mailto:|tel:)/.test(value)
