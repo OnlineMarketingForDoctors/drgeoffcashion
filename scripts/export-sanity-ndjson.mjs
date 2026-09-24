@@ -7,9 +7,9 @@
  * re-running an import creates duplicates rather than upserting, so import
  * into an empty dataset (or clear the affected types first).
  *
- *   node scripts/export-sanity-ndjson.mjs
- *   cd ../studio-dr-geoff-cashion
- *   npx sanity dataset import ../drgeoffcashion/dist-sanity/seed.ndjson production
+ *   npm run sanity:seed
+ *   cd studio-dr-geoff-cashion
+ *   npx sanity dataset import ../dist-sanity/seed.ndjson --dataset production
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { states } from '../src/data/locations.ts';

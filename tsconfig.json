@@ -2,5 +2,7 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "types": ["@sanity/astro/module"]
-  }
+  },
+  // The Studio is its own package with its own tsconfig
+  "exclude": ["dist", "studio-dr-geoff-cashion"]
 }
