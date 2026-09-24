@@ -1,0 +1,15 @@
+---
+/**
+ * One JSON-LD block. `<` is escaped so text from Sanity can never close the
+ * script element early.
+ */
+interface Props {
+  data: Record<string, unknown>;
+}
+const json = JSON.stringify({ "@context": "https://schema.org", ...Astro.props.data }).replace(
+  /</g,
+  "\\u003c"
+);
+---
+
+<script type="application/ld+json" set:html={json} />

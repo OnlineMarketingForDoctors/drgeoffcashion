@@ -8,6 +8,8 @@ import ReferBand from "../components/ReferBand.astro";
 import Occlusion from "../components/Occlusion.astro";
 import LocationFinder from "../components/LocationFinder.astro";
 import { getPage, getSiteSettings } from "../sanity/queries";
+import JsonLd from "../components/JsonLd.astro";
+import { absolute } from "../lib/schema";
 
 import heroImg from "../assets/generated/vasectomy-hero.webp";
 import instrumentSetImg from "../assets/generated/instrument-set.webp";
@@ -117,9 +119,50 @@ const unchanged = [
 
 const SITE = await getSiteSettings();
 const page = await getPage("vasectomy");
+
+/* Structured data. Every statement is taken from the copy on this page, so
+   the markup never claims more than a reader can see. */
+const pageUrl = absolute(Astro.url.pathname, Astro.site);
+
+const procedureSchema = {
+  "@type": "MedicalProcedure",
+  "@id": `${pageUrl}#procedure`,
+  name: "No-scalpel vasectomy",
+  alternateName: "Vasectomy",
+  url: pageUrl,
+  mainEntityOfPage: { "@id": `${pageUrl}#webpage` },
+  description:
+    "A vasectomy divides the vas deferens so that sperm cannot reach the ejaculate. The no-scalpel technique reaches the vas through a single small opening made by spreading tissue with sharp dissecting forceps rather than cutting it, and the opening does not need a stitch.",
+  bodyLocation: "Vas deferens",
+  preparation:
+    "Identity, indication and expectations are confirmed and consent is taken on arrival. Local anaesthetic only; no sedation.",
+  howPerformed: appointment
+    .filter((s) => s.at !== "On arrival")
+    .map((s) => `${s.title}: ${s.body}`)
+    .join(" "),
+  followup:
+    "Rest for the first two days; most men are back to desk work by day 3 and normal activity by week 1. Contraception continues until post-vasectomy semen analysis, generally at around twelve weeks, confirms clearance.",
+  possibleComplication: risks.map((r) => ({
+    "@type": "MedicalCondition",
+    name: r.name,
+    description: `${r.rate}. ${r.body}`,
+  })),
+};
+
+const faqSchema = {
+  "@type": "FAQPage",
+  "@id": `${pageUrl}#faq`,
+  mainEntity: unchanged.map((u) => ({
+    "@type": "Question",
+    name: u.q,
+    acceptedAnswer: { "@type": "Answer", text: u.a },
+  })),
+};
 ---
 
 <Base title={page.metaTitle} description={page.metaDescription}>
+  <JsonLd data={procedureSchema} />
+  <JsonLd data={faqSchema} />
   <Nav />
 
   <main id="main" tabindex="-1">
@@ -479,7 +522,7 @@ const page = await getPage("vasectomy");
     <section class="band perm" id="permanence">
       <div class="wrap perm__inner">
         <div class="perm__bg" aria-hidden="true">
-          <Image src={drapeImg} alt="" widths={[1200, 2000]} sizes="100vw" quality={70} />
+          <Image src={drapeImg} alt="Close-up texture of a green surgical drape" widths={[1200, 2000]} sizes="100vw" quality={70} />
         </div>
         <div class="perm__content" data-reveal>
           <p class="tag">Permanence</p>

@@ -29,6 +29,21 @@ slash; links from Sanity pass through `withSlash()` in
 `vercel.json` is generated only for its headers block; other keys, including
 this one, are kept as they are.
 
+## Build-time checks and structured data
+
+`npm run build` ends with `scripts/check-html.mjs` (the `postbuild` script),
+which fails the build if any page has an `<img>` without `alt`, a raster
+image that is not WebP/AVIF, an `<img>` without a `loading` attribute or more
+than one eager image, an `<iframe>` that is not lazy, an external link without
+`target="_blank"` and `rel="nofollow noopener"`, or invalid JSON-LD. Fix the
+page rather than loosening the check.
+
+JSON-LD: `Base.astro` emits WebSite + WebPage on every page, `PageHero.astro`
+a BreadcrumbList matching the visible crumbs, and `vasectomy.astro` a
+MedicalProcedure and an FAQPage (from the "What it does not change"
+accordion). URLs in it are absolute against `site` in `astro.config.mjs`.
+`/llms.txt` is generated from Sanity by `src/pages/llms.txt.ts`.
+
 ## Search engine indexing: OFF (temporary)
 
 This site must not be indexed by search engines **for now**. It is expected to

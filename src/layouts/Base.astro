@@ -1,6 +1,8 @@
 ---
 import { NOINDEX } from "../site.config";
 import BackToTop from "../components/BackToTop.astro";
+import JsonLd from "../components/JsonLd.astro";
+import { absolute, SITE_NAME, websiteId } from "../lib/schema";
 import "../styles/fonts.css";
 import "../styles/global.css";
 
@@ -16,6 +18,28 @@ interface Props {
 }
 
 const { title, description, noindex = false } = Astro.props;
+
+const pageUrl = absolute(Astro.url.pathname, Astro.site);
+const schema = {
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": websiteId(Astro.site),
+      url: absolute("/", Astro.site),
+      name: SITE_NAME,
+      inLanguage: "en-AU",
+    },
+    {
+      "@type": "WebPage",
+      "@id": `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: title,
+      description,
+      inLanguage: "en-AU",
+      isPartOf: { "@id": websiteId(Astro.site) },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -56,6 +80,8 @@ const { title, description, noindex = false } = Astro.props;
     <link rel="alternate icon" href="/favicon.svg" />
 
     <meta name="theme-color" content="#0e1f1b" />
+
+    <JsonLd data={schema} />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>

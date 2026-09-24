@@ -51,11 +51,20 @@ const page = await getPage("refer");
         </aside>
 
         <!-- ---------------------------------------------- form -->
-        {/* Wufoo embed, as supplied by Vasectomy Australia. is:inline keeps
-            Astro from bundling the script; the loader inserts form.js and
-            renders the form into the div. */}
+        {/* Wufoo embed, as supplied by Vasectomy Australia, with two changes:
+            the fallback link opens in a new tab with nofollow, and the loader
+            runs only when the form nears the viewport, so the iframe it
+            creates is lazy-loaded. is:inline keeps Astro from bundling it. */}
         <div class="rf__form">
-          <div id="wufoo-z1funy0c0agqy7q"> Fill out my <a href="https://vasectomyaustralia.wufoo.com/forms/z1funy0c0agqy7q">online form</a>. </div><script type="text/javascript" is:inline> var z1funy0c0agqy7q; (function(d, t) { var s = d.createElement(t), options = { 'userName':'vasectomyaustralia', 'formHash':'z1funy0c0agqy7q', 'autoResize':true, 'height':'627', 'async':true, 'host':'wufoo.com', 'header':'show', 'ssl':true }; s.src = ('https:' == d.location.protocol ?'https://':'http://') + 'secure.wufoo.com/scripts/embed/form.js'; s.onload = s.onreadystatechange = function() { var rs = this.readyState; if (rs) if (rs != 'complete') if (rs != 'loaded') return; try { z1funy0c0agqy7q = new WufooForm(); z1funy0c0agqy7q.initialize(options); z1funy0c0agqy7q.display(); } catch (e) { } }; var scr = d.getElementsByTagName(t)[0], par = scr.parentNode; par.insertBefore(s, scr); })(document, 'script'); </script>
+          <div id="wufoo-z1funy0c0agqy7q"> Fill out my <a href="https://vasectomyaustralia.wufoo.com/forms/z1funy0c0agqy7q" target="_blank" rel="nofollow noopener noreferrer">online form</a>. </div><script type="text/javascript" is:inline> var z1funy0c0agqy7q; function loadWufooZ1funy0c0agqy7q() { (function(d, t) { var s = d.createElement(t), options = { 'userName':'vasectomyaustralia', 'formHash':'z1funy0c0agqy7q', 'autoResize':true, 'height':'627', 'async':true, 'host':'wufoo.com', 'header':'show', 'ssl':true }; s.src = ('https:' == d.location.protocol ?'https://':'http://') + 'secure.wufoo.com/scripts/embed/form.js'; s.onload = s.onreadystatechange = function() { var rs = this.readyState; if (rs) if (rs != 'complete') if (rs != 'loaded') return; try { z1funy0c0agqy7q = new WufooForm(); z1funy0c0agqy7q.initialize(options); z1funy0c0agqy7q.display(); } catch (e) { } }; var scr = d.getElementsByTagName(t)[0], par = scr.parentNode; par.insertBefore(s, scr); })(document, 'script'); }
+          (function () {
+            var el = document.getElementById('wufoo-z1funy0c0agqy7q');
+            if (!('IntersectionObserver' in window) || !el) return loadWufooZ1funy0c0agqy7q();
+            var io = new IntersectionObserver(function (entries) {
+              if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); loadWufooZ1funy0c0agqy7q(); }
+            }, { rootMargin: '600px 0px' });
+            io.observe(el);
+          })(); </script>
         </div>
       </div>
     </section>

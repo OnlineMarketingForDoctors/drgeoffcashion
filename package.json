@@ -7,6 +7,7 @@
     "prebuild": "node scripts/sync-noindex.mjs --check",
     "dev": "astro dev",
     "build": "astro build",
+    "postbuild": "node scripts/check-html.mjs",
     "preview": "astro preview",
     "sync:noindex": "node scripts/sync-noindex.mjs",
     "sanity:seed": "node --experimental-strip-types scripts/export-sanity-ndjson.mjs"
