@@ -13,6 +13,7 @@ import type { Publication } from "../data/publications";
 import type { Review } from "../data/reviews";
 import type { PageContent } from "../data/pages";
 import type { SiteSettings } from "../data/siteSettings";
+import type { SanityImage } from "./image";
 
 export const CLINICS_QUERY = defineQuery(/* groq */ `
   *[_type == "clinic"] | order(coalesce(order, 9999) asc, area asc) {
@@ -77,26 +78,25 @@ export const SITE_SETTINGS_QUERY = defineQuery(/* groq */ `
     offerEyebrow,
     offerHeading,
     offerBody,
-    offerLinkLabel
+    offerLinkLabel,
+    offerImage
   }
 `);
 
+// The whole page document: hero and SEO fields at the top, then each
+// section as an object. Only the home page's video needs dereferencing.
 export const PAGE_QUERY = defineQuery(/* groq */ `
   *[_id == $id][0] {
-    eyebrow,
-    heading,
-    headingEmphasis,
-    lede,
-    breadcrumb,
-    metaTitle,
-    metaDescription
+    ...,
+    watch { ..., "videoUrl": video.asset->url }
   }
 `);
 
 // Pages that only make sense after a form submission, plus the sitemap
-// itself, are left out of the sitemap page.
+// itself, are left out of the sitemap page. Every page document has an ID
+// of the form page-<slug>, whatever its type.
 export const SITEMAP_PAGES_QUERY = defineQuery(/* groq */ `
-  *[_type == "page" && !(_id in path("drafts.**"))
+  *[string::startsWith(_id, "page-") && !(_id in path("drafts.**"))
     && !string::startsWith(_id, "page-thank-you")
     && _id != "page-sitemap"] {
     title,
@@ -199,7 +199,7 @@ export async function getReviews(): Promise<Review[]> {
   }));
 }
 
-export type Site = SiteSettings & { phoneHref: string };
+export type Site = SiteSettings & { phoneHref: string; offerImage: SanityImage };
 
 /**
  * Site paths always end in a slash (trailingSlash: 'always'). Editors can
@@ -222,7 +222,7 @@ let siteSettings: Promise<Site> | undefined;
 /** The Site Settings singleton, plus a tel: link built from the digits. */
 export function getSiteSettings(): Promise<Site> {
   siteSettings ??= sanityClient
-    .fetch<SiteSettings | null>(SITE_SETTINGS_QUERY)
+    .fetch<(SiteSettings & { offerImage: SanityImage }) | null>(SITE_SETTINGS_QUERY)
     .then((doc) => {
       if (!doc) throw new Error('Sanity: the "siteSettings" document is missing');
       return {
@@ -237,9 +237,18 @@ export function getSiteSettings(): Promise<Site> {
   return siteSettings;
 }
 
-export type Page = Omit<PageContent, "slug" | "title" | "route">;
+/**
+ * A page document: hero and meta fields, the hero image, and — on pages with
+ * their own type — one object per section. Section shapes follow the Studio
+ * schema (studio-dr-geoff-cashion/schemaTypes/pages.ts); they are loosely
+ * typed here because each page reads only its own.
+ */
+export type Page = Omit<PageContent, "slug" | "title" | "route"> & {
+  heroImage: SanityImage;
+  [section: string]: any;
+};
 
-/** Hero and meta text for one route, from the document `page-<slug>`. */
+/** Everything one route shows, from the document `page-<slug>`. */
 export async function getPage(slug: string): Promise<Page> {
   const doc = await sanityClient.fetch<Page | null>(PAGE_QUERY, { id: `page-${slug}` });
   if (!doc) throw new Error(`Sanity: the "page-${slug}" document is missing`);

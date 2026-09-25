@@ -1,14 +1,13 @@
 ---
-import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import PageHero from "../components/PageHero.astro";
 import ReferBand from "../components/ReferBand.astro";
+import RichText from "../components/RichText.astro";
+import SanityImage from "../components/SanityImage.astro";
 import { getPage, getSiteSettings, getPublications } from "../sanity/queries";
 
-import journalsImg from "../assets/generated/journals.webp";
-import conferenceImg from "../assets/generated/conference.webp";
 
 const publications = await getPublications();
 
@@ -33,28 +32,16 @@ const page = await getPage("research");
       title={page.heading}
       titleEmphasis={page.headingEmphasis}
       lede={page.lede}
-      image={journalsImg}
-      imageAlt="A stack of medical journals on a desk under a reading lamp"
-      focus="65% center"
+      image={page.heroImage}
       crumb={page.breadcrumb ?? page.eyebrow}
     />
 
     <!-- ============================================ INTRO -->
     <section class="band intro">
       <div class="wrap intro__inner">
-        <p class="intro__statement" data-reveal>
-          A practice doing three and a half thousand procedures a year
-          generates a lot of data. Publishing it is how the technique gets
-          tested rather than merely repeated.
-        </p>
+        <p class="intro__statement" data-reveal>{page.intro.statement}</p>
         <div class="intro__note" data-reveal style="--delay:140ms">
-          <p>
-            Dr Cashion's recent work covers early-onset infection after
-            no-scalpel vasectomy, the diagnostic problem of unilateral absence
-            of the vas deferens, and a decade of change in who is choosing
-            vasectomy in Australia. His earlier research, from emergency
-            medicine, examined procedural sedation safety.
-          </p>
+          <RichText value={page.intro.note} />
         </div>
       </div>
     </section>
@@ -64,11 +51,9 @@ const page = await getPage("research");
       <div class="wrap">
         <div class="pubs__head">
           <div data-reveal>
-            <p class="tag tag--pale">Publications</p>
-            <h2>Selected work.</h2>
-            <p class="pubs__author">
-              Dr Geoffrey Cashion · AHPRA reg. {SITE.ahpra}
-            </p>
+            <p class="tag tag--pale">{page.publications.eyebrow}</p>
+            <h2>{page.publications.heading}</h2>
+            <p class="pubs__author">{page.publications.author} {SITE.ahpra}</p>
           </div>
           <div class="pubs__filters" data-reveal style="--delay:120ms" role="group" aria-label="Filter publications by topic">
             {
@@ -122,25 +107,13 @@ const page = await getPage("research");
     <!-- ============================================ CONFERENCES — full bleed -->
     <section class="bleed" id="conferences">
       <div class="bleed__media">
-        <Image
-          src={conferenceImg}
-          alt="A darkened conference auditorium during a presentation"
-          widths={[1200, 1800, 2600]}
-          sizes="100vw"
-          quality={76}
-        />
+        <SanityImage image={page.conferences.image} widths={[1200, 1800, 2600]} sizes="100vw" quality={76} />
       </div>
       <div class="bleed__scrim"></div>
       <div class="wrap bleed__inner">
-        <p class="tag tag--pale" data-reveal>Conferences</p>
-        <h2 data-reveal style="--delay:80ms">Presenting, and being corrected.</h2>
-        <p class="lede" data-reveal style="--delay:160ms">
-          Dr Cashion regularly attends and presents at national and
-          international vasectomy conferences — as much to learn from other
-          leading practitioners as to share his own results. Technique
-          refinements from those meetings come back into a practice performing
-          thousands of procedures a year.
-        </p>
+        <p class="tag tag--pale" data-reveal>{page.conferences.eyebrow}</p>
+        <h2 data-reveal style="--delay:80ms">{page.conferences.heading}</h2>
+        <p class="lede" data-reveal style="--delay:160ms">{page.conferences.lede}</p>
       </div>
     </section>
 
@@ -189,7 +162,7 @@ const page = await getPage("research");
     text-wrap: balance;
   }
 
-  .intro__note p {
+  .intro__note :global(p) {
     color: var(--ink-soft);
     max-width: 46ch;
   }

@@ -4,7 +4,8 @@
  * the build, and Vercel keeps serving the previous deployment.
  *
  * - every <img> has an alt attribute
- * - raster images are WebP (or AVIF); SVG is fine
+ * - raster images are WebP (or AVIF); SVG is fine. Sanity CDN images count
+ *   when the URL asks for fm=webp
  * - every <img> says how it loads, and at most one per page is eager (the
  *   hero); every <iframe> is lazy
  * - external links open in a new tab with rel="nofollow …"
@@ -25,7 +26,12 @@ const htmlFiles = (dir) =>
 const attr = (tag, name) => {
   const m = tag.match(new RegExp(`\\s${name}(?:=("[^"]*"|'[^']*'|[^\\s>]+))?(?=[\\s/>])`, "i"));
   if (!m) return undefined;
-  return m[1] === undefined ? "" : m[1].replace(/^["']|["']$/g, "");
+  if (m[1] === undefined) return "";
+  return m[1]
+    .replace(/^["']|["']$/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
 };
 
 const problems = [];
@@ -45,7 +51,11 @@ for (const file of htmlFiles(DIST)) {
 
     const urls = [src, ...(attr(tag, "srcset") ?? "").split(",").map((s) => s.trim().split(/\s+/)[0])];
     for (const u of urls.filter(Boolean)) {
-      if (!/\.(webp|avif|svg)(\?|$)/i.test(u) && !u.startsWith("data:")) fail(`image not WebP: ${u}`);
+      const ok =
+        /\.(webp|avif|svg)(\?|$)/i.test(u) ||
+        u.startsWith("data:") ||
+        (/^https:\/\/cdn\.sanity\.io\/images\//.test(u) && /[?&]fm=(webp|avif)\b/.test(u));
+      if (!ok) fail(`image not WebP: ${u}`);
     }
 
     const loading = attr(tag, "loading");

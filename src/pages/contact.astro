@@ -4,9 +4,8 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import PageHero from "../components/PageHero.astro";
 import ReferBand from "../components/ReferBand.astro";
-import { getPage, getSiteSettings, getStates } from "../sanity/queries";
-
-import receptionImg from "../assets/generated/reception.webp";
+import RichText from "../components/RichText.astro";
+import { getPage, getSiteSettings, getStates, withSlash } from "../sanity/queries";
 
 const totalClinics = (await getStates()).reduce((n, s) => n + s.clinics.length, 0);
 
@@ -23,9 +22,7 @@ const page = await getPage("contact");
       title={page.heading}
       titleEmphasis={page.headingEmphasis}
       lede={page.lede}
-      image={receptionImg}
-      imageAlt="An empty medical practice reception area in morning light"
-      focus="60% center"
+      image={page.heroImage}
       crumb={page.breadcrumb ?? page.eyebrow}
     />
 
@@ -33,12 +30,9 @@ const page = await getPage("contact");
     <section class="band direct" id="direct">
       <div class="wrap direct__inner">
         <div class="direct__head">
-          <p class="tag" data-reveal>Direct</p>
-          <h2 data-reveal style="--delay:80ms">Three ways through.</h2>
-          <p class="lede" data-reveal style="--delay:160ms">
-            For anything clinical, the phone is fastest. For anything with a
-            document attached, use email.
-          </p>
+          <p class="tag" data-reveal>{page.direct.eyebrow}</p>
+          <h2 data-reveal style="--delay:80ms">{page.direct.heading}</h2>
+          <p class="lede" data-reveal style="--delay:160ms">{page.direct.lede}</p>
         </div>
 
         <ul class="chan">
@@ -52,7 +46,7 @@ const page = await getPage("contact");
             <a class="chan__value chan__value--sm" href={`mailto:${SITE.email}`}>
               {SITE.email}
             </a>
-            <span class="chan__sub">Referrals and patient questions</span>
+            <span class="chan__sub">{page.direct.emailNote}</span>
           </li>
           <li class="chan__item" data-reveal style="--delay:280ms">
             <span class="chan__label">Social</span>
@@ -62,9 +56,9 @@ const page = await getPage("contact");
               target="_blank"
               rel="nofollow noopener noreferrer"
             >
-              facebook.com/vasectomyaustralia
+              {page.direct.socialLabel}
             </a>
-            <span class="chan__sub">Vasectomy Australia</span>
+            <span class="chan__sub">{page.direct.socialNote}</span>
           </li>
         </ul>
       </div>
@@ -74,23 +68,12 @@ const page = await getPage("contact");
     <section class="band band--dark cform" id="ask">
       <div class="wrap cform__inner">
         <div class="cform__text">
-          <p class="tag tag--pale" data-reveal>Ask a question</p>
-          <h2 data-reveal style="--delay:80ms">
-            Have a question about a patient?
-          </h2>
-          <p class="lede" data-reveal style="--delay:160ms">
-            Fill this out and Dr Cashion will contact you as soon as possible.
-            Please keep patient identifiers out of the message — a description
-            of the clinical question is enough to get a useful answer.
-          </p>
-          <p class="cform__aside" data-reveal style="--delay:240ms">
-            Not a GP? Patients book directly through <a
-              class="cform__aside-link"
-              href={SITE.parentSite}
-              target="_blank"
-              rel="nofollow noopener noreferrer">Vasectomy Australia</a> rather than through these
-            rooms.
-          </p>
+          <p class="tag tag--pale" data-reveal>{page.ask.eyebrow}</p>
+          <h2 data-reveal style="--delay:80ms">{page.ask.heading}</h2>
+          <p class="lede" data-reveal style="--delay:160ms">{page.ask.lede}</p>
+          <div data-reveal style="--delay:240ms">
+            <RichText value={page.ask.aside} class="cform__aside" linkClass="cform__aside-link" />
+          </div>
         </div>
 
         <form class="cform__form" data-cform novalidate>
@@ -134,14 +117,11 @@ const page = await getPage("contact");
     <section class="band where" id="where">
       <div class="wrap where__inner">
         <div data-reveal>
-          <p class="tag">Clinics</p>
-          <h2>{totalClinics} clinics, six states.</h2>
-          <p class="lede">
-            If the question is simply "where is the nearest one", the full list
-            is on the vasectomy page, filterable by state.
-          </p>
-          <a class="btn btn--ghost" href="/vasectomy/#locations">
-            Find a clinic
+          <p class="tag">{page.where.eyebrow}</p>
+          <h2>{page.where.heading.replaceAll("{count}", String(totalClinics))}</h2>
+          <p class="lede">{page.where.lede}</p>
+          <a class="btn btn--ghost" href={withSlash(page.where.button.href)}>
+            {page.where.button.label}
             <span class="btn__arrow" aria-hidden="true">→</span>
           </a>
         </div>
@@ -296,7 +276,7 @@ const page = await getPage("contact");
     max-width: 40ch;
   }
 
-  .cform__aside-link {
+  .cform__text :global(.cform__aside-link) {
     color: var(--bone);
     text-decoration: none;
     border-bottom: 1px solid color-mix(in srgb, var(--iodine-bright) 50%, transparent);
@@ -304,11 +284,11 @@ const page = await getPage("contact");
     transition: border-color 0.3s var(--ease);
   }
 
-  .cform__aside-link:hover {
+  .cform__text :global(.cform__aside-link:hover) {
     border-bottom-color: var(--iodine-bright);
   }
 
-  .cform__aside {
+  .cform__text :global(.cform__aside) {
     margin-top: 1.6rem;
     font-family: var(--mono);
     font-size: 0.74rem;

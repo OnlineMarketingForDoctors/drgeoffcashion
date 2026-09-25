@@ -5,26 +5,17 @@
  * anatomy cannot be trusted. Deliberately schematic — it shows the mechanism
  * (isolate, divide and cauterise, interpose fascia), not the anatomy.
  *
- * Steps advance on click/keyboard and on scroll into view.
+ * Steps advance on click/keyboard and on scroll into view. The step text is
+ * editable in the Studio; the three stages and their labels are fixed here,
+ * because they are drawn.
  */
 
-const steps = [
-  {
-    n: "01",
-    title: "The vas is isolated",
-    body: "A ring-tipped fixation clamp secures the vas deferens through the skin. A single small opening is made in the midline with sharp dissecting forceps — spread, not cut — and the vas is lifted out through it.",
-  },
-  {
-    n: "02",
-    title: "Divided, and the lumen sealed",
-    body: "A short segment is removed and the lumen of the testicular end is sealed with cautery, rather than relying on a tie that can slip or cut through.",
-  },
-  {
-    n: "03",
-    title: "Fascia interposed between the ends",
-    body: "The fascial sheath is drawn over one cut end and secured, so the two ends sit in separate tissue planes. Cautery plus fascial interposition is what drives the failure rate down.",
-  },
-];
+interface Props {
+  /** One per diagram stage, in order; the text comes from the Studio. */
+  steps: { title: string; body: string }[];
+}
+
+const steps = Astro.props.steps.slice(0, 3).map((s, i) => ({ ...s, n: String(i + 1).padStart(2, "0") }));
 ---
 
 <div class="occ" data-occ>

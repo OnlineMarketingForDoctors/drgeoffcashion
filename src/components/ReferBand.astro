@@ -1,7 +1,6 @@
 ---
-import { Image } from "astro:assets";
+import SanityImage from "./SanityImage.astro";
 import { getSiteSettings } from "../sanity/queries";
-import orchidImg from "../assets/generated/orchidometer.png";
 
 interface Props {
   /** Interior pages carry an id so the spine and nav can target them. */
@@ -36,15 +35,18 @@ const SITE = await getSiteSettings();
     </div>
 
     <aside class="offer" data-reveal style="--delay:200ms">
-      <figure class="offer__figure">
-        <Image
-          src={orchidImg}
-          alt="A Prader orchidometer laid out on a surgical drape"
-          widths={[420, 700, 1024]}
-          sizes="(min-width: 62rem) 38vw, 90vw"
-          quality={82}
-        />
-      </figure>
+      {
+        SITE.offerImage?.asset && (
+          <figure class="offer__figure">
+            <SanityImage
+              image={SITE.offerImage}
+              widths={[420, 700, 1024]}
+              sizes="(min-width: 62rem) 38vw, 90vw"
+              quality={82}
+            />
+          </figure>
+        )
+      }
       <div class="offer__text">
         {SITE.offerEyebrow && <p class="tag tag--pale">{SITE.offerEyebrow}</p>}
         {SITE.offerHeading && <h3>{SITE.offerHeading}</h3>}

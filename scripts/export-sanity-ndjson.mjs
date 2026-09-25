@@ -10,7 +10,8 @@
  * Site Settings and the pages do have fixed IDs (`siteSettings`,
  * `page-<slug>`), because the site loads them by ID. An import stops on an
  * ID that already exists unless given --replace (overwrite) or --missing
- * (skip existing).
+ * (skip existing). Their images and the home page video point at the files
+ * in src/assets/generated/ and public/assets/, which the import uploads.
  *
  *   npm run sanity:seed
  *   cd studio-dr-geoff-cashion
@@ -21,7 +22,14 @@ import { states } from '../src/data/locations.ts';
 import { publications } from '../src/data/publications.ts';
 import { reviews } from '../src/data/reviews.ts';
 import { siteSettings } from '../src/data/siteSettings.ts';
-import { pages } from '../src/data/pages.ts';
+import { buildOfferImage, buildPageDocs } from './seed-pages.mjs';
+
+// `sanity dataset import` uploads these, resolving file:// against this path
+const assetsDir = new URL('../src/assets/generated/', import.meta.url).pathname;
+const refs = {
+  image: (file) => ({ _sanityAsset: `image@file://${assetsDir}${file}` }),
+  file: (file) => ({ _sanityAsset: `file@file://${new URL(`../public/assets/${file}`, import.meta.url).pathname}` }),
+};
 
 const docs = [];
 
@@ -38,11 +46,10 @@ docs.push({
   footerLinks: keyed(siteSettings.footerLinks),
   credit: link(siteSettings.credit),
   referButton: link(siteSettings.referButton),
+  offerImage: buildOfferImage(refs),
 });
 
-for (const { slug, ...p } of pages) {
-  docs.push({ _id: `page-${slug}`, _type: 'page', ...p });
-}
+docs.push(...buildPageDocs(refs));
 
 // `order` keeps the curated sequence (metro before regional); Sanity would
 // otherwise have nothing better than alphabetical to sort by

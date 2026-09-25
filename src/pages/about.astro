@@ -1,29 +1,16 @@
 ---
-import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import PageHero from "../components/PageHero.astro";
 import ReferBand from "../components/ReferBand.astro";
-import { qualifications } from "../data/publications";
-import { getPage, getSiteSettings } from "../sanity/queries";
-
-import deskImg from "../assets/generated/cashion-desk.webp";
-import rockhamptonImg from "../assets/generated/rockhampton.webp";
-import townImg from "../assets/generated/country-town.webp";
-import lecternImg from "../assets/generated/lectern.webp";
-import portraitImg from "../assets/generated/cashion-portrait.webp";
-import universityImg from "../assets/generated/university.webp";
-
-const scale = [
-  { figure: "25,000+", label: "Vasectomies performed" },
-  { figure: "~3,500", label: "Each year" },
-  { figure: "6", label: "States with clinics" },
-  { figure: "2017", label: "Full-time vasectomy practice since" },
-];
+import RichText from "../components/RichText.astro";
+import SanityImage from "../components/SanityImage.astro";
+import { getPage, getSiteSettings, withSlash } from "../sanity/queries";
 
 const SITE = await getSiteSettings();
 const page = await getPage("about");
+const { lead, scale, rural, access, quals, teaching, quote } = page;
 ---
 
 <Base title={page.metaTitle} description={page.metaDescription}>
@@ -35,42 +22,25 @@ const page = await getPage("about");
       title={page.heading}
       titleEmphasis={page.headingEmphasis}
       lede={page.lede}
-      image={deskImg}
-      imageAlt="Dr Geoff Cashion at his desk in a consulting room"
-      focus="70% center"
+      image={page.heroImage}
       crumb={page.breadcrumb ?? page.eyebrow}
     />
 
     <!-- ============================================ LEAD -->
     <section class="band lead" id="who">
       <div class="wrap lead__inner">
-        <p class="lead__statement" data-reveal>
-          Dr Geoff Cashion has dedicated his professional life to one
-          question: how do you make a safe, effective, affordable vasectomy
-          available to <em>every</em> Australian man, not just the ones who
-          live near a capital city?
-        </p>
+        <div class="lead__statement" data-reveal>
+          <RichText value={lead.statement} />
+        </div>
 
         <div class="lead__cols">
-          <div class="lead__col" data-reveal style="--delay:100ms">
-            <p>
-              He is the founder of Vasectomy Australia, the country's largest
-              provider of no-scalpel vasectomy. What began as one doctor is now
-              a practice with several full-time vasectomists and clinics across
-              six states — built specifically so that a man in Dubbo or
-              Rockhampton has the same access to an experienced vasectomist as
-              a man in Sydney.
-            </p>
-          </div>
-          <div class="lead__col" data-reveal style="--delay:200ms">
-            <p>
-              For a referring GP, the practical consequence is simple. You are
-              not sending your patient to someone who does a handful of these
-              between other work. You are sending him to a doctor who has done
-              the procedure more than twenty-five thousand times, and who does
-              little else.
-            </p>
-          </div>
+          {
+            lead.columns.map((text: string, i: number) => (
+              <div class="lead__col" data-reveal style={`--delay:${100 + i * 100}ms`}>
+                <p>{text}</p>
+              </div>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -78,12 +48,12 @@ const page = await getPage("about");
     <!-- ============================================ SCALE -->
     <section class="band band--drape scale" id="scale">
       <div class="wrap">
-        <p class="tag tag--pale" data-reveal>The practice</p>
-        <h2 data-reveal style="--delay:80ms">Built for distance.</h2>
+        <p class="tag tag--pale" data-reveal>{scale.eyebrow}</p>
+        <h2 data-reveal style="--delay:80ms">{scale.heading}</h2>
 
         <dl class="scale__grid">
           {
-            scale.map((s, i) => (
+            scale.stats.map((s: { figure: string; label: string }, i: number) => (
               <div class="scale__item" data-reveal style={`--delay:${140 + i * 80}ms`}>
                 <dt class="scale__label">{s.label}</dt>
                 <dd class="scale__figure">{s.figure}</dd>
@@ -97,27 +67,13 @@ const page = await getPage("about");
     <!-- ============================================ ROCKHAMPTON — full bleed -->
     <section class="bleed" id="rural">
       <div class="bleed__media">
-        <Image
-          src={rockhamptonImg}
-          alt="Open cattle country near Rockhampton, Central Queensland, at golden hour"
-          widths={[1200, 1800, 2600]}
-          sizes="100vw"
-          quality={78}
-        />
+        <SanityImage image={rural.image} widths={[1200, 1800, 2600]} sizes="100vw" quality={78} />
       </div>
       <div class="bleed__scrim"></div>
       <div class="wrap bleed__inner">
-        <p class="tag tag--pale" data-reveal>Rockhampton, Queensland</p>
-        <h2 data-reveal style="--delay:80ms">
-          He grew up a long way from a specialist.
-        </h2>
-        <p class="lede" data-reveal style="--delay:160ms">
-          Dr Cashion was raised in Rockhampton, and that upbringing is the
-          reason Vasectomy Australia is shaped the way it is. Rural and
-          regional men have historically had two options: travel hundreds of
-          kilometres, or go without. The clinic list exists to remove that
-          choice.
-        </p>
+        <p class="tag tag--pale" data-reveal>{rural.eyebrow}</p>
+        <h2 data-reveal style="--delay:80ms">{rural.heading}</h2>
+        <p class="lede" data-reveal style="--delay:160ms">{rural.lede}</p>
       </div>
     </section>
 
@@ -125,28 +81,15 @@ const page = await getPage("about");
     <section class="band split" id="access">
       <div class="wrap split__inner">
         <div class="split__text">
-          <p class="tag" data-reveal>Access</p>
-          <h2 data-reveal style="--delay:80ms">
-            The same procedure, the same price, wherever your patient lives.
-          </h2>
+          <p class="tag" data-reveal>{access.eyebrow}</p>
+          <h2 data-reveal style="--delay:80ms">{access.heading}</h2>
           <div class="split__prose" data-reveal style="--delay:160ms">
-            <p>
-              A vasectomy performed in Tamworth is the same operation, by the
-              same technique, at the same out-of-pocket cost as one performed
-              in the inner west of Sydney. Regional clinics run to a schedule,
-              so a patient in a country town is booked into a real list rather
-              than waiting for a visiting doctor who may or may not come.
-            </p>
-            <p>
-              For you, that means a referral does not have to come with an
-              apology about travel.
-            </p>
+            <RichText value={access.body} />
           </div>
         </div>
         <figure class="split__figure" data-reveal style="--delay:120ms">
-          <Image
-            src={townImg}
-            alt="A quiet main street in a regional Australian town"
+          <SanityImage
+            image={access.image}
             widths={[600, 900, 1300]}
             sizes="(min-width: 60rem) 48vw, 90vw"
             quality={80}
@@ -159,17 +102,12 @@ const page = await getPage("about");
     <section class="band quals" id="qualifications">
       <div class="wrap quals__inner">
         <div class="quals__head">
-          <p class="tag" data-reveal>Qualifications &amp; memberships</p>
-          <h2 data-reveal style="--delay:80ms">An unusual route in.</h2>
-          <p class="lede" data-reveal style="--delay:160ms">
-            Accountancy first, then medicine, then rural and emergency
-            fellowships. It is not the standard path to a procedural practice,
-            and it shows in how the clinics are run.
-          </p>
+          <p class="tag" data-reveal>{quals.eyebrow}</p>
+          <h2 data-reveal style="--delay:80ms">{quals.heading}</h2>
+          <p class="lede" data-reveal style="--delay:160ms">{quals.lede}</p>
           <figure class="quals__figure" data-reveal style="--delay:240ms">
-            <Image
-              src={universityImg}
-              alt="A sandstone university building in Queensland"
+            <SanityImage
+              image={quals.image}
               widths={[500, 800, 1100]}
               sizes="(min-width: 62rem) 38vw, 90vw"
               quality={78}
@@ -177,13 +115,11 @@ const page = await getPage("about");
           </figure>
         </div>
 
-        <p class="quals__reg">
-          Registered medical practitioner · AHPRA reg. {SITE.ahpra}
-        </p>
+        <p class="quals__reg">{quals.registration} {SITE.ahpra}</p>
 
         <ol class="tl">
           {
-            qualifications.map((q, i) => (
+            quals.items.map((q: { year: number; award: string; institution: string }, i: number) => (
               <li class="tl__item" data-reveal style={`--delay:${i * 90}ms`}>
                 <span class="tl__year">{q.year}</span>
                 <span class="tl__dot" aria-hidden="true" />
@@ -202,28 +138,19 @@ const page = await getPage("about");
     <section class="band band--dark teach" id="teaching">
       <div class="wrap teach__inner">
         <figure class="teach__figure" data-reveal>
-          <Image
-            src={lecternImg}
-            alt="A speaker at a lectern addressing a darkened conference auditorium"
+          <SanityImage
+            image={teaching.image}
             widths={[600, 1000, 1500]}
             sizes="(min-width: 62rem) 52vw, 90vw"
             quality={78}
           />
         </figure>
         <div class="teach__text">
-          <p class="tag tag--pale" data-reveal>Thought leadership</p>
-          <h2 data-reveal style="--delay:80ms">
-            He presents the work, and publishes it.
-          </h2>
-          <p class="lede" data-reveal style="--delay:160ms">
-            Dr Cashion regularly attends and presents at national and
-            international vasectomy conferences, and publishes on technique,
-            complications and Australian vasectomy trends. Volume without
-            scrutiny is just repetition; the publishing is what keeps the
-            technique honest.
-          </p>
-          <a class="teach__link" href="/research/" data-reveal style="--delay:240ms">
-            Read the publications <span aria-hidden="true">→</span>
+          <p class="tag tag--pale" data-reveal>{teaching.eyebrow}</p>
+          <h2 data-reveal style="--delay:80ms">{teaching.heading}</h2>
+          <p class="lede" data-reveal style="--delay:160ms">{teaching.lede}</p>
+          <a class="teach__link" href={withSlash(teaching.link.href)} data-reveal style="--delay:240ms">
+            {teaching.link.label} <span aria-hidden="true">→</span>
           </a>
         </div>
       </div>
@@ -233,21 +160,17 @@ const page = await getPage("about");
     <section class="band quote" id="quote">
       <div class="wrap quote__inner">
         <figure class="quote__figure" data-reveal>
-          <Image
-            src={portraitImg}
-            alt="Studio portrait of Dr Geoff Cashion"
+          <SanityImage
+            image={quote.image}
             widths={[400, 700, 1000]}
             sizes="(min-width: 60rem) 32vw, 70vw"
             quality={82}
           />
         </figure>
         <blockquote class="quote__body" data-reveal style="--delay:120ms">
-          <p>
-            I look forward to partnering with you and your patients, helping
-            them to achieve their family planning goals.
-          </p>
+          <p>{quote.quote}</p>
           <cite>
-            Dr Geoffrey Cashion — Specialist GP, founder of Vasectomy Australia<br />
+            {quote.cite}<br />
             AHPRA registration {SITE.ahpra}
           </cite>
         </blockquote>
@@ -273,7 +196,7 @@ const page = await getPage("about");
     text-wrap: balance;
   }
 
-  .lead__statement em {
+  .lead__statement :global(em) {
     font-style: italic;
     color: var(--iodine);
   }

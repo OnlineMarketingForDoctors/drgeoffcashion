@@ -166,6 +166,12 @@ export const siteSettings = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'offerImage',
+      title: 'Offer image',
+      type: 'imageWithAlt',
+      group: 'refer',
+    }),
+    defineField({
       name: 'offerEyebrow',
       title: 'Offer eyebrow',
       type: 'string',

@@ -1,0 +1,61 @@
+---
+/**
+ * Paragraphs from a Sanity rich-text field: italic, bold and links only.
+ * External links open in a new tab with nofollow, like every external link
+ * on the site; internal ones get their trailing slash.
+ */
+import { withSlash } from "../sanity/queries";
+
+interface Span {
+  _key?: string;
+  text: string;
+  marks?: string[];
+}
+interface Block {
+  _key?: string;
+  _type: string;
+  children?: Span[];
+  markDefs?: { _key: string; _type: string; href?: string }[];
+}
+
+interface Props {
+  value: Block[] | null | undefined;
+  /** Class on each <p>. */
+  class?: string;
+  /** Class on each link. */
+  linkClass?: string;
+}
+
+const { value, class: pClass, linkClass } = Astro.props;
+const blocks = (value ?? []).filter((b) => b._type === "block");
+
+const external = (href: string) => /^(https?:)?\/\//i.test(href);
+const linkOf = (b: Block, marks: string[] = []) =>
+  marks.map((m) => b.markDefs?.find((d) => d._key === m && d._type === "link")).find(Boolean)?.href;
+---
+
+{
+  blocks.map((b) => (
+    <p class={pClass}>
+      {(b.children ?? []).map((s) => {
+        const marks = s.marks ?? [];
+        let node: any = s.text;
+        if (marks.includes("em")) node = <em>{node}</em>;
+        if (marks.includes("strong")) node = <strong>{node}</strong>;
+        const href = linkOf(b, marks);
+        if (href) {
+          node = external(href) ? (
+            <a class={linkClass} href={href} target="_blank" rel="nofollow noopener noreferrer">
+              {node}
+            </a>
+          ) : (
+            <a class={linkClass} href={withSlash(href)}>
+              {node}
+            </a>
+          );
+        }
+        return node;
+      })}
+    </p>
+  ))
+}

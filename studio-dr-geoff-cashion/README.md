@@ -16,10 +16,16 @@ Schema types live in `schemaTypes/`. Their fields match the GROQ queries in
 
 - **Site Settings** (`siteSettings`): one document, ID `siteSettings`, for
   what repeats on every page: contact details, header, footer, refer band.
-- **Pages** (`page`): one document per route, ID `page-<slug>` (home, about,
-  vasectomy, research, contact, refer), holding hero and meta text. Routes
-  and layouts live in the Astro app, so the Studio offers no create, delete
-  or duplicate for these two types (see `structure.ts`, `sanity.config.ts`).
+- **Pages**: one document per route, ID `page-<slug>`. The six main pages
+  each have their own type (`homePage`, `aboutPage`, `vasectomyPage`,
+  `researchPage`, `contactPage`, `referPage`, in `schemaTypes/pages.ts`), with
+  a tab per page section: headings, text, lists, figures and images,
+  including background images. The thank-you pages and the sitemap use the
+  simple `page` type (hero and SEO only). Routes and layouts live in the
+  Astro app, so the Studio offers no create, delete or duplicate for pages
+  or Site Settings (see `structure.ts`, `sanity.config.ts`).
+- Images use `imageWithAlt`: alt text is required, and the hotspot sets
+  which part of the picture stays in frame when it is cropped to fit.
 - **Clinics**, **Publications**, **Reviews**: collections; clinics and
   reviews have an Order field for their position on the site.
 

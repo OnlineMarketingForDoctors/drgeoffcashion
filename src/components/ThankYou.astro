@@ -1,5 +1,4 @@
 ---
-import type { ImageMetadata } from "astro";
 import Base from "../layouts/Base.astro";
 import Nav from "./Nav.astro";
 import Footer from "./Footer.astro";
@@ -13,14 +12,11 @@ import { getPage, getSiteSettings } from "../sanity/queries";
  */
 interface Props {
   slug: string;
-  image: ImageMetadata;
-  imageAlt: string;
-  focus?: string;
   /** Where "send another" goes back to. */
   again: { href: string; label: string };
 }
 
-const { slug, image, imageAlt, focus, again } = Astro.props;
+const { slug, again } = Astro.props;
 const SITE = await getSiteSettings();
 const page = await getPage(slug);
 ---
@@ -34,9 +30,7 @@ const page = await getPage(slug);
       title={page.heading}
       titleEmphasis={page.headingEmphasis}
       lede={page.lede}
-      image={image}
-      imageAlt={imageAlt}
-      focus={focus}
+      image={page.heroImage}
       crumb={page.breadcrumb ?? page.eyebrow}
     />
 

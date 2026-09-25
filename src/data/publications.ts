@@ -2,9 +2,9 @@
  * Publications and presentations, transcribed from the old
  * drgeoffcashion.com.au/research page. Citations left exactly as published.
  *
- * `publications` is seed data only: the research page renders them from Sanity
- * (see src/sanity/queries.ts), and `npm run sanity:seed` exports them from
- * here. `qualifications` is still rendered from this file.
+ * Seed data only: the research page renders them from Sanity (see
+ * src/sanity/queries.ts), and `npm run sanity:seed` exports them from here.
+ * Edit the live content in the Studio, not in this file.
  */
 
 export interface Publication {
@@ -73,34 +73,5 @@ export const publications: Publication[] = [
     year: 2007,
     topic: "Sedation",
     note: "Presented November 2007. Currently being updated in preparation for publication.",
-  },
-];
-
-export interface Qualification {
-  year: number;
-  award: string;
-  institution: string;
-}
-
-export const qualifications: Qualification[] = [
-  {
-    year: 1992,
-    award: "Bachelor of Business (Accountancy)",
-    institution: "Queensland University of Technology",
-  },
-  {
-    year: 2002,
-    award: "Bachelor of Medicine and Bachelor of Surgery",
-    institution: "University of Queensland",
-  },
-  {
-    year: 2011,
-    award: "Fellowship",
-    institution: "Australian College of Rural and Remote Medicine",
-  },
-  {
-    year: 2013,
-    award: "Fellowship",
-    institution: "The Royal College of Emergency Medicine",
   },
 ];

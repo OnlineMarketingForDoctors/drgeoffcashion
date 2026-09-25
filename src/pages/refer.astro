@@ -5,8 +5,6 @@ import Footer from "../components/Footer.astro";
 import PageHero from "../components/PageHero.astro";
 import { getPage, getSiteSettings } from "../sanity/queries";
 
-import referralImg from "../assets/generated/referral-desk.webp";
-
 const SITE = await getSiteSettings();
 const page = await getPage("refer");
 ---
@@ -20,9 +18,7 @@ const page = await getPage("refer");
       title={page.heading}
       titleEmphasis={page.headingEmphasis}
       lede={page.lede}
-      image={referralImg}
-      imageAlt="A referral letter and fountain pen on a doctor's desk"
-      focus="60% center"
+      image={page.heroImage}
       crumb={page.breadcrumb ?? page.eyebrow}
     />
 
@@ -30,16 +26,12 @@ const page = await getPage("refer");
       <div class="wrap rf__inner">
         <!-- ---------------------------------------------- aside -->
         <aside class="rf__aside">
-          <p class="tag" data-reveal>The referral</p>
-          <h2 data-reveal style="--delay:80ms">Refer a patient</h2>
-          <p class="rf__note" data-reveal style="--delay:160ms">
-            We need enough to contact your patient and enough to send the
-            outcome back to you. Nothing else is required at this stage —
-            anything clinical can follow in a letter.
-          </p>
+          <p class="tag" data-reveal>{page.aside.eyebrow}</p>
+          <h2 data-reveal style="--delay:80ms">{page.aside.heading}</h2>
+          <p class="rf__note" data-reveal style="--delay:160ms">{page.aside.note}</p>
 
           <div class="rf__alt" data-reveal style="--delay:240ms">
-            <p class="rf__alt-label">Rather not use a form?</p>
+            <p class="rf__alt-label">{page.aside.altLabel}</p>
             <a class="rf__alt-link" href={SITE.phoneHref}>
               {SITE.phoneLabel}
               <span class="rf__alt-sub">{SITE.phoneDigits}</span>

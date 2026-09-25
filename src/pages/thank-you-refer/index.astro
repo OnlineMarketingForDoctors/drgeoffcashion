@@ -1,12 +1,5 @@
 ---
 import ThankYou from "../../components/ThankYou.astro";
-import referralImg from "../../assets/generated/referral-desk.webp";
 ---
 
-<ThankYou
-  slug="thank-you-refer"
-  image={referralImg}
-  imageAlt="A referral letter and fountain pen on a doctor's desk"
-  focus="60% center"
-  again={{ href: "/refer/", label: "Refer another patient" }}
-/>
+<ThankYou slug="thank-you-refer" again={{ href: "/refer/", label: "Refer another patient" }} />

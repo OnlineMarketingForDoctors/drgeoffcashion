@@ -1,0 +1,37 @@
+---
+/**
+ * <img> for a Sanity image: WebP srcset from the image CDN, intrinsic size to
+ * avoid layout shift, lazy unless told otherwise, and the editor's hotspot as
+ * object-position. Alt text comes from the image itself in the Studio.
+ */
+import { focus, responsive, type SanityImage } from "../sanity/image";
+
+interface Props {
+  image: SanityImage;
+  widths: number[];
+  sizes: string;
+  quality?: number;
+  /** Only the hero should be eager. */
+  eager?: boolean;
+  class?: string;
+  /** Overrides the alt text; "" marks the image decorative. */
+  alt?: string;
+}
+
+const { image, widths, sizes, quality = 80, eager = false, class: className, alt } = Astro.props;
+const r = responsive(image, widths, quality);
+---
+
+<img
+  class={className}
+  src={r.src}
+  srcset={r.srcset}
+  sizes={sizes}
+  width={r.width}
+  height={r.height}
+  alt={alt ?? image.alt ?? ""}
+  loading={eager ? "eager" : "lazy"}
+  fetchpriority={eager ? "high" : "auto"}
+  decoding="async"
+  style={focus(image) ? `object-position:${focus(image)}` : undefined}
+/>

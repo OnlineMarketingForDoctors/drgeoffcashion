@@ -1,59 +1,25 @@
 ---
-import { Image } from "astro:assets";
-
-import referralImg from "../assets/generated/referral-desk.webp";
-import corridorImg from "../assets/generated/corridor.webp";
-import instrumentsImg from "../assets/generated/instruments.webp";
-import roomImg from "../assets/generated/procedure-room.webp";
-import mondayImg from "../assets/generated/monday.webp";
+import SanityImage from "./SanityImage.astro";
+import type { SanityImage as SanityImageField } from "../sanity/image";
 
 /*
  * This one genuinely is a sequence, so it gets numbers. The image column
- * pins and cross-fades as each step comes into view.
+ * pins and cross-fades as each step comes into view. Content comes from the
+ * home page's "Patient's day" section in the Studio.
  */
-const steps = [
-  {
-    when: "Day 0",
-    title: "You send the referral.",
-    body: "A standard referral by email or post. Our rooms contact him directly to book — you are not chasing anyone, and neither is he.",
-    img: referralImg,
-    alt: "A referral letter and fountain pen on a doctor's desk",
-  },
-  {
-    when: "Before",
-    title: "He arrives knowing what happens.",
-    body: "Written instructions, reminders and an explainer video go out ahead of the appointment. Most of the anxiety in this procedure is about the unknown, so we remove the unknown.",
-    img: corridorImg,
-    alt: "A calm, daylit medical suite corridor",
-  },
-  {
-    when: "5–8 min",
-    title: "No scalpel, no stitches.",
-    body: "Local anaesthetic, then a single small opening made with a ring-tipped forceps rather than a blade. He is awake, and it is over in the time it takes to park the car.",
-    img: instrumentsImg,
-    alt: "Ring-tipped fixation forceps and dissecting forceps on a surgical drape",
-  },
-  {
-    when: "Same hour",
-    title: "He drives himself home.",
-    body: "No sedation and no general anaesthetic means no carer to arrange and no afternoon written off. Several patients have mentioned going out for dinner the same night.",
-    img: roomImg,
-    alt: "An empty procedure room in morning light",
-  },
-  {
-    when: "Monday",
-    title: "He is back at work.",
-    body: "A quiet weekend, ibuprofen, and most men are back to normal duties by Monday. A follow-up semen analysis confirms clearance, then he returns to your care.",
-    img: mondayImg,
-    alt: "A man at home in a sunlit kitchen on a weekend morning",
-  },
-];
+interface Props {
+  eyebrow: string;
+  heading: string;
+  steps: { when: string; title: string; body: string; image?: SanityImageField }[];
+}
+
+const { eyebrow, heading, steps } = Astro.props;
 ---
 
 <section class="band seq" id="experience">
   <div class="wrap seq__head" data-reveal>
-    <p class="tag">Your patient's day</p>
-    <h2>What you are actually sending him into.</h2>
+    <p class="tag">{eyebrow}</p>
+    <h2>{heading}</h2>
   </div>
 
   <div class="wrap seq__inner">
@@ -62,13 +28,14 @@ const steps = [
         {
           steps.map((s, i) => (
             <figure class:list={["seq__frame", { "is-active": i === 0 }]} data-seq-frame={i}>
-              <Image
-                src={s.img}
-                alt={s.alt}
-                widths={[600, 900, 1300]}
-                sizes="(min-width: 62rem) 46vw, 90vw"
-                quality={80}
-              />
+              {s.image?.asset && (
+                <SanityImage
+                  image={s.image}
+                  widths={[600, 900, 1300]}
+                  sizes="(min-width: 62rem) 46vw, 90vw"
+                  quality={80}
+                />
+              )}
             </figure>
           ))
         }
@@ -79,15 +46,11 @@ const steps = [
       {
         steps.map((s, i) => (
           <li class="step" data-seq-step={i}>
-            <figure class="step__inline">
-              <Image
-                src={s.img}
-                alt={s.alt}
-                widths={[500, 800]}
-                sizes="90vw"
-                quality={78}
-              />
-            </figure>
+            {s.image?.asset && (
+              <figure class="step__inline">
+                <SanityImage image={s.image} widths={[500, 800]} sizes="90vw" quality={78} />
+              </figure>
+            )}
             <p class="step__when">{s.when}</p>
             <h3 class="step__title">{s.title}</h3>
             <p class="step__body">{s.body}</p>

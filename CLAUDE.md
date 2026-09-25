@@ -4,19 +4,30 @@ Deployed on Vercel from this repository.
 
 ## Content: Sanity
 
-Clinics, publications, reviews, Site Settings (contact details, header,
-footer, refer band) and each page's hero and meta text are read from Sanity
-(project `4odz5ftz`, dataset `production`) at build time, via
-`src/sanity/queries.ts`. Page layouts and images stay in code. The Studio is
-`studio-dr-geoff-cashion/`, a separate package deployed to
+All site content is read from Sanity (project `4odz5ftz`, dataset
+`production`) at build time, via `src/sanity/queries.ts`: clinics,
+publications, reviews, Site Settings (contact details, header, footer, refer
+band) and every page's text and images, section by section. Each main page has
+its own document type (`homePage`, `aboutPage`, `vasectomyPage`,
+`researchPage`, `contactPage`, `referPage`); the thank-you pages and the
+sitemap use `page`. All page documents have IDs `page-<slug>`. Layouts, CSS,
+and interface wording (filter buttons, form labels, the side navigation,
+diagram labels) stay in code.
+
+Images are served by Sanity's image CDN as WebP srcsets
+(`src/sanity/image.ts`, `src/components/SanityImage.astro`); the build does
+not download them. Rich text renders through `src/components/RichText.astro`.
+
+The Studio is `studio-dr-geoff-cashion/`, a separate package deployed to
 https://drgeoffcashion.sanity.studio; see its README. `src/data/*.ts` is only
-the seed source for `npm run sanity:seed` (except `qualifications`, which is
-still rendered from there).
+the seed source for `npm run sanity:seed`; page sections are in
+`src/data/pageContent.ts`, turned into documents by `scripts/seed-pages.mjs`.
 
 The site is static, so content changes need a Vercel rebuild. A Sanity
 webhook ("Rebuild site on Vercel", manage.sanity.io → API → Webhooks) calls a
 Vercel deploy hook on `main` whenever a published document of those types is
-created, updated or deleted, so a publish is live about a minute later. The
+created, updated or deleted (a new document type must be added to the
+webhook's filter too), so a publish is live about a minute later. The
 hook URL is a secret and is not stored in this repo.
 
 ## URLs end in a slash

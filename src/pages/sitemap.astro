@@ -5,8 +5,6 @@ import Footer from "../components/Footer.astro";
 import PageHero from "../components/PageHero.astro";
 import { getPage, getSitemapPages } from "../sanity/queries";
 
-import corridorImg from "../assets/generated/corridor.webp";
-
 /*
  * The HTML sitemap, for people. Not sitemap.xml: that stays out while the
  * site is noindexed (see CLAUDE.md). The list comes from the Page documents
@@ -25,9 +23,7 @@ const pages = await getSitemapPages();
       title={page.heading}
       titleEmphasis={page.headingEmphasis}
       lede={page.lede}
-      image={corridorImg}
-      imageAlt="A calm, daylit medical suite corridor"
-      focus="center"
+      image={page.heroImage}
       crumb={page.breadcrumb ?? page.eyebrow}
     />
 
