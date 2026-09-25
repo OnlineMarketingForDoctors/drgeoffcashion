@@ -26,8 +26,11 @@ Schema types live in `schemaTypes/`. Their fields match the GROQ queries in
   or Site Settings (see `structure.ts`, `sanity.config.ts`).
 - Images use `imageWithAlt`: alt text is required, and the hotspot sets
   which part of the picture stays in frame when it is cropped to fit.
-- **Clinics**, **Publications**, **Reviews**: collections; clinics and
-  reviews have an Order field for their position on the site.
+- **Clinics** and **Publications** are lists inside the pages that show
+  them: the procedure page (Locations tab) and the research page
+  (Publications tab). Drag to reorder clinics; publications sort newest
+  first on the site.
+- **Reviews**: standalone documents, not shown on any page at present.
 
 ## Commands
 

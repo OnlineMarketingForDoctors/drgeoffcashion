@@ -334,6 +334,15 @@ export const vasectomyPage = defineType({
       str('eyebrow', 'Eyebrow', ''),
       str('heading', 'Heading', ''),
       txt('lede', 'Intro', ''),
+      defineField({
+        name: 'clinics',
+        title: 'Clinics',
+        description:
+          'Drag to reorder: within each state, clinics show in this order. The Contact page and llms.txt count and list them from here too.',
+        type: 'array',
+        of: [{type: 'clinic'}],
+        validation: (r) => r.required().min(1),
+      }),
     ]),
   ],
   preview,
@@ -352,6 +361,14 @@ export const researchPage = defineType({
       str('eyebrow', 'Eyebrow', ''),
       str('heading', 'Heading', ''),
       str('author', 'Author line', '', {description: AHPRA_NOTE}),
+      defineField({
+        name: 'items',
+        title: 'Publications',
+        description: 'Shown newest first on the site, whatever the order here.',
+        type: 'array',
+        of: [{type: 'publication'}],
+        validation: (r) => r.required().min(1),
+      }),
     ]),
     section('conferences', 'Conferences', [
       img('image', 'Background image', ''),

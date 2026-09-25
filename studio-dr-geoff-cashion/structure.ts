@@ -38,8 +38,6 @@ export const structure: StructureResolver = (S) =>
               ),
             ),
         ),
-      S.documentTypeListItem('clinic').title('Clinics'),
-      S.documentTypeListItem('publication').title('Publications'),
       S.documentTypeListItem('review').title('Reviews'),
     ])
 

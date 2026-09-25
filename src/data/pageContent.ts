@@ -8,6 +8,9 @@
  * width and height (what the old CSS object-position said).
  */
 
+import { states } from "./locations.ts";
+import { publications } from "./publications.ts";
+
 export interface SeedImage {
   _seed: "image";
   file: string;
@@ -465,6 +468,9 @@ export const vasectomy = {
     eyebrow: "Where to send him",
     heading: "Clinics across six states.",
     lede: "Select a state to filter, or narrow to the clinics Dr Cashion operates himself.",
+    clinics: states.flatMap((s) =>
+      s.clinics.map((c) => ({ _type: "clinic", clinic: c.clinic, area: c.area, state: s.code, doctor: c.doctor }))
+    ),
   },
 };
 
@@ -481,6 +487,7 @@ export const research = {
     eyebrow: "Publications",
     heading: "Selected work.",
     author: "Dr Geoffrey Cashion · AHPRA reg.",
+    items: publications.map((p) => ({ _type: "publication", ...p })),
   },
   conferences: {
     image: img("conference.webp", "A darkened conference auditorium during a presentation"),

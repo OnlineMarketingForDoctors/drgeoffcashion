@@ -9,10 +9,11 @@ export const STATES = [
   {title: 'Tasmania', value: 'TAS'},
 ]
 
+/** One clinic in the procedure page's list (Locations tab); list order is site order. */
 export const clinic = defineType({
   name: 'clinic',
   title: 'Clinic',
-  type: 'document',
+  type: 'object',
   fields: [
     defineField({
       name: 'clinic',
@@ -49,28 +50,6 @@ export const clinic = defineType({
       initialValue: 'cashion',
       validation: (rule) => rule.required(),
     }),
-    defineField({
-      name: 'order',
-      title: 'Order',
-      type: 'number',
-      description: 'Position within its state on the site; lower numbers show first.',
-      validation: (rule) => rule.integer(),
-    }),
-  ],
-  orderings: [
-    {
-      title: 'Site order',
-      name: 'siteOrder',
-      by: [{field: 'order', direction: 'asc'}],
-    },
-    {
-      title: 'State, then area',
-      name: 'stateArea',
-      by: [
-        {field: 'state', direction: 'asc'},
-        {field: 'area', direction: 'asc'},
-      ],
-    },
   ],
   preview: {
     select: {title: 'clinic', area: 'area', state: 'state', doctor: 'doctor'},

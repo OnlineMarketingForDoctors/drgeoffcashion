@@ -5,9 +5,13 @@ Deployed on Vercel from this repository.
 ## Content: Sanity
 
 All site content is read from Sanity (project `4odz5ftz`, dataset
-`production`) at build time, via `src/sanity/queries.ts`: clinics,
-publications, reviews, Site Settings (contact details, header, footer, refer
-band) and every page's text and images, section by section. Each main page has
+`production`) at build time, via `src/sanity/queries.ts`: Site Settings
+(contact details, header, footer, refer band) and every page's text and
+images, section by section. Content used on one page lives in that page's
+document: the clinics are a list in the procedure page's Locations tab (the
+Contact page's count and `llms.txt` read them from there), the publications a
+list in the research page. Reviews are standalone documents but no page shows
+them at present. Each main page has
 its own document type (`homePage`, `aboutPage`, `vasectomyPage`,
 `researchPage`, `contactPage`, `referPage`); the thank-you pages and the
 sitemap use `page`. All page documents have IDs `page-<slug>`. Layouts, CSS,

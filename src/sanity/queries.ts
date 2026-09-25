@@ -15,9 +15,11 @@ import type { PageContent } from "../data/pages";
 import type { SiteSettings } from "../data/siteSettings";
 import type { SanityImage } from "./image";
 
+// Clinics are a list on the procedure page (Locations tab); the list order
+// is the order within each state.
 export const CLINICS_QUERY = defineQuery(/* groq */ `
-  *[_type == "clinic"] | order(coalesce(order, 9999) asc, area asc) {
-    _id,
+  *[_id == "page-vasectomy"][0].locations.clinics[] {
+    _key,
     area,
     clinic,
     state,
@@ -25,9 +27,10 @@ export const CLINICS_QUERY = defineQuery(/* groq */ `
   }
 `);
 
+// Publications are a list on the research page, shown newest first.
 export const PUBLICATIONS_QUERY = defineQuery(/* groq */ `
-  *[_type == "publication"] | order(year desc, title asc) {
-    _id,
+  *[_id == "page-research"][0].publications.items | order(year desc, title asc) {
+    _key,
     title,
     authors,
     venue,
@@ -116,7 +119,7 @@ const STATE_NAMES: [code: string, name: string][] = [
 ];
 
 interface ClinicDoc {
-  _id: string;
+  _key: string;
   area: string | null;
   clinic: string | null;
   state: string | null;
@@ -124,7 +127,7 @@ interface ClinicDoc {
 }
 
 interface PublicationDoc extends Omit<Publication, "doi" | "href" | "note"> {
-  _id: string;
+  _key: string;
   doi: string | null;
   href: string | null;
   note: string | null;
@@ -143,10 +146,11 @@ interface ReviewDoc {
 
 /**
  * Clinics grouped by state, in the site's state order. Within a state they
- * keep the query's order: the Studio's Order field, then area.
+ * keep their order in the procedure page's Clinics list.
  */
 export async function getStates(): Promise<StateGroup[]> {
-  const docs = await sanityClient.fetch<ClinicDoc[]>(CLINICS_QUERY);
+  const docs = await sanityClient.fetch<ClinicDoc[] | null>(CLINICS_QUERY);
+  if (!docs?.length) throw new Error("Sanity: the procedure page has no clinics");
   return STATE_NAMES.map(([code, name]) => ({
     code,
     name,
@@ -161,8 +165,9 @@ export async function getStates(): Promise<StateGroup[]> {
 }
 
 export async function getPublications(): Promise<Publication[]> {
-  const docs = await sanityClient.fetch<PublicationDoc[]>(PUBLICATIONS_QUERY);
-  return docs.map(({ _id, doi, href, note, ...p }) => ({
+  const docs = await sanityClient.fetch<PublicationDoc[] | null>(PUBLICATIONS_QUERY);
+  if (!docs?.length) throw new Error("Sanity: the research page has no publications");
+  return docs.map(({ _key, doi, href, note, ...p }) => ({
     ...p,
     ...(doi ? { doi } : {}),
     ...(href ? { href } : {}),

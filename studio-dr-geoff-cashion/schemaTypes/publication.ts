@@ -1,9 +1,10 @@
 import {defineField, defineType} from 'sanity'
 
+/** One entry in the research page's list; the site sorts them newest first. */
 export const publication = defineType({
   name: 'publication',
   title: 'Publication',
-  type: 'document',
+  type: 'object',
   fields: [
     defineField({
       name: 'title',
@@ -56,16 +57,6 @@ export const publication = defineType({
       title: 'Note',
       type: 'string',
     }),
-  ],
-  orderings: [
-    {
-      title: 'Newest first',
-      name: 'yearDesc',
-      by: [
-        {field: 'year', direction: 'desc'},
-        {field: 'title', direction: 'asc'},
-      ],
-    },
   ],
   preview: {
     select: {title: 'title', year: 'year', venue: 'venue', topic: 'topic'},
