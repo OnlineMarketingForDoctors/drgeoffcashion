@@ -2,7 +2,7 @@ import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
-import {FIXED_TYPES, structure} from './structure'
+import {FIXED_TYPES, HIDDEN_TYPES, structure} from './structure'
 
 export default defineConfig({
   name: 'default',
@@ -15,8 +15,10 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
-    // Site Settings and Pages map onto code, so no new ones from the + menu
-    templates: (templates) => templates.filter(({schemaType}) => !FIXED_TYPES.has(schemaType)),
+    // Site Settings and Pages map onto code, and hidden types stay hidden,
+    // so none of them can be created from the + menu
+    templates: (templates) =>
+      templates.filter(({schemaType}) => !FIXED_TYPES.has(schemaType) && !HIDDEN_TYPES.has(schemaType)),
   },
 
   document: {

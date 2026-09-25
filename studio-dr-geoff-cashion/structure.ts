@@ -4,6 +4,14 @@ import {PAGE_TYPES} from './schemaTypes/pages'
 /** Document types edited as a fixed set rather than created freely. */
 export const FIXED_TYPES = new Set(['siteSettings', ...PAGE_TYPES])
 
+/**
+ * Types kept in the dataset and schema but out of the Studio: no sidebar
+ * entry, nothing to create. Reviews are here because no page shows them;
+ * to bring them back, delete 'review' from this set and restore
+ * S.documentTypeListItem('review').title('Reviews') in the list below.
+ */
+export const HIDDEN_TYPES = new Set(['review'])
+
 /** The pages, in the order the Pages list shows them. IDs are `page-<slug>`. */
 const PAGES: [slug: string, title: string][] = [
   ['home', 'Home'],
@@ -38,7 +46,6 @@ export const structure: StructureResolver = (S) =>
               ),
             ),
         ),
-      S.documentTypeListItem('review').title('Reviews'),
     ])
 
 function typeFor(slug: string) {

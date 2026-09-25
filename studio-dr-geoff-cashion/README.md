@@ -30,7 +30,8 @@ Schema types live in `schemaTypes/`. Their fields match the GROQ queries in
   them: the procedure page (Locations tab) and the research page
   (Publications tab). Drag to reorder clinics; publications sort newest
   first on the site.
-- **Reviews**: standalone documents, not shown on any page at present.
+- **Reviews**: kept in the dataset but hidden from the Studio (`HIDDEN_TYPES`
+  in `structure.ts`), because no page shows them.
 
 ## Commands
 

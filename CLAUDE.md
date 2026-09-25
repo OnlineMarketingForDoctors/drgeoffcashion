@@ -10,8 +10,8 @@ All site content is read from Sanity (project `4odz5ftz`, dataset
 images, section by section. Content used on one page lives in that page's
 document: the clinics are a list in the procedure page's Locations tab (the
 Contact page's count and `llms.txt` read them from there), the publications a
-list in the research page. Reviews are standalone documents but no page shows
-them at present. Each main page has
+list in the research page. Reviews are standalone documents, hidden from the
+Studio (`HIDDEN_TYPES` in its `structure.ts`) because no page shows them. Each main page has
 its own document type (`homePage`, `aboutPage`, `vasectomyPage`,
 `researchPage`, `contactPage`, `referPage`); the thank-you pages and the
 sitemap use `page`. All page documents have IDs `page-<slug>`. Layouts, CSS,
