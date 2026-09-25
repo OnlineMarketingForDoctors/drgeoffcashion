@@ -15,11 +15,11 @@ import type { PageContent } from "../data/pages";
 import type { SiteSettings } from "../data/siteSettings";
 import type { SanityImage } from "./image";
 
-// Clinics are a list on the procedure page (Locations tab); the list order
-// is the order within each state.
+// Clinics are their own documents (Clinics in the Studio sidebar), ordered
+// by their Order field, then area.
 export const CLINICS_QUERY = defineQuery(/* groq */ `
-  *[_id == "page-vasectomy"][0].locations.clinics[] {
-    _key,
+  *[_type == "clinic"] | order(coalesce(order, 9999) asc, area asc) {
+    _id,
     area,
     clinic,
     state,
@@ -119,7 +119,7 @@ const STATE_NAMES: [code: string, name: string][] = [
 ];
 
 interface ClinicDoc {
-  _key: string;
+  _id: string;
   area: string | null;
   clinic: string | null;
   state: string | null;
@@ -146,11 +146,11 @@ interface ReviewDoc {
 
 /**
  * Clinics grouped by state, in the site's state order. Within a state they
- * keep their order in the procedure page's Clinics list.
+ * keep the query's order: the Studio's Order field, then area.
  */
 export async function getStates(): Promise<StateGroup[]> {
   const docs = await sanityClient.fetch<ClinicDoc[] | null>(CLINICS_QUERY);
-  if (!docs?.length) throw new Error("Sanity: the procedure page has no clinics");
+  if (!docs?.length) throw new Error("Sanity: there are no clinic documents");
   return STATE_NAMES.map(([code, name]) => ({
     code,
     name,

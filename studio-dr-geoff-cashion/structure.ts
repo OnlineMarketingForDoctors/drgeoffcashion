@@ -46,6 +46,7 @@ export const structure: StructureResolver = (S) =>
               ),
             ),
         ),
+      S.documentTypeListItem('clinic').title('Clinics'),
     ])
 
 function typeFor(slug: string) {

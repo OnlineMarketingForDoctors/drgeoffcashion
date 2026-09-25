@@ -334,15 +334,6 @@ export const vasectomyPage = defineType({
       str('eyebrow', 'Eyebrow', ''),
       str('heading', 'Heading', ''),
       txt('lede', 'Intro', ''),
-      defineField({
-        name: 'clinics',
-        title: 'Clinics',
-        description:
-          'Drag to reorder: within each state, clinics show in this order. The Contact page and llms.txt count and list them from here too.',
-        type: 'array',
-        of: [{type: 'clinic'}],
-        validation: (r) => r.required().min(1),
-      }),
     ]),
   ],
   preview,

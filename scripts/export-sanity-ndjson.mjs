@@ -2,11 +2,11 @@
  * Turns the hardcoded site data into an NDJSON file that
  * `sanity dataset import` can load into the Content Lake.
  *
- * Reviews deliberately have no `_id`: Sanity assigns document IDs, and the
- * schema guidance is to keep explicit IDs for singletons only. Re-importing
- * them creates duplicates rather than upserting, so import into an empty
- * dataset (or clear them first). Clinics and publications are lists inside
- * the procedure and research page documents.
+ * Clinics and reviews deliberately have no `_id`: Sanity assigns document
+ * IDs, and the schema guidance is to keep explicit IDs for singletons only.
+ * Re-importing them creates duplicates rather than upserting, so import into
+ * an empty dataset (or clear those types first). Publications are a list
+ * inside the research page document.
  *
  * Site Settings and the pages do have fixed IDs (`siteSettings`,
  * `page-<slug>`), because the site loads them by ID. An import stops on an
@@ -19,6 +19,7 @@
  *   npx sanity dataset import ../dist-sanity/seed.ndjson --dataset production
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { states } from '../src/data/locations.ts';
 import { reviews } from '../src/data/reviews.ts';
 import { siteSettings } from '../src/data/siteSettings.ts';
 import { buildOfferImage, buildPageDocs } from './seed-pages.mjs';
@@ -49,6 +50,22 @@ docs.push({
 });
 
 docs.push(...buildPageDocs(refs));
+
+// `order` keeps the curated sequence (metro before regional); Sanity would
+// otherwise have nothing better than alphabetical to sort by
+let clinicOrder = 0;
+for (const state of states) {
+  for (const c of state.clinics) {
+    docs.push({
+      _type: 'clinic',
+      order: ++clinicOrder,
+      clinic: c.clinic,
+      area: c.area,
+      state: state.code,
+      doctor: c.doctor,
+    });
+  }
+}
 
 for (const [i, r] of reviews.entries()) {
   docs.push({

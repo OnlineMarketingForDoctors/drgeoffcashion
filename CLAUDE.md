@@ -7,10 +7,10 @@ Deployed on Vercel from this repository.
 All site content is read from Sanity (project `4odz5ftz`, dataset
 `production`) at build time, via `src/sanity/queries.ts`: Site Settings
 (contact details, header, footer, refer band) and every page's text and
-images, section by section. Content used on one page lives in that page's
-document: the clinics are a list in the procedure page's Locations tab (the
-Contact page's count and `llms.txt` read them from there), the publications a
-list in the research page. Reviews are standalone documents, hidden from the
+images, section by section. Clinics are their own documents (Clinics in the
+Studio sidebar, ordered by their Order field), shown on the procedure page and
+counted on the Contact page. Publications are a list inside the research
+page's document. Reviews are standalone documents, hidden from the
 Studio (`HIDDEN_TYPES` in its `structure.ts`) because no page shows them. Each main page has
 its own document type (`homePage`, `aboutPage`, `vasectomyPage`,
 `researchPage`, `contactPage`, `referPage`); the thank-you pages and the
