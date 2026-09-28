@@ -195,7 +195,7 @@ export const siteSettings = defineType({
       title: 'Offer link label',
       type: 'string',
       group: 'refer',
-      description: 'Opens an email to the address under Contact.',
+      description: 'Opens an email to the address under Contact. Leave empty to show no link.',
     }),
   ],
   preview: {prepare: () => ({title: 'Site Settings'})},

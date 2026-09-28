@@ -31,7 +31,8 @@ export interface SiteSettings {
   offerEyebrow: string;
   offerHeading: string;
   offerBody: string;
-  offerLinkLabel: string;
+  /** Label for the email link under the offer; none means no link. */
+  offerLinkLabel?: string;
 }
 
 export const siteSettings: SiteSettings = {
@@ -70,5 +71,4 @@ export const siteSettings: SiteSettings = {
   offerHeading: "We'll post you an orchidometer.",
   offerBody:
     "As a thank you to our loyal referrers, tell us where to send one and we will put an orchidometer in the post, along with some other Vasectomy Australia swag.",
-  offerLinkLabel: "Claim yours",
 };
